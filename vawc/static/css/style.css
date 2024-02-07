@@ -1,0 +1,143 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.custom-btn {
+    width: 100%;
+}
+.cust-outline-btn {
+    border-color: transparent !important; /* Set border color to transparent */
+}
+
+.cust-outline-btn:focus,
+.cust-outline-btn:active {
+    outline: none; /* Remove outline on focus and active states */
+    border-color: transparent !important;
+}
+
+/* Unchecked state */
+.custom-btn input[type="radio"].btn-check:not(:checked) + .btn {
+    background-color: #8a2be2; /* Change to desired color */
+}
+
+/* Checked state */
+.custom-btn input[type="radio"].btn-check:checked + .btn {
+    background-color: #6717b2; /* Custom color when selected */
+    border-color: #6717b2; /* Border color when selected */
+}
+
+.wrapper {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+}
+
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #7ac142;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    margin: 10% auto;
+    box-shadow: inset 0px 0px 0px #7ac142;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes scale {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0px 0px 0px 30px #7ac142;
+    }
+}
+
+
+
+.cust-bg {
+    background-color: blueviolet;
+}
+.btn-primary {
+    background-color: #8a2be2 !important;
+    border-color: #8a2be2 !important;
+}
+
+.btn-primary:hover {
+    background-color: #6717b2  !important;
+    border-color: #6717b2  !important;
+}
+
+.btn-outline-primary {
+    background-color: transparent !important;
+    color: #6717b2 !important;
+    border-color: #8a2be2 !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #6717b2  !important;
+    border-color: #6717b2  !important;
+    color: #ffffff !important;
+}
+
+.text-cust-color {
+    color: #6717b2 !important;
+}
+
+.form-check-input:checked {
+    background-color: #6717b2 !important;
+    border: 0;
+  }
+ /*For OPT Card*/
+.otp-card-inputs {
+    margin: 30px 0;
+    display: grid;
+    gap: 30px;
+    justify-content: center;
+    grid-template-columns: repeat(5, auto);
+}
+
+.otp-card-inputs input {
+    width: 60px;
+    height: 70px;
+}
+
+ /*End of OPT Card*/
