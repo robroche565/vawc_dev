@@ -22,277 +22,118 @@ def impact_victim_view (request):
 def behalf_victim_view (request):
     return render(request, 'landing/case_type/behalf-victim.html')
 
-@require_POST
 def add_case(request):
     if request.method == 'POST':
-        type_of_case = request.POST.get('type_of_case')
-        # Calculate the next available unique case number
-        latest_case_number = Case.objects.aggregate(Max('case_number'))['case_number__max']
-        next_case_number = 1 if latest_case_number is None else latest_case_number + 1
+        case_data = {
+            'case_number': get_next_case_number(),
+            'date_latest_incident': request.POST.get('date-latest-incident'),
+            'incomplete_date': request.POST.get('incomplete-date'),
+            'place_of_incident': request.POST.get('place-incident'),
+            'street': request.POST.get('incident-street'),
+            'barangay': request.POST.get('incident-barangay'),
+            'province': request.POST.get('incident-province'),
+            'city': request.POST.get('incident-city'),
+            'region': request.POST.get('incident-region'),
+            'description_of_evidence': request.POST.get('incident-desc'),
+            'service_information': request.POST.get('service'),
+            'type_of_case': request.POST.get('type_of_case'),  # Collecting type of case from the form
+        }
+        case_instance = Case.objects.create(**case_data)
 
-        # Ensure the generated case number is unique
-        while Case.objects.filter(case_number=next_case_number).exists():
-            next_case_number += 1
+        if 'evidence_file' in request.FILES:
+            handle_evidence_files(request.FILES.getlist('evidence_file'), case_instance)
 
-        # Convert the case number to a 5-digit string with leading zeros
-        next_case_number_str = str(next_case_number).zfill(5)
+        # Get dynamic victim data
+        victim_instances = []
+        victim_form_prefix = 'victim-'  # Adjust this prefix according to your form field names
+        victim_count = int(request.POST.get('victim_count'))  # Assuming you have a hidden input for victim count
+        for i in range(victim_count):
+            victim_data = get_victim_data(request.POST, prefix=victim_form_prefix, index=i)
+            victim_instance = Victim.objects.create(case_victim=case_instance, **victim_data)
+            victim_instances.append(victim_instance)
 
-        if type_of_case == 'Impacted':
-            # Parse form data for Case
-            date_latest_incident = request.POST.get('date-latest-incident')
-            incomplete_date = request.POST.get('incomplete-date')
-            place_of_incident = request.POST.get('place-incident')
-            incident_street = request.POST.get('incident-street')
-            incident_barangay = request.POST.get('incident-barangay')
-            incident_province = request.POST.get('incident-province')
-            incident_city = request.POST.get('incident-city')
-            incident_region = request.POST.get('incident-region')
-            incident_description_of_evidence = request.POST.get('incident-desc')
-            incident_service_information = request.POST.get('service')
+        # Perpetrator data handling
+        perpetrator_count = int(request.POST.get('perpetrator_count'))  # Assuming you have a hidden input for perpetrator count
+        for i in range(perpetrator_count):
+            perpetrator_data = get_perpetrator_data(request.POST, index=i)
+            perpetrator_instance = Perpetrator.objects.create(case_perpetrator=case_instance, **perpetrator_data)
 
-            # Create Case instance and save to database
-            case_instance = Case.objects.create(
-                case_number=next_case_number_str,
-                date_latest_incident=date_latest_incident,
-                incomplete_date=incomplete_date,
-                place_of_incident=place_of_incident,
-                street=incident_street,
-                barangay=incident_barangay,
-                province=incident_province,
-                city=incident_city,
-                region=incident_region,
-                description_of_evidence=incident_description_of_evidence,
-                service_information=incident_service_information,
-                date_added=timezone.now()
-            )
-            # Handle file upload for evidence
-            if 'evidence_file' in request.FILES:
-                for file in request.FILES.getlist('evidence_file'):
-                    fs = FileSystemStorage(location=settings.MEDIA_ROOT)  # Use MEDIA_ROOT as the base location
-                    # Generate a unique filename using UUID
-                    unique_filename = str(uuid.uuid4()) + os.path.splitext(file.name)[-1]
-                    filename = fs.save(unique_filename, file)
-                    evidence_instance = Evidence.objects.create(case=case_instance, file=filename)
-            
-            # Parse form data for Victim
-            victim_first_name = request.POST.get('victim-firstname')
-            victim_middle_name = request.POST.get('victim-middlename')
-            victim_last_name = request.POST.get('victim-lastname')
-            victim_suffix = request.POST.get('victim-Suffix')
-            victim_sex = request.POST.get('victim-sex')
-            victim_age = request.POST.get('victim-age')
-            victim_civil_status = request.POST.get('victim-civilstatus')
-            victim_nationality = request.POST.get('victim-nationality')
-            victim_contact_number = request.POST.get('victim-contact-number')
-            victim_tel_number = request.POST.get('victim-tel-number')
-            victim_house_info = request.POST.get('victim-house-info')
-            victim_street = request.POST.get('victim-street')
-            victim_barangay = request.POST.get('victim-barangay')
-            victim_province = request.POST.get('victim-province')
-            victim_city = request.POST.get('victim-city')
-            victim_region = request.POST.get('victim-region')
-
-            # Create Victim instance with case_victim set to the newly created Case instance and save to database
-            victim_instance = Victim.objects.create(
-                case_victim=case_instance,
-                first_name=victim_first_name,
-                middle_name=victim_middle_name,
-                last_name=victim_last_name,
-                suffix=victim_suffix,
-                sex=victim_sex,
-                age=victim_age,
-                civil_status=victim_civil_status,
-                nationality=victim_nationality,
-                contact_number=victim_contact_number,
-                telephone_number=victim_tel_number,
-                house_information=victim_house_info,
-                street=victim_street,
-                barangay=victim_barangay,
-                province=victim_province,
-                city=victim_city,
-                region=victim_region
-            )
-            # Parse form data for Perpetrator
-            perp_first_name = request.POST.get('perp-firstname')
-            perp_middle_name = request.POST.get('perp-middlename')
-            perp_last_name = request.POST.get('perp-lastname')
-            perp_suffix = request.POST.get('perp-Suffix')
-            perp_alias = request.POST.get('perp-alias')
-            perp_sex = request.POST.get('perp-sex')
-            perp_age = request.POST.get('perp-age')
-            perp_nationality = request.POST.get('perp-nationality')
-            perp_identifying_marks = request.POST.get('perp-identifying-marks')
-            perp_house_info = request.POST.get('perp-address-info')
-            perp_street = request.POST.get('perp-street')
-            perp_barangay = request.POST.get('perp-barangay')
-            perp_province = request.POST.get('perp-province')
-            perp_city = request.POST.get('perp-city')
-            perp_region = request.POST.get('perp-region')
-            perp_relationship_to_victim = request.POST.get('perp-relationsip-victim')
-
-            # Create Perpetrator instance with case_perpetrator set to the newly created Case instance and save to database
-            perpetrator_instance = Perpetrator.objects.create(
-                case_perpetrator=case_instance,
-                first_name=perp_first_name,
-                middle_name=perp_middle_name,
-                last_name=perp_last_name,
-                suffix=perp_suffix,
-                alias=perp_alias,
-                sex=perp_sex,
-                age=perp_age,
-                nationality=perp_nationality,
-                identifying_marks=perp_identifying_marks,
-                house_information=perp_house_info,
-                street=perp_street,
-                barangay=perp_barangay,
-                province=perp_province,
-                city=perp_city,
-                region=perp_region,
-                relationship_to_victim=perp_relationship_to_victim
-            )
-        elif type_of_case == 'Behalf':
-            # Parse form data for Case
-            date_latest_incident = request.POST.get('date-latest-incident')
-            incomplete_date = request.POST.get('incomplete-date')
-            place_of_incident = request.POST.get('place-incident')
-            incident_street = request.POST.get('incident-street')
-            incident_barangay = request.POST.get('incident-barangay')
-            incident_province = request.POST.get('incident-province')
-            incident_city = request.POST.get('incident-city')
-            incident_region = request.POST.get('incident-region')
-            incident_description_of_evidence = request.POST.get('incident-desc')
-            incident_service_information = request.POST.get('service')
-
-            # Create Case instance and save to database
-            case_instance = Case.objects.create(
-                case_number=next_case_number_str,
-                date_latest_incident=date_latest_incident,
-                incomplete_date=incomplete_date,
-                place_of_incident=place_of_incident,
-                street=incident_street,
-                barangay=incident_barangay,
-                province=incident_province,
-                city=incident_city,
-                region=incident_region,
-                description_of_evidence=incident_description_of_evidence,
-                service_information=incident_service_information,
-                date_added=timezone.now()
-            )
-            # Handle file upload for evidence
-            if 'evidence_file' in request.FILES:
-                for file in request.FILES.getlist('evidence_file'):
-                    fs = FileSystemStorage(location=settings.MEDIA_ROOT)  # Use MEDIA_ROOT as the base location
-                    # Generate a unique filename using UUID
-                    unique_filename = str(uuid.uuid4()) + os.path.splitext(file.name)[-1]
-                    filename = fs.save(unique_filename, file)
-                    evidence_instance = Evidence.objects.create(case=case_instance, file=filename)
-            
-            # Parse form data for Victim
-            victim_first_name = request.POST.get('victim-firstname')
-            victim_middle_name = request.POST.get('victim-middlename')
-            victim_last_name = request.POST.get('victim-lastname')
-            victim_suffix = request.POST.get('victim-Suffix')
-            victim_sex = request.POST.get('victim-sex')
-            victim_age = request.POST.get('victim-age')
-            victim_civil_status = request.POST.get('victim-civilstatus')
-            victim_nationality = request.POST.get('victim-nationality')
-            victim_contact_number = request.POST.get('victim-contact-number')
-            victim_tel_number = request.POST.get('victim-tel-number')
-            victim_house_info = request.POST.get('victim-house-info')
-            victim_street = request.POST.get('victim-street')
-            victim_barangay = request.POST.get('victim-barangay')
-            victim_province = request.POST.get('victim-province')
-            victim_city = request.POST.get('victim-city')
-            victim_region = request.POST.get('victim-region')
-
-            # Create Victim instance with case_victim set to the newly created Case instance and save to database
-            victim_instance = Victim.objects.create(
-                case_victim=case_instance,
-                first_name=victim_first_name,
-                middle_name=victim_middle_name,
-                last_name=victim_last_name,
-                suffix=victim_suffix,
-                sex=victim_sex,
-                age=victim_age,
-                civil_status=victim_civil_status,
-                nationality=victim_nationality,
-                contact_number=victim_contact_number,
-                telephone_number=victim_tel_number,
-                house_information=victim_house_info,
-                street=victim_street,
-                barangay=victim_barangay,
-                province=victim_province,
-                city=victim_city,
-                region=victim_region
-            )
-            # Parse form data for Perpetrator
-            perp_first_name = request.POST.get('perp-firstname')
-            perp_middle_name = request.POST.get('perp-middlename')
-            perp_last_name = request.POST.get('perp-lastname')
-            perp_suffix = request.POST.get('perp-Suffix')
-            perp_alias = request.POST.get('perp-alias')
-            perp_sex = request.POST.get('perp-sex')
-            perp_age = request.POST.get('perp-age')
-            perp_nationality = request.POST.get('perp-nationality')
-            perp_identifying_marks = request.POST.get('perp-identifying-marks')
-            perp_house_info = request.POST.get('perp-address-info')
-            perp_street = request.POST.get('perp-street')
-            perp_barangay = request.POST.get('perp-barangay')
-            perp_province = request.POST.get('perp-province')
-            perp_city = request.POST.get('perp-city')
-            perp_region = request.POST.get('perp-region')
-            perp_relationship_to_victim = request.POST.get('perp-relationsip-victim')
-
-            # Create Perpetrator instance with case_perpetrator set to the newly created Case instance and save to database
-            perpetrator_instance = Perpetrator.objects.create(
-                case_perpetrator=case_instance,
-                first_name=perp_first_name,
-                middle_name=perp_middle_name,
-                last_name=perp_last_name,
-                suffix=perp_suffix,
-                alias=perp_alias,
-                sex=perp_sex,
-                age=perp_age,
-                nationality=perp_nationality,
-                identifying_marks=perp_identifying_marks,
-                house_information=perp_house_info,
-                street=perp_street,
-                barangay=perp_barangay,
-                province=perp_province,
-                city=perp_city,
-                region=perp_region,
-                relationship_to_victim=perp_relationship_to_victim
-            )
-            # Parse form data for contact Person
-            contact_first_name = request.POST.get('contact-firstname')
-            contact_middle_name = request.POST.get('contact-midname')
-            contact_last_name = request.POST.get('contact-lastname')
-            contact_suffix = request.POST.get('contact-Suffix')
-            contact_relationship = request.POST.get('relationship')
-            contact_street = request.POST.get('contact-street')
-            contact_barangay = request.POST.get('contact-barangay')
-            contact_city = request.POST.get('contact-city')
-            contact_province = request.POST.get('contact-province')
-            contact_contact_number = request.POST.get('contact-number')
-            contact_tel_number = request.POST.get('contact-tel')
-            
-        # Create Contact Person instance with case_Contact Person set to the newly created Case instance and save to database
-        contact_person_instance = Contact_Person.objects.create(
-            case_contact=case_instance,
-            first_name=contact_first_name,
-            middle_name=contact_middle_name,
-            last_name=contact_last_name,
-            suffix=contact_suffix,
-            relationship=contact_relationship,
-            street=contact_street,
-            barangay=contact_barangay,
-            city=contact_city,
-            province=contact_province,
-            contact_number=contact_contact_number,
-            telephone_number=contact_tel_number
-        )
+        contact_person_data = get_contact_person_data(request.POST)
+        contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
 
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
-    #return redirect('home')  # Replace 'success_page' with the name of your success page URL pattern
+
+
+
+def get_next_case_number():
+    latest_case_number = Case.objects.aggregate(Max('case_number'))['case_number__max']
+    return 1 if latest_case_number is None else latest_case_number + 1
+
+def handle_evidence_files(files, case_instance):
+    for file in files:
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+        unique_filename = str(uuid.uuid4()) + os.path.splitext(file.name)[-1]
+        filename = fs.save(unique_filename, file)
+        evidence_instance = Evidence.objects.create(case=case_instance, file=filename)
+
+def get_victim_data(post_data, prefix, index):
+    victim_data = {
+        'first_name': post_data.get(f'{prefix}firstname_{index}'),
+        'middle_name': post_data.get(f'{prefix}middlename_{index}'),
+        'last_name': post_data.get(f'{prefix}lastname_{index}'),
+        'suffix': post_data.get(f'{prefix}Suffix_{index}'),
+        'sex': post_data.get(f'{prefix}sex_{index}'),
+        'age': post_data.get(f'{prefix}age_{index}'),
+        'civil_status': post_data.get(f'{prefix}civilstatus_{index}'),
+        'nationality': post_data.get(f'{prefix}nationality_{index}'),
+        'contact_number': post_data.get(f'{prefix}contact-number_{index}'),
+        'telephone_number': post_data.get(f'{prefix}tel-number_{index}'),
+        'house_information': post_data.get(f'{prefix}house-info_{index}'),
+        'street': post_data.get(f'{prefix}street_{index}'),
+        'barangay': post_data.get(f'{prefix}barangay_{index}'),
+        'province': post_data.get(f'{prefix}province_{index}'),
+        'city': post_data.get(f'{prefix}city_{index}'),
+        'region': post_data.get(f'{prefix}region_{index}'),
+    }
+    return victim_data
+
+def get_perpetrator_data(post_data, index):
+    perpetrator_data = {
+        'first_name': post_data.get(f'perp-firstname_{index}'),
+        'middle_name': post_data.get(f'perp-middlename_{index}'),
+        'last_name': post_data.get(f'perp-lastname_{index}'),
+        'suffix': post_data.get(f'perp-Suffix_{index}'),
+        'alias': post_data.get(f'perp-alias_{index}'),
+        'sex': post_data.get(f'perp-sex_{index}'),
+        'age': post_data.get(f'perp-age_{index}'),
+        'nationality': post_data.get(f'perp-nationality_{index}'),
+        'identifying_marks': post_data.get(f'perp-identifying-marks_{index}'),
+        'house_information': post_data.get(f'perp-address-info_{index}'),
+        'street': post_data.get(f'perp-street_{index}'),
+        'barangay': post_data.get(f'perp-barangay_{index}'),
+        'province': post_data.get(f'perp-province_{index}'),
+        'city': post_data.get(f'perp-city_{index}'),
+        'region': post_data.get(f'perp-region_{index}'),
+        'relationship_to_victim': post_data.get(f'perp-relationsip-victim_{index}'),
+    }
+    return perpetrator_data
+
+def get_contact_person_data(post_data):
+    contact_person_data = {
+        'first_name': post_data.get('contact-firstname'),
+        'middle_name': post_data.get('contact-midname'),
+        'last_name': post_data.get('contact-lastname'),
+        'suffix': post_data.get('contact-Suffix'),
+        'relationship': post_data.get('relationship'),
+        'street': post_data.get('contact-street'),
+        'barangay': post_data.get('contact-barangay'),
+        'city': post_data.get('contact-city'),
+        'province': post_data.get('contact-province'),
+        'contact_number': post_data.get('contact-number'),
+        'telephone_number': post_data.get('contact-tel'),
+        'region': post_data.get('contact-region'),
+    }
+    return contact_person_data
+
