@@ -19,8 +19,9 @@
       <!--form panels-->
       <div class="row">
         <div class="col-12 col-lg-12">
-          <form class="multisteps-form__form" id="impact-victim-form" method="POST" action="{% url 'add_impact_victim' %}" enctype="multipart/form-data">
+          <form class="multisteps-form__form" id="impact-victim-form" method="POST" action="{% url 'add_case' %}" enctype="multipart/form-data">
             {% csrf_token %}
+                <input type="hidden" name="type_of_case" value="Impacted">
                 <!--single form panel-->
                 <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active" data-animation="slideHorz">
                     <div class="multisteps-form__content">
@@ -340,6 +341,7 @@
                                 <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
                                     <label for="place-incident" class="form-label">Type of Place of incident: </label>
                                     <select id="place-incident" name="place-incident" class="form-select">
+                                        <option selected>---Select Place of Incident---</option>
                                         <option value="house">House</option>
                                         <option value="work">Work</option>
                                         <option value="school">School</option>
@@ -449,7 +451,6 @@
         <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title fs-5" id="staticBackdropLabel">Success</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <div class="wrapper"> <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"> <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/> <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
@@ -459,7 +460,6 @@
             <p class="py-1 fs-4 text-center">Thank you for reporting! Your report will help us maintain a safe and enjoyable environment for everyone. We'll review the issue promptly. If necessary, we'll take appropriate action. Your contribution is appreciate!</p>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <a type="button" class="btn btn-primary" href="{% url 'home' %}">Back to HomePage</a>
         </div>
         </div>

@@ -7,7 +7,8 @@ from . import views
 urlpatterns = [
     path('report_violence/', views.report_violence_view, name='report violence'),
     path('impact-victim-survivor/', views.impact_victim_view, name='impact victim'),
-    path('add-impact-victim/', views.add_impact_victim, name='add_impact_victim'),
+    path('behalf-victim-survivor/', views.behalf_victim_view, name='behalf impact victim'),
+    path('add-case/', views.add_case, name='add_case'),
 ]
 
 # Serve media files during development

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class Case(models.Model):
@@ -19,10 +20,42 @@ class Case(models.Model):
         (ISSUANCE_ENFORCEMENT, 'Issuance / Enforcement of Barangay Protection Order'),
     ]
     service_information = models.CharField(max_length=20, choices=SERVICE_CHOICES, null=True, blank=True)
-    
+    TYPE_IMPACTED_VICTIM = 'Impacted'
+    TYPE_REPORTING_BEHALF = 'Behalf'
+    TYPE_CHOICES = [
+        (TYPE_IMPACTED_VICTIM, 'The Impacted Victim'),
+        (TYPE_REPORTING_BEHALF, 'Reporting on Behalf of Impacted Victim'),
+    ]
+    type_of_case = models.CharField(max_length=30, choices=TYPE_CHOICES, default='Pending')
+
+    STATUS_PENDING = 'Pending'
+    STATUS_APPROVED = 'Approved'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_APPROVED, 'Approved'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+
+    date_added = models.DateField(default=timezone.now)
+
     def __str__(self):
         return f"Case ID: {self.id}, Case Number: {self.case_number}"
-    
+
+class Contact_Person(models.Model):
+    case_contact = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='contact_person',null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    middle_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    suffix = models.CharField(max_length=10, null=True, blank=True)
+    relationship = models.CharField(max_length=50, null=True, blank=True)
+    street = models.CharField(max_length=150, null=True, blank=True)
+    barangay = models.CharField(max_length=150, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    province = models.CharField(max_length=100, null=True, blank=True)
+    contact_number = models.IntegerField(default=0,null=True, blank=True)
+    telephone_number = models.IntegerField(default=0,null=True, blank=True)
+
+
 class Evidence(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='evidence')
     file = models.FileField()
