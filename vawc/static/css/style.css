@@ -126,18 +126,9 @@ main {
     background-color: #6717b2 !important;
     border: 0;
   }
- /*For OPT Card*/
-.otp-card-inputs {
-    margin: 30px 0;
-    display: grid;
-    gap: 30px;
-    justify-content: center;
-    grid-template-columns: repeat(5, auto);
-}
 
-.otp-card-inputs input {
-    width: 60px;
-    height: 70px;
+.otp-input {
+    width: 3em; /* Adjust width as needed */
+    text-align: center;
+    margin: 0 6px; /* Add gap between inputs */
 }
-
- /*End of OPT Card*/

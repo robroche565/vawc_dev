@@ -1,17 +1,141 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from case.models import *
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Max
 from django.core.files.storage import FileSystemStorage
 import os
+from django.contrib import auth
 from django.conf import settings
 import uuid
+from django.core.mail import send_mail, EmailMultiAlternatives 
+from django.template.loader import render_to_string
+from django.conf import settings
+import random
+import string
 from django.utils import timezone
+from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+import json
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
+#models
+from case.models import *
+from account.models import *
 def home_view (request):
     return render(request, 'landing/home.html')
+
+def login_view (request):
+    return render(request, 'login/login.html')
+
+@login_required
+def dashboard_view (request):
+    return render(request, 'admin/dashboard.html')
+
+def send_otp_email(email, otp):
+    subject = 'One-Time Password Verification'
+    message = (
+        f'--------------------------\n'
+        f'One-Time Password Verification\n'
+        f'--------------------------\n\n'
+        f'Your One-Time Password (OTP) is: {otp}\n\n'
+        f'Please use this OTP to verify your account.\n\n'
+        f'This OTP will expire in 5 minutes.\n\n'
+        f'--------------------------\n'
+        f'This email was sent automatically. Please do not reply.'
+    )
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+
+def generate_otp():
+    return ''.join(random.choices(string.digits, k=6))
+
+def login_with_otp(request):
+    if request.method == 'POST':
+        email = request.POST.get('barangay-email')
+        passkey = request.POST.get('barangay-passkey')
+        # Check if the user exists
+        user = CustomUser.objects.filter(email=email).first()
+        if user:
+            # Validate passkey
+            user_authenticated = authenticate(request, username=email, password=passkey)
+            if user_authenticated:
+                otp = generate_otp()
+                request.session['otp'] = otp
+                request.session['user_email'] = email  # Store user email in session for later retrieval
+                otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+                request.session['otp_expiry'] = otp_expiry.isoformat()  # Convert datetime to string
+                send_otp_email(email, otp)
+                return JsonResponse({'success': True, 'message': 'OTP has been sent to your email.'})
+            else:
+                print('Invalid passkey. Please try again.')
+                return JsonResponse({'success': False, 'message': 'Invalid passkey. Please try again.'})
+        else:
+            print('Account not found.')
+            return JsonResponse({'success': False, 'message': 'Account not found.'})
+    return render(request, 'login/login.html')
+
+
+def verify_otp(request):
+    if request.method == 'POST':
+        otp_entered = ''
+        for i in range(1, 7):  # Iterate through OTP fields from 1 to 6
+            otp_entered += request.POST.get(f'otp_{i}', '')
+
+        otp_saved = None
+        otp_expiry_str = None
+
+        # Check all possible OTP fields
+        for i in range(1, 4):  # Adjust the range based on your maximum OTP fields
+            otp_saved = request.session.get('otp')
+            otp_expiry_str = request.session.get('otp_expiry')
+            user_email = request.session.get('user_email')
+            print(user_email)
+            if otp_saved and otp_expiry_str:
+                otp_expiry = timezone.datetime.fromisoformat(otp_expiry_str)
+                if timezone.now() < otp_expiry and otp_entered == otp_saved:
+                    user = CustomUser.objects.filter(email=user_email).first()
+                    if user:
+                        login(request, user)  # Logging in the user
+                        request.session.pop('otp')
+                        request.session.pop('otp_expiry')
+                        request.session.pop('user_email')
+                        # Print a success message
+                        print("User logged in successfully")
+                        return JsonResponse({'success': True, 'message': 'Login successful.', 'otp_expiry': otp_expiry_str})
+                    else:
+                        return JsonResponse({'success': False, 'message': 'User not found.'})
+                elif timezone.now() >= otp_expiry:
+                    return JsonResponse({'success': False, 'message': 'Code is already expired.', 'otp_expiry': otp_expiry_str})
+                else:
+                    break
+        # If OTP is incorrect
+        return JsonResponse({'success': False, 'message': 'OTP Inputted is not Correct.', 'otp_expiry': otp_expiry_str})
+
+    return JsonResponse({'success': False, 'message': 'Invalid request.'}, encoder=DjangoJSONEncoder)
+
+def resend_otp(request):
+    if request.method == 'GET':
+        user_email = request.session.get('user_email')  # Corrected key
+        if user_email:
+            try:
+                user = CustomUser.objects.get(email=user_email)
+                otp = generate_otp()  # Assuming you have a function to generate OTP
+                request.session['otp'] = otp
+                otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+                request.session['otp_expiry'] = otp_expiry.isoformat()
+                send_otp_email(user_email, otp)  # Assuming you have a function to send OTP email
+                return JsonResponse({'success': True, 'message': 'OTP resent successfully.'})
+            except ObjectDoesNotExist:
+                return JsonResponse({'success': False, 'message': 'User not found.'})
+        else:
+            return JsonResponse({'success': False, 'message': 'User email not found in session.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+
 
 def report_violence_view (request):
     return render(request, 'landing/report_violence.html')
@@ -64,8 +188,6 @@ def add_case(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
-
-
 
 def get_next_case_number():
     latest_case_number = Case.objects.aggregate(Max('case_number'))['case_number__max']
