@@ -9,11 +9,16 @@ urlpatterns = [
     path('login-with-otp/', views.login_with_otp, name='login_with_otp'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('resend-otp/', views.resend_otp, name='resend_otp'),
-    path('admin-vawc/dashboard/', views.dashboard_view, name='dashboard'),
+    
+    #anonymouse side
     path('report_violence/', views.report_violence_view, name='report violence'),
     path('impact-victim-survivor/', views.impact_victim_view, name='impact victim'),
     path('behalf-victim-survivor/', views.behalf_victim_view, name='behalf impact victim'),
     path('add-case/', views.add_case, name='add_case'),
+    
+    #admin side
+    path('admin-vawc/dashboard/', views.dashboard_view, name='dashboard'),
+    path('admin-vawc/graph-report/', views.graph_view, name='graph'),
 ]
 
 # Serve media files during development

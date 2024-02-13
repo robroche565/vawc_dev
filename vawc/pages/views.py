@@ -35,6 +35,10 @@ def login_view (request):
 def dashboard_view (request):
     return render(request, 'admin/dashboard.html')
 
+@login_required
+def graph_view (request):
+    return render(request, 'admin/graph_report.html')
+
 def send_otp_email(email, otp):
     subject = 'One-Time Password Verification'
     message = (
