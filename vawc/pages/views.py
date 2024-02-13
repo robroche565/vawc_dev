@@ -136,7 +136,6 @@ def resend_otp(request):
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 
-
 def report_violence_view (request):
     return render(request, 'landing/report_violence.html')
 
