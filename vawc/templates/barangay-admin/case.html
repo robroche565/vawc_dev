@@ -2,7 +2,16 @@
 {% block title %}Report | Case {% endblock %}
 {% load static %}
 {% block styles %}
+<link href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
+
 <style>
+    .dataTables_wrapper .dataTables_length {
+        float: left;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -40,7 +49,7 @@
     
     <div class="pt-4 table-responsive-lg table-responsive-md table-responsive-sm">
         <table class="table table-hover" id="table-case">
-          <thead>
+          <thead class="border-bottom border-dark border-2 border-opacity-50">
             <tr>
               <th scope="col">Case Number</th>
               <th scope="col">Type of Case</th>
@@ -117,7 +126,6 @@
             </tr>
           </tbody>
         </table><!--end of table-->
-        <div class="text-end" id="length-menu-container"></div>
     </div><!--end of div of table-->
 </div>
 {% endblock content %}
@@ -125,9 +133,10 @@
 <script>
     $(document).ready(function() {
         $('#table-case').DataTable({
-            dom: 'Brtp',
+            dom: 'Brt <"bottom"lp>',
             responsive: true,
             fixedHeader: true,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
         });
 
         // Your filter options and search functionality
