@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Max
@@ -20,11 +20,13 @@ from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 import json
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 # Create your views here.
 
 #models
 from case.models import *
 from account.models import *
+
 def home_view (request):
     return render(request, 'landing/home.html')
 
@@ -32,12 +34,26 @@ def login_view (request):
     return render(request, 'login/login.html')
 
 @login_required
-def dashboard_view (request):
-    return render(request, 'admin/dashboard.html')
+def logout_view(request):
+    logout(request)
+    return redirect(reverse('login'))
 
 @login_required
-def graph_view (request):
-    return render(request, 'admin/graph_report.html')
+def admin_dashboard_view (request):
+    return render(request, 'super-admin/dashboard.html')
+
+@login_required
+def admin_graph_view (request):
+    return render(request, 'super-admin/graph_report.html')
+
+@login_required
+def barangay_dashboard_view (request):
+    return render(request, 'barangay-admin/dashboard.html')
+
+@login_required
+def barangay_case_view (request):
+    return render(request, 'barangay-admin/case.html')
+
 
 def send_otp_email(email, otp):
     subject = 'One-Time Password Verification'
@@ -106,9 +122,16 @@ def verify_otp(request):
                         request.session.pop('otp')
                         request.session.pop('otp_expiry')
                         request.session.pop('user_email')
+
+                        # Fetch the account type of the user
+                        account_type = Account.objects.filter(user=user).first().type
+
                         # Print a success message
                         print("User logged in successfully")
-                        return JsonResponse({'success': True, 'message': 'Login successful.', 'otp_expiry': otp_expiry_str})
+                        print(account_type)
+
+                        # Return success along with account type
+                        return JsonResponse({'success': True, 'message': 'Login successful.', 'account_type': account_type, 'otp_expiry': otp_expiry_str})
                     else:
                         return JsonResponse({'success': False, 'message': 'User not found.'})
                 elif timezone.now() >= otp_expiry:

@@ -59,16 +59,16 @@ class Case(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     region = models.CharField(max_length=250,choices=REGION_CHOICES, null=True, blank=True)
     description_of_evidence = models.TextField(null=True, blank=True)
-    
-    
 
-    STATUS_PENDING = 'Pending'
-    STATUS_APPROVED = 'Approved'
+    STATUS_ACTIVE = 'Active'
+    STATUS_CLOSE = 'Close'
     STATUS_CHOICES = [
-        (STATUS_PENDING, 'Pending'),
-        (STATUS_APPROVED, 'Approved'),
+        (STATUS_ACTIVE, 'Active'),
+        (STATUS_CLOSE, 'Close'),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
+    
+    status_description = models.TextField()
 
     date_added = models.DateField(default=timezone.now)
 
@@ -121,6 +121,7 @@ class Victim(models.Model):
         choices=CIVIL_STATUS_CHOICES,
         null=True,
         blank=True)
+    type_of_disability = models.CharField(max_length=50, null=True, blank=True)
     nationality = models.CharField(max_length=50, null=True, blank=True)
     contact_number = models.IntegerField(default=0,null=True, blank=True)
     telephone_number = models.IntegerField(default=0,null=True, blank=True)
@@ -130,7 +131,7 @@ class Victim(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     region = models.CharField(max_length=250,choices=REGION_CHOICES, null=True, blank=True)
-    
+
 
 class Perpetrator(models.Model):
     case_perpetrator = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='perpetrator',null=True, blank=True)
@@ -176,3 +177,39 @@ class Perpetrator(models.Model):
         null=True,
         blank=True)
 
+
+class Parent(models.Model):
+    victim_parent = models.ForeignKey(Victim, on_delete=models.CASCADE, related_name='parent',null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    middle_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    suffix = models.CharField(max_length=10, null=True, blank=True)
+    MALE, FEMALE = 'Male', 'Female'
+    SEX_CHOICES = [(MALE, 'Male'), (FEMALE, 'Female')]
+    sex = models.CharField(
+        max_length=6,
+        choices=SEX_CHOICES,
+        null=True,
+        blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    CIVIL_STATUS_CHOICES = [
+        ('single', 'Single'),
+        ('married', 'Married'),
+        ('live-in', 'Live-In'),
+        ('widowed', 'Widowed'),
+        ('separated', 'Separated'),
+    ]
+    civil_status = models.CharField(
+        max_length=10,
+        choices=CIVIL_STATUS_CHOICES,
+        null=True,
+        blank=True)
+    nationality = models.CharField(max_length=50, null=True, blank=True)
+    contact_number = models.IntegerField(default=0,null=True, blank=True)
+    telephone_number = models.IntegerField(default=0,null=True, blank=True)
+    house_information = models.CharField(max_length=250, null=True, blank=True)
+    street = models.CharField(max_length=150, null=True, blank=True)
+    barangay = models.CharField(max_length=150, null=True, blank=True)
+    province = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    region = models.CharField(max_length=250,choices=REGION_CHOICES, null=True, blank=True)

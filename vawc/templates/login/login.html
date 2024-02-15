@@ -128,7 +128,7 @@
                 }
             });
         });
-    
+
         $('#otpForm').submit(function(event) {
             event.preventDefault();
             var formData = $(this).serialize();
@@ -139,8 +139,16 @@
                 success: function(response) {
                     if (response.success) {
                         $('#successMessage').text(response.message);
-                        // Redirect to dashboard view after successful OTP verification
-                        window.location.href = '{% url "dashboard" %}';
+
+                        // Redirect based on account type
+                        if (response.account_type === 'admin') {
+                            // Redirect to admin dashboard
+                            window.location.href = '{% url "admin dashboard" %}';
+                        } else if (response.account_type === 'staff') {
+                            // Redirect to staff dashboard
+                            window.location.href = '{% url "barangay dashboard" %}';
+                        }
+
                         // Log success message to the console
                         console.log('OTP verification successful.');
                     } else {

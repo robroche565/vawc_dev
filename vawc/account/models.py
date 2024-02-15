@@ -35,6 +35,7 @@ class Account(models.Model):
         choices=TYPE_CHOICES,
         default=STAFF
     )
+    
 
     def __str__(self):
         return self.user.username
