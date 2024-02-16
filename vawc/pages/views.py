@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.http import require_POST
@@ -51,8 +51,9 @@ def barangay_dashboard_view (request):
     return render(request, 'barangay-admin/dashboard.html')
 
 @login_required
-def barangay_case_view (request):
-    return render(request, 'barangay-admin/case.html')
+def barangay_case_view(request):
+    cases = Case.objects.all()  # Retrieve all cases from the database
+    return render(request, 'barangay-admin/case/case.html', {'cases': cases})
 
 
 def send_otp_email(email, otp):
@@ -187,6 +188,7 @@ def add_case(request):
             'description_of_evidence': request.POST.get('incident-desc'),
             'service_information': request.POST.get('service'),
             'type_of_case': request.POST.get('type_of_case'),  # Collecting type of case from the form
+            'date_added': timezone.now(),
         }
         case_instance = Case.objects.create(**case_data)
 
@@ -233,7 +235,7 @@ def get_victim_data(post_data, prefix, index):
         'last_name': post_data.get(f'{prefix}lastname_{index}'),
         'suffix': post_data.get(f'{prefix}Suffix_{index}'),
         'sex': post_data.get(f'{prefix}sex_{index}'),
-        'age': post_data.get(f'{prefix}age_{index}'),
+        'date_of_birth': post_data.get(f'{prefix}date-of-birth_{index}'),
         'civil_status': post_data.get(f'{prefix}civilstatus_{index}'),
         'nationality': post_data.get(f'{prefix}nationality_{index}'),
         'contact_number': post_data.get(f'{prefix}contact-number_{index}'),
@@ -255,7 +257,7 @@ def get_perpetrator_data(post_data, index):
         'suffix': post_data.get(f'perp-Suffix_{index}'),
         'alias': post_data.get(f'perp-alias_{index}'),
         'sex': post_data.get(f'perp-sex_{index}'),
-        'age': post_data.get(f'perp-age_{index}'),
+        'date_of_birth': post_data.get(f'perp-date-of-birth_{index}'),
         'nationality': post_data.get(f'perp-nationality_{index}'),
         'identifying_marks': post_data.get(f'perp-identifying-marks_{index}'),
         'house_information': post_data.get(f'perp-address-info_{index}'),
@@ -285,3 +287,99 @@ def get_contact_person_data(post_data):
     }
     return contact_person_data
 
+
+@login_required
+def view_case(request, case_id):
+    try:
+        # Retrieve the case object from the database based on the case_id
+        case = Case.objects.get(id=case_id)
+        # Retrieve related objects such as contact persons, evidence, victims, perpetrators, and parents
+        contact_persons = Contact_Person.objects.filter(case_contact=case)
+        evidences = Evidence.objects.filter(case=case)
+        victims = Victim.objects.filter(case_victim=case)
+        perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
+        parents = Parent.objects.filter(victim_parent__in=victims)
+
+        # Render the view-case.html template with the case and related objects as context
+        return render(request, 'barangay-admin/case/view-case.html', {
+            'case': case,
+            'contact_persons': contact_persons,
+            'evidence': evidences,
+            'victims': victims,
+            'perpetrators': perpetrators,
+            'parents': parents,
+        })
+    except Case.DoesNotExist:
+        # Handle case not found appropriately, for example, return a 404 page
+        return HttpResponseNotFound("Case not found")
+    
+@require_POST
+def save_victim_data(request, victim_id):
+    try:
+        victim = get_object_or_404(Victim, id=victim_id)
+        
+        # Update victim data
+        victim.first_name = request.POST.get('victim_first_name_' + str(victim_id))
+        victim.middle_name = request.POST.get('victim_middle_name_' + str(victim_id))
+        victim.last_name = request.POST.get('victim_last_name_' + str(victim_id))
+        victim.suffix = request.POST.get('victim_suffix_name_' + str(victim_id))
+        victim.sex = request.POST.get('victim_sex_' + str(victim_id))
+        victim.type_of_disability = request.POST.get('victim_type_of_disability_' + str(victim_id))
+        victim.date_of_birth = request.POST.get('victim_date_of_birth_' + str(victim_id))
+        victim.civil_status = request.POST.get('victim_civil_status_' + str(victim_id))
+        victim.contact_number = request.POST.get('victim_contact_number_' + str(victim_id))
+        victim.telephone_number = request.POST.get('victim_telephone_number_' + str(victim_id))
+        victim.educational_attainment = request.POST.get('victim_educational_attainment_' + str(victim_id))
+        victim.occupation = request.POST.get('victim_occupation_' + str(victim_id))
+        victim.nationality = request.POST.get('victim_nationality_' + str(victim_id))
+        victim.religion = request.POST.get('victim_religion_' + str(victim_id))
+        victim.house_information = request.POST.get('victim_house_information_' + str(victim_id))
+        victim.street = request.POST.get('victim_street_' + str(victim_id))
+        victim.barangay = request.POST.get('victim_barangay_' + str(victim_id))
+        victim.province = request.POST.get('victim_province_' + str(victim_id))
+        victim.city = request.POST.get('victim_city_' + str(victim_id))
+        victim.region = request.POST.get('victim_region_' + str(victim_id))
+
+        # Save victim data
+        victim.save()
+
+        return JsonResponse({'success': True, 'message': 'Victim data saved successfully'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@require_POST
+def save_perpetrator_data(request, perpetrator_id):
+    try:
+        perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
+        
+        # Update perpetrator data
+        perpetrator.first_name = request.POST.get('perpetrator_first_name_' + str(perpetrator_id))
+        perpetrator.middle_name = request.POST.get('perpetrator_middle_name_' + str(perpetrator_id))
+        perpetrator.last_name = request.POST.get('perpetrator_last_name_' + str(perpetrator_id))
+        perpetrator.suffix = request.POST.get('perpetrator_suffix_name_' + str(perpetrator_id))
+        perpetrator.identifying_marks = request.POST.get('perpetrator_identifying_marks_' + str(perpetrator_id))
+        perpetrator.alias = request.POST.get('perpetrator_alias_' + str(perpetrator_id))
+        perpetrator.relationship_to_victim = request.POST.get('perp-relationship-victim_' + str(perpetrator_id))
+        perpetrator.sex = request.POST.get('perpetrator_sex_' + str(perpetrator_id))
+        perpetrator.type_of_disability = request.POST.get('perpetrator_type_of_disability_' + str(perpetrator_id))
+        perpetrator.date_of_birth = request.POST.get('perpetrator_date_of_birth_' + str(perpetrator_id))
+        perpetrator.civil_status = request.POST.get('perpetrator_civil_status_' + str(perpetrator_id))
+        perpetrator.contact_number = request.POST.get('perpetrator_contact_number_' + str(perpetrator_id))
+        perpetrator.telephone_number = request.POST.get('perpetrator_telephone_number_' + str(perpetrator_id))
+        perpetrator.educational_attainment = request.POST.get('perpetrator_educational_attainment_' + str(perpetrator_id))
+        perpetrator.occupation = request.POST.get('perpetrator_occupation_' + str(perpetrator_id))
+        perpetrator.nationality = request.POST.get('perpetrator_nationality_' + str(perpetrator_id))
+        perpetrator.religion = request.POST.get('perpetrator_religion_' + str(perpetrator_id))
+        perpetrator.house_information = request.POST.get('perpetrator_house_information_' + str(perpetrator_id))
+        perpetrator.street = request.POST.get('perpetrator_street_' + str(perpetrator_id))
+        perpetrator.barangay = request.POST.get('perpetrator_barangay_' + str(perpetrator_id))
+        perpetrator.province = request.POST.get('perpetrator_province_' + str(perpetrator_id))
+        perpetrator.city = request.POST.get('perpetrator_city_' + str(perpetrator_id))
+        perpetrator.region = request.POST.get('perpetrator_region_' + str(perpetrator_id))
+
+        # Save perpetrator data
+        perpetrator.save()
+
+        return JsonResponse({'success': True, 'message': 'Perpetrator data saved successfully'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

@@ -23,7 +23,12 @@ urlpatterns = [
 
     #barangay admin side
     path('admin-barangay-vawc/dashboard/', views.barangay_dashboard_view, name='barangay dashboard'),
+
     path('admin-barangay-vawc/case/', views.barangay_case_view, name='barangay case'),
+    path('admin-barangay-vawc/view-case/<int:case_id>/', views.view_case, name='barangay case view'),
+    path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
+    path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
+
 ]
 
 # Serve media files during development
