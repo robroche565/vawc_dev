@@ -312,12 +312,12 @@ def view_case(request, case_id):
     except Case.DoesNotExist:
         # Handle case not found appropriately, for example, return a 404 page
         return HttpResponseNotFound("Case not found")
-    
+
 @require_POST
 def save_victim_data(request, victim_id):
     try:
         victim = get_object_or_404(Victim, id=victim_id)
-        
+
         # Update victim data
         victim.first_name = request.POST.get('victim_first_name_' + str(victim_id))
         victim.middle_name = request.POST.get('victim_middle_name_' + str(victim_id))
@@ -383,3 +383,12 @@ def save_perpetrator_data(request, perpetrator_id):
         return JsonResponse({'success': True, 'message': 'Perpetrator data saved successfully'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+
+def add_parent(request, case_id, victim_id):
+    case = Case.objects.get(id=case_id)
+    victim = Victim.objects.get(id=victim_id)
+    return render(request, 'barangay-admin/case/add-parent.html', {
+            'victim': victim,
+            'case': case,  # Include the 'case' variable in the context
+        })

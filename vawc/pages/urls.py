@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin-barangay-vawc/view-case/<int:case_id>/', views.view_case, name='barangay case view'),
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
+    path('add_parent/<int:case_id>/<int:victim_id>/', views.add_parent, name='add_parent'),
 
 ]
 

@@ -1,0 +1,18 @@
+{% extends "../../base/base_barangay.html" %}
+{% block title %}Report | Add Parent {% endblock %}
+{% load static %}
+{% block styles %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid pb-4">
+    <div class="pt-1 row">
+        <a class="col text-decoration-none text-dark" href="{% url 'barangay case view' case_id=case.id %}" role="button"><i class='bx bx-arrow-back'></i> Back</a>
+    </div>
+    <h2>Victim ID: {{ victim.id }}</h2>
+    <h2>Case ID: {{ case.id }}</h2>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+</script>
+{% endblock scripts %}

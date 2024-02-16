@@ -70,6 +70,16 @@
                     {% for victim in victims %}
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-victim-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-victim-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
+                            <div class="d-flex justify-content-end mb-3">
+                                <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id %}" class="btn btn-primary me-2">
+                                    <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
+                                    <span>Add Parent/s</span>
+                                </a>
+                                <button class="btn btn-primary">
+                                    <i class="bx bx-show-alt" style="vertical-align: middle;"></i>
+                                    <span>View Parent/s</span>
+                                </button>
+                            </div>
                             <form id="victim_form_{{ victim.id }}">
                                 {% csrf_token %}
                                 <div class="h-100">
