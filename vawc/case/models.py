@@ -193,6 +193,7 @@ class Parent(models.Model):
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
     suffix = models.CharField(max_length=10, null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     MALE, FEMALE = 'Male', 'Female'
     SEX_CHOICES = [(MALE, 'Male'), (FEMALE, 'Female')]
     sex = models.CharField(
@@ -200,7 +201,6 @@ class Parent(models.Model):
         choices=SEX_CHOICES,
         null=True,
         blank=True)
-    date_of_birth = models.DateField(null=True, blank=True)
     CIVIL_STATUS_CHOICES = [
         ('single', 'Single'),
         ('married', 'Married'),
@@ -215,8 +215,9 @@ class Parent(models.Model):
         blank=True)
     educational_attainment = models.CharField(max_length=50, null=True, blank=True)
     occupation = models.CharField(max_length=50, null=True, blank=True)
-    religion = models.CharField(max_length=50, null=True, blank=True)
+    type_of_disability = models.CharField(max_length=50, null=True, blank=True)
     nationality = models.CharField(max_length=50, null=True, blank=True)
+    religion = models.CharField(max_length=50, null=True, blank=True)
     contact_number = models.IntegerField(default=0,null=True, blank=True)
     telephone_number = models.IntegerField(default=0,null=True, blank=True)
     house_information = models.CharField(max_length=250, null=True, blank=True)
