@@ -16,7 +16,7 @@ import random
 import string
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.template.loader import render_to_string
 import json
 from django.core.exceptions import ObjectDoesNotExist
@@ -466,6 +466,7 @@ def process_incident_form(request):
 
 
         # Additional fields
+        case.checkbox_ra_9262 = True if request.POST.get('checkbox_ra_9262') == 'true' else False
         case.checkbox_sexual_abuse = True if request.POST.get('checkbox_sexual_abuse') == 'true' else False
         case.checkbox_psychological_abuse = True if request.POST.get('checkbox_psychological_abuse') == 'true' else False
         case.checkbox_physical_abuse = True if request.POST.get('checkbox_physical_abuse') == 'true' else False

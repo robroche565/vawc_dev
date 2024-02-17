@@ -89,7 +89,16 @@
                         </div>
                     </div>
                 </div><!--end of status box-->
-
+                <div class="container pt-3">
+                    <div class="d-flex align-items-center">
+                        <h4><strong>CASE STATUS:</strong></h4>
+                        <input type="radio" class="btn-check btn-check-update" name="status_case" value="Active" id="option1" autocomplete="off" {% if case.status == 'Active' %}checked{% endif %} data-status="Active">
+                        <label class="btn btn-outline-primary mx-2" for="option1">Active</label>
+                
+                        <input type="radio" class="btn-check btn-check-update" name="status_case" value="Close" id="option2" autocomplete="off" {% if case.status == 'Close' %}checked{% endif %} data-status="Close">
+                        <label class="btn btn-outline-primary" for="option2">Closed</label>
+                    </div>
+                </div><!--end of container-->
                 <div class="container pt-3 pb-3">
                     <div class="row">
                         <div class="col-lg-11 col-md-11 col-sm-8">
@@ -103,17 +112,47 @@
                         </div><!--end of col-->
                     </div><!--end of row-->
                 </div><!--end of container-->
+                <div class="container pt-5 pb-3">
+                    <h1 class="pt-3 text-center">Services Information</h1>
 
-                <div class="container pt-3">
-                    <div class="d-flex align-items-center">
-                        <h4><strong>CASE STATUS:</strong></h4>
-                        <input type="radio" class="btn-check btn-check-update" name="status_case" value="Active" id="option1" autocomplete="off" {% if case.status == 'Active' %}checked{% endif %} data-status="Active">
-                        <label class="btn btn-outline-primary mx-2" for="option1">Active</label>
-                
-                        <input type="radio" class="btn-check btn-check-update" name="status_case" value="Close" id="option2" autocomplete="off" {% if case.status == 'Close' %}checked{% endif %} data-status="Close">
-                        <label class="btn btn-outline-primary" for="option2">Closed</label>
-                    </div>
-                </div><!--end of container-->
+                    <div class="pt-5">
+                        <div class="row">
+                            <div class="col-lg-2 col-md-6 col-sm-8 pt-1">
+                                <h5>Services Type:</h5>
+                            </div><!--end of col-->
+                            <div class="col-lg-10 col-md-6 col-sm-8">
+                                <button type="button" class="btn btn-primary">Issuance / Enforcement of Barangay Protection Order</button>
+                            </div><!--end of col-->
+                        </div><!--end of row-->
+
+                        <div class="row pt-5">
+                            <div class="col-lg-10 col-md-10 col-sm-8">
+                                <h5>Referred:</h5>
+                            </div><!--end of col-->
+                            <div class="col-lg-2 col-md-2 col-sm-8">
+                                <a class="btn btn-primary" href="#" role="button">Add Referral</a>
+                            </div><!--end of col-->
+                        </div><!--end of row-->
+
+                       <!--table-->
+                        <div class="pt-4 table-responsive-lg table-responsive-md table-responsive-sm">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr class="border-bottom border-2">
+                                    <th>PNP</th>
+                                    <td>September 12, 2023</td>
+                                    <td class="text-center"><a class="btn btn-outline-success" href="#" role="button">View More</a></td>
+                                    </tr>
+                                    <tr class="border-bottom border-2">
+                                    <th>Social Welfare</th>
+                                    <td>September 12, 2023</td>
+                                    <td class="text-center"><a class="btn btn-outline-success" href="#" role="button">View More</a></td>
+                                    </tr>
+                                </tbody>
+                            </table><!--end of table-->
+                        </div><!--end of div of table-->
+                    </div><!--end of container-->
+                </div>
 
             </div><!--end of container-->
 
@@ -623,112 +662,112 @@
                     {% csrf_token %}
                     <input type="hidden" name="case_id" value="{{ case.id }}">
                     <div class="pt-2">
-                        <input class="form-check-input" type="checkbox" value="true" name="checkbox_ra_9262" id="checkbox_ra_9262">
+                        <input class="form-check-input" type="checkbox" value="true" {% if case.checkbox_ra_9262 %} checked {% endif %} name="checkbox_ra_9262" id="checkbox_ra_9262">
                         <label class="form-check-label" for="checkbox_ra_9262">
                             <strong> RA 9262: Anti Violence against Women and Their Children Act</strong>
                         </label>
                     </div><!--End of title-->
-                    <div class="row d-flex align-items-center pt-3">
+                    <div class="row d-flex align-items-center pt-3" id="ra_9262_subschecks">
                         <div class="col-lg-2 col-md-2 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_sexual_abuse" name="checkbox_sexual_abuse">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_sexual_abuse" name="checkbox_sexual_abuse" {% if case.checkbox_sexual_abuse %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_sexual_abuse">Sexual Abuse</label>
                         </div><!--End of col-->
                         <div class="col-lg-2 col-md-2 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_psychological_abuse" name="checkbox_psychological_abuse">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_psychological_abuse" name="checkbox_psychological_abuse" {% if case.checkbox_psychological_abuse %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_psychological_abuse">Psychological</label>
                         </div><!--End of col-->
                         <div class="col-lg-2 col-md-2 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_physical_abuse" name="checkbox_physical_abuse">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_physical_abuse" name="checkbox_physical_abuse" {% if case.checkbox_physical_abuse %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_physical_abuse">Physical</label>
                         </div><!--End of col-->
                         <div class="col-lg-2 col-md-2 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_economic_abuse" name="checkbox_economic_abuse">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_economic_abuse" name="checkbox_economic_abuse" {% if case.checkbox_economic_abuse %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_economic_abuse">Economic</label>
                         </div><!--End of col-->
                         <div class="col-lg-2 col-md-2 col-sm-8">
                             <div class="input-group">
                                 <div class="input-group-text">
-                                    <input class="form-check-input" type="checkbox" value="true" id="checkbox_others" name="checkbox_others">
+                                    <input class="form-check-input" type="checkbox" value="true" id="checkbox_others" name="checkbox_others" {% if case.checkbox_others %} checked {% endif %}>
                                 </div>
-                                <input type="text" class="form-control" id="others_input" name="others_input" placeholder="Others">
+                                <input type="text" class="form-control" id="others_input" name="others_input" placeholder="Others" {% if case.checkbox_others %} value="{{ case.others_input }}" {% endif %}>
                             </div>
                         </div><!--End of col-->
                     </div><!--End of row-->
 
                     <div class="pt-5">
-                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_8353" name="checkbox_ra_8353">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_8353" name="checkbox_ra_8353" {% if case.checkbox_ra_8353 %} checked {% endif %}>
                         <label class="form-check-label" for="checkbox_ra_8353">
                             <strong> RA 8353: Anti-Rape Law of 1995</strong>
                         </label>
                     </div><!--End of title-->
                     <div class="row pt-3">
                         <div class="col-lg-6 col-md-6 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_rape_by_sexual_intercourse" name="checkbox_rape_by_sexual_intercourse">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_rape_by_sexual_intercourse" name="checkbox_rape_by_sexual_intercourse" {% if case.checkbox_rape_by_sexual_intercourse %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_rape_by_sexual_intercourse">Rape by sexual intercourse</label>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_rape_by_sexual_assault" name="checkbox_rape_by_sexual_assault">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_rape_by_sexual_assault" name="checkbox_rape_by_sexual_assault" {% if case.checkbox_rape_by_sexual_assault %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_rape_by_sexual_assault">Rape by sexual assault</label>
                         </div>
                     </div><!--End of row-->
 
                     <div class="pt-5">
-                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_art_336" name="checkbox_art_336">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_art_336" name="checkbox_art_336" {% if case.checkbox_art_336 %} checked {% endif %}>
                         <label class="form-check-label" for="checkbox_art_336">
                             <strong> Art 336 of the Revised Penal Code</strong>
                         </label>
                     </div><!--End of title-->
                     <div class="row pt-3">
                         <div class="col-lg-12 col-md-12 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_acts_of_lasciviousness" name="checkbox_acts_of_lasciviousness">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_acts_of_lasciviousness" name="checkbox_acts_of_lasciviousness" {% if case.checkbox_acts_of_lasciviousness %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_acts_of_lasciviousness">Acts of lasciviousness</label>
                         </div>
                     </div><!--End of row-->
 
                     <div class="col-lg-12 col-md-12 col-sm-8 pt-5">
-                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_7877" name="checkbox_ra_7877">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_7877" name="checkbox_ra_7877" {% if case.checkbox_ra_7877 %} checked {% endif %}>
                         <label class="form-check-label" for="checkbox_ra_7877">
                             <strong> RA 7877: Anti-Sexual Harassment Act</strong>
                         </label>
                     </div><!--End of title-->
                     <div class="row pt-3">
                         <div class="col-lg-3 col-md-12 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_verbal" name="checkbox_verbal">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_verbal" name="checkbox_verbal" {% if case.checkbox_verbal %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_verbal">Verbal</label>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_physical" name="checkbox_physical">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_physical" name="checkbox_physical" {% if case.checkbox_physical %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_physical">Physical</label>
                         </div>
                         <div class="col-lg-6 col-md-12 col-sm-8">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_use_of_objects" name="checkbox_use_of_objects">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_use_of_objects" name="checkbox_use_of_objects" {% if case.checkbox_use_of_objects %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_use_of_objects">Use of objects, pictures, letters or notes with sexual under-pinnings</label>
                         </div>
                     </div><!--End of row-->
-
-
+                    
                     <div class="pt-5">
-                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_a_7610" name="checkbox_a_7610">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_a_7610" name="checkbox_a_7610" {% if case.checkbox_a_7610 %} checked {% endif %}>
                         <label class="form-check-label" for="checkbox_a_7610">
                             <strong> A 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</strong>
                         </label>
                     </div><!--End of title-->
                     <div class="row pb-3">
                         <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_engage_prostitution" name="checkbox_engage_prostitution">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_engage_prostitution" name="checkbox_engage_prostitution" {% if case.checkbox_engage_prostitution %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_engage_prostitution">Engage, facilitate, promote or attempt to commit prostitution</label>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
-                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_sexual_lascivious_conduct" name="checkbox_sexual_lascivious_conduct">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_sexual_lascivious_conduct" name="checkbox_sexual_lascivious_conduct" {% if case.checkbox_sexual_lascivious_conduct %} checked {% endif %}>
                             <label class="form-check-label" for="checkbox_sexual_lascivious_conduct">Sexual intercourse or lascivious conduct</label>
                         </div>
                     </div><!--End of row-->
                     <div class="pt-5">
-                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_9775" name="checkbox_ra_9775">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_9775" name="checkbox_ra_9775" {% if case.checkbox_ra_9775 %} checked {% endif %}>
                         <label class="form-check-label" for="checkbox_ra_9775">
                             <strong> RA 9775 Anti-Child Pornography Act</strong>
                         </label>
                     </div><!--End of title-->
+                    
 
                     <div class="pt-4">
                     <hr>

@@ -44,6 +44,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 label.setAttribute('for', id.replace(/_\d+$/, match => `_${count}`));
             }
         });
+
+        const victimElement = clone.querySelector('#victim_counter')
+        const countplusone = count + 1;
+        victimElement.innerHTML = "Victim " + countplusone
+
         victimFormContainer.parentNode.appendChild(clone); // Append the cloned form to the parent
         victimCountInput.value = count + 1;
 
@@ -111,6 +116,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 label.setAttribute('for', id.replace(/_\d+$/, match => `_${count}`));
             }
         });
+
+        const perpetratorElement = clone.querySelector('#perpetrator_counter')
+        const countplusone = count + 1;
+        perpetratorElement.innerHTML = "Perpetrator " + countplusone
+
         perpetratorFormContainer.parentNode.appendChild(clone);
         perpetratorCountInput.value = count + 1;
 
