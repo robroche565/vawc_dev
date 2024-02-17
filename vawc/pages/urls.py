@@ -33,6 +33,7 @@ urlpatterns = [
 
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
+    path('process_incident_form/', views.process_incident_form, name='process_incident_form'),
 
     path('add_parent/<int:case_id>/<int:victim_id>/', views.add_parent_view, name='add_parent'),
 

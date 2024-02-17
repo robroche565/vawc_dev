@@ -189,7 +189,7 @@ def add_case(request):
             'province': request.POST.get('incident-province'),
             'city': request.POST.get('incident-city'),
             'region': request.POST.get('incident-region'),
-            'description_of_evidence': request.POST.get('incident-desc'),
+            'description_of_incident': request.POST.get('incident-desc'),
             'service_information': request.POST.get('service'),
             'type_of_case': request.POST.get('type_of_case'),  # Collecting type of case from the form
             'date_added': timezone.now(),
@@ -255,20 +255,20 @@ def get_victim_data(post_data, prefix, index):
 
 def get_perpetrator_data(post_data, index):
     perpetrator_data = {
-        'first_name': post_data.get(f'perp-firstname_{index}').capitalize(),
-        'middle_name': post_data.get(f'perp-middlename_{index}').capitalize(),
-        'last_name': post_data.get(f'perp-lastname_{index}').capitalize(),
+        'first_name': post_data.get(f'perp-firstname_{index}'),
+        'middle_name': post_data.get(f'perp-middlename_{index}'),
+        'last_name': post_data.get(f'perp-lastname_{index}'),
         'suffix': post_data.get(f'perp-Suffix_{index}'),
-        'alias': post_data.get(f'perp-alias_{index}').capitalize(),
+        'alias': post_data.get(f'perp-alias_{index}'),
         'sex': post_data.get(f'perp-sex_{index}'),
         'date_of_birth': post_data.get(f'perp-date-of-birth_{index}'),
-        'nationality': post_data.get(f'perp-nationality_{index}').capitalize(),
-        'identifying_marks': post_data.get(f'perp-identifying-marks_{index}').capitalize(),
-        'house_information': post_data.get(f'perp-address-info_{index}').capitalize(),
-        'street': post_data.get(f'perp-street_{index}').capitalize(),
-        'barangay': post_data.get(f'perp-barangay_{index}').capitalize(),
-        'province': post_data.get(f'perp-province_{index}').capitalize(),
-        'city': post_data.get(f'perp-city_{index}').capitalize(),
+        'nationality': post_data.get(f'perp-nationality_{index}'),
+        'identifying_marks': post_data.get(f'perp-identifying-marks_{index}'),
+        'house_information': post_data.get(f'perp-address-info_{index}'),
+        'street': post_data.get(f'perp-street_{index}'),
+        'barangay': post_data.get(f'perp-barangay_{index}'),
+        'province': post_data.get(f'perp-province_{index}'),
+        'city': post_data.get(f'perp-city_{index}'),
         'region': post_data.get(f'perp-region_{index}'),
         'relationship_to_victim': post_data.get(f'perp-relationsip-victim_{index}'),
     }
@@ -276,15 +276,15 @@ def get_perpetrator_data(post_data, index):
 
 def get_contact_person_data(post_data):
     contact_person_data = {
-        'first_name': post_data.get('contact-firstname').capitalize(),
-        'middle_name': post_data.get('contact-midname').capitalize(),
-        'last_name': post_data.get('contact-lastname').capitalize(),
+        'first_name': post_data.get('contact-firstname'),
+        'middle_name': post_data.get('contact-midname'),
+        'last_name': post_data.get('contact-lastname'),
         'suffix': post_data.get('contact-Suffix'),
         'relationship': post_data.get('relationship'),
-        'street': post_data.get('contact-street').capitalize(),
-        'barangay': post_data.get('contact-barangay').capitalize(),
-        'city': post_data.get('contact-city').capitalize(),
-        'province': post_data.get('contact-province').capitalize(),
+        'street': post_data.get('contact-street'),
+        'barangay': post_data.get('contact-barangay'),
+        'city': post_data.get('contact-city'),
+        'province': post_data.get('contact-province'),
         'contact_number': post_data.get('contact-number'),
         'telephone_number': post_data.get('contact-tel'),
         'region': post_data.get('contact-region'),
@@ -421,7 +421,7 @@ def update_status(request):
 def update_status_case(request):
     case_id = request.POST.get('case_id')
     status = request.POST.get('status_case')
-    
+
     print (status)
 
     # Update the status for the given case_id
@@ -431,3 +431,73 @@ def update_status_case(request):
 
     # Return success response
     return JsonResponse({'status': 'success'})
+
+def process_incident_form(request):
+    if request.method == 'POST':
+        # Process removal of evidence
+        evidence_to_delete = request.POST.getlist('evidenceToDelete')
+        for evidence_id in evidence_to_delete:
+            Evidence.objects.filter(id=evidence_id).delete()
+
+        # Process upload of new evidence
+        if 'evidence_file' in request.FILES:
+            case_id = request.POST.get('case_id')
+            case_instance = Case.objects.get(id=case_id)
+            handle_evidence_files(request.FILES.getlist('evidence_file'), case_instance)
+
+
+        # Process other fields in the form and save them to Case model
+        case_id = request.POST.get('case_id')
+        case = Case.objects.get(id=case_id)
+        print(case_id)
+
+        date_latest_incident = request.POST.get('date_latest_incident')
+        print(date_latest_incident)
+
+        case.date_latest_incident = request.POST.get('date_latest_incident')
+        case.incomplete_date = True if request.POST.get('incomplete_date') == 'true' else False
+        case.place_of_incident = request.POST.get('place_of_incident')
+        case.street = request.POST.get('street')
+        case.barangay = request.POST.get('barangay')
+        case.province = request.POST.get('province')
+        case.city = request.POST.get('city')
+        case.region = request.POST.get('region')
+        case.description_of_incident = request.POST.get('description_of_incident')
+
+
+        # Additional fields
+        case.checkbox_sexual_abuse = True if request.POST.get('checkbox_sexual_abuse') == 'true' else False
+        case.checkbox_psychological_abuse = True if request.POST.get('checkbox_psychological_abuse') == 'true' else False
+        case.checkbox_physical_abuse = True if request.POST.get('checkbox_physical_abuse') == 'true' else False
+        case.checkbox_economic_abuse = True if request.POST.get('checkbox_economic_abuse') == 'true' else False
+        case.checkbox_others = True if request.POST.get('checkbox_others') == 'true' else False
+        case.others_input = request.POST.get('others_input')
+        case.checkbox_ra_8353 = True if request.POST.get('checkbox_ra_8353') == 'true' else False
+        case.checkbox_rape_by_sexual_intercourse = True if request.POST.get('checkbox_rape_by_sexual_intercourse') == 'true' else False
+        case.checkbox_rape_by_sexual_assault = True if request.POST.get('checkbox_rape_by_sexual_assault') == 'true' else False
+        case.checkbox_art_336 = True if request.POST.get('checkbox_art_336') == 'true' else False
+        case.checkbox_acts_of_lasciviousness = True if request.POST.get('checkbox_acts_of_lasciviousness') == 'true' else False
+        case.checkbox_ra_7877 = True if request.POST.get('checkbox_ra_7877') == 'true' else False
+        case.checkbox_verbal = True if request.POST.get('checkbox_verbal') == 'true' else False
+        case.checkbox_physical = True if request.POST.get('checkbox_physical') == 'true' else False
+        case.checkbox_use_of_objects = True if request.POST.get('checkbox_use_of_objects') == 'true' else False
+        case.checkbox_a_7610 = True if request.POST.get('checkbox_a_7610') == 'true' else False
+        case.checkbox_engage_prostitution = True if request.POST.get('checkbox_engage_prostitution') == 'true' else False
+        case.checkbox_sexual_lascivious_conduct = True if request.POST.get('checkbox_sexual_lascivious_conduct') == 'true' else False
+        case.checkbox_ra_9775 = True if request.POST.get('checkbox_ra_9775') == 'true' else False
+
+        # Save the case instance with updated fields
+        case.save()
+
+        # Return JSON response
+        response_data = {
+            'status': 'success',
+            'message': 'Form submitted successfully.'
+        }
+        return JsonResponse(response_data)
+    else:
+        response_data = {
+            'status': 'error',
+            'message': 'Invalid request method.'
+        }
+        return JsonResponse(response_data)

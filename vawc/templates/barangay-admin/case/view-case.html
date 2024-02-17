@@ -64,59 +64,58 @@
           {% endif %}
           <button class="nav-link custom-tab text-dark fs-4" id="nav-perpetrator-tab" data-bs-toggle="tab" data-bs-target="#nav-perpetrator" type="button" role="tab" aria-controls="nav-perpetrator" aria-selected="false">Perpetrator</button>
           <button class="nav-link custom-tab text-dark fs-4" id="nav-incident-tab" data-bs-toggle="tab" data-bs-target="#nav-incident" type="button" role="tab" aria-controls="nav-incident" aria-selected="false">Incident</button>
-          <button class="nav-link custom-tab text-dark fs-4" id="nav-service-tab" data-bs-toggle="tab" data-bs-target="#nav-service" type="button" role="tab" aria-controls="nav-service" aria-selected="false">Services</button>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade" id="nav-status" role="tabpanel" aria-labelledby="nav-status">
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between py-3">
-                <h2>Status</h2>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bx bx-plus"></i> Add/Edit Status</button>
-            </div><!--end of row-->
-
-            <div class="pt-2">
-                <div class="card shadow-lg rounded border border-dark border-1 border-opacity-10">
-                    <div class="card-body card-status">
-                        <span id="case-status-desc" class="fs-5">
-                            {% if case.status_description %}
-                                {{ case.status_description }}.
-                            {% else %}
-                                No Status Yet.
-                            {% endif %}
-                        </span>
-                        <br>
-                        <span id="case-status-date">({{ case.status_date }})</span>
-                    </div>
-                </div>
-            </div><!--end of status box-->
-
-            <div class="container pt-3 pb-3">
-                <div class="row">
-                    <div class="col-lg-11 col-md-11 col-sm-8">
-                        <h3>Warrantless Arrest</h3>
-                    </div><!--end of col-->
-                    <div class="col-lg-1 col-md-1 col-sm-8">
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warrantlessArrest">
-                            Send
-                        </button>
-                    </div><!--end of col-->
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between py-3">
+                    <h2>Status</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bx bx-plus"></i> Add/Edit Status</button>
                 </div><!--end of row-->
-            </div><!--end of container-->
 
-            <div class="container pt-3">
-                <div class="d-flex align-items-center">
-                    <h4><strong>CASE STATUS:</strong></h4>
-                    <input type="radio" class="btn-check btn-check-update" name="status_case" value="Active" id="option1" autocomplete="off" {% if case.status == 'Active' %}checked{% endif %} data-status="Active">
-                    <label class="btn btn-outline-primary mx-2" for="option1">Active</label>
-            
-                    <input type="radio" class="btn-check btn-check-update" name="status_case" value="Close" id="option2" autocomplete="off" {% if case.status == 'Close' %}checked{% endif %} data-status="Close">
-                    <label class="btn btn-outline-primary" for="option2">Closed</label>
-                </div>
-            </div><!--end of container-->
+                <div class="pt-2">
+                    <div class="card shadow-lg rounded border border-dark border-1 border-opacity-10">
+                        <div class="card-body card-status">
+                            <span id="case-status-desc" class="fs-5">
+                                {% if case.status_description %}
+                                    {{ case.status_description }}.
+                                {% else %}
+                                    No Status Yet.
+                                {% endif %}
+                            </span>
+                            <br>
+                            <span id="case-status-date">({{ case.status_date }})</span>
+                        </div>
+                    </div>
+                </div><!--end of status box-->
 
-        </div><!--end of container-->
+                <div class="container pt-3 pb-3">
+                    <div class="row">
+                        <div class="col-lg-11 col-md-11 col-sm-8">
+                            <h3>Warrantless Arrest</h3>
+                        </div><!--end of col-->
+                        <div class="col-lg-1 col-md-1 col-sm-8">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warrantlessArrest">
+                                Send
+                            </button>
+                        </div><!--end of col-->
+                    </div><!--end of row-->
+                </div><!--end of container-->
+
+                <div class="container pt-3">
+                    <div class="d-flex align-items-center">
+                        <h4><strong>CASE STATUS:</strong></h4>
+                        <input type="radio" class="btn-check btn-check-update" name="status_case" value="Active" id="option1" autocomplete="off" {% if case.status == 'Active' %}checked{% endif %} data-status="Active">
+                        <label class="btn btn-outline-primary mx-2" for="option1">Active</label>
+                
+                        <input type="radio" class="btn-check btn-check-update" name="status_case" value="Close" id="option2" autocomplete="off" {% if case.status == 'Close' %}checked{% endif %} data-status="Close">
+                        <label class="btn btn-outline-primary" for="option2">Closed</label>
+                    </div>
+                </div><!--end of container-->
+
+            </div><!--end of container-->
 
         </div> <!--end of div of status tab-->
 
@@ -620,253 +619,245 @@
         <div class="tab-pane fade" id="nav-incident" role="tabpanel" aria-labelledby="nav-incident">
             <div class="container pt-3">
                 <h2 class="pt-1 text-center">INCIDENT INFORMATION</h2>
-
-                <div class="pt-2">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <strong> RA 9262: Anti Violence against Women and Their Children Act</strong></label>
-                </div><!--End of title-->
-                <div class="row pt-3">
-                    <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Sexual Abuse</label>
-                      </div><!--End of col-->
-                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Psychological</label>
-                      </div><!--End of col-->
-                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Physical</label>
-                      </div><!--End of col-->
-                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Economic</label>
-                      </div><!--End of col-->
-                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                              <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                <form id="incident-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="case_id" value="{{ case.id }}">
+                    <div class="pt-2">
+                        <input class="form-check-input" type="checkbox" value="true" name="checkbox_ra_9262" id="checkbox_ra_9262">
+                        <label class="form-check-label" for="checkbox_ra_9262">
+                            <strong> RA 9262: Anti Violence against Women and Their Children Act</strong>
+                        </label>
+                    </div><!--End of title-->
+                    <div class="row d-flex align-items-center pt-3">
+                        <div class="col-lg-2 col-md-2 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_sexual_abuse" name="checkbox_sexual_abuse">
+                            <label class="form-check-label" for="checkbox_sexual_abuse">Sexual Abuse</label>
+                        </div><!--End of col-->
+                        <div class="col-lg-2 col-md-2 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_psychological_abuse" name="checkbox_psychological_abuse">
+                            <label class="form-check-label" for="checkbox_psychological_abuse">Psychological</label>
+                        </div><!--End of col-->
+                        <div class="col-lg-2 col-md-2 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_physical_abuse" name="checkbox_physical_abuse">
+                            <label class="form-check-label" for="checkbox_physical_abuse">Physical</label>
+                        </div><!--End of col-->
+                        <div class="col-lg-2 col-md-2 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_economic_abuse" name="checkbox_economic_abuse">
+                            <label class="form-check-label" for="checkbox_economic_abuse">Economic</label>
+                        </div><!--End of col-->
+                        <div class="col-lg-2 col-md-2 col-sm-8">
+                            <div class="input-group">
+                                <div class="input-group-text">
+                                    <input class="form-check-input" type="checkbox" value="true" id="checkbox_others" name="checkbox_others">
+                                </div>
+                                <input type="text" class="form-control" id="others_input" name="others_input" placeholder="Others">
                             </div>
-                            <input type="text" class="form-control" aria-label="Text input with checkbox" placeholder="Others">
-                          </div>
-                      </div><!--End of col-->
-                </div><!--End of row-->
-                <div class="pt-5">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <strong> RA 8353: Anti-Rape Law of 1995</strong></label>
-                </div><!--End of title-->
-                <div class="row pt-3">
-                    <div class="col-lg-6 col-md-6 col-sm-8">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Rape by sexual intercourse</label>
-                    </div>
-            
-                    <div class="col-lg-6 col-md-6 col-sm-8">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Rape by sexual assault</label>
-                    </div>
-                  </div><!--End of row-->
-                  <div class="pt-5">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <strong> Art 336 of the Revised Penal Code</strong></label>
-                </div><!--End of title-->
-                <div class="row pt-3">
-                    <div class="col-lg-12 col-md-12 col-sm-8">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Acts of lasciviousness</label>
-                    </div>
-                  </div><!--End of row-->
-                  <div class="col-lg-12 col-md-12 col-sm-8 pt-5">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <strong> RA 7877: Anti-Sexual Harassment Act</strong></label>
-                </div><!--End of title-->
-                <div class="row pt-3">
-                    <div class="col-lg-3 col-md-12 col-sm-8">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Verbal</label>
-                    </div>
-                    <div class="col-lg-3 col-md-12 col-sm-8">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Pyhsical</label>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-8">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Use of objects, pictures, letters or notes with sexual under-pinnings</label>
-                    </div>
-                  </div><!--End of row-->
-                  <div class="pt-5">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <strong> A 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</strong></label>
-                </div><!--End of title-->
-                <div class="row pb-3">
-                    <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Engage, facilitate, promote or attempt to commit prostitution</label>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Sexual intercourse or lascivious conduct</label>
-                    </div>
-                  </div><!--End of row-->
-                  <div class="pt-5">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <strong> RA 9775 Anti-Child Pornography Act</strong></label>
-                </div><!--End of title-->
-        
-                <div class="pt-4">
-                  <hr>
-                </div>
-        
-                <h4 class="pt-3">Accident Information</h4>
-        
-                <div class="row pt-2 pb-3">
-                  <div class="col-lg-4 col-md-4 col-sm-8 pt-3">
-                      <div class="form-floating mb-3">
-                          <input type="date" class="form-control" id="floatingInput" placeholder="name@example.com">
-                          <label for="floatingInput">Date of Latest Incident</label>
-                        </div>
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault"> Incomplete Date</label>
-                  </div><!--end of col-->
-                </div><!--End of row-->
-        
-                <h5 class="pt-3 pb-3">Place of Incident:</h5>
-        
-                <div class="row">
-                  <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
-                      <div class="form-floating">
-                          <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                              <option value="Home">Home</option>
-                              <option value="work">Work</option>
-                              <option value="school">School</option>
-                              <option value="commercial-places">Commercial Places</option>
-                              <option value="religious-institutions">Religious Institutions</option>
-                              <option value="placeOfMedicalTreatment">Place of Medical Treatment</option>
-                              <option value="transport-ConnectingSites">Transport & Connecting Sites</option>
-                              <option value="brothels-SimilarEstablishments">Brothels and Similar Extablishments</option>
-                              <option value="peopleOfAuthority">Others</option>
-                              <option value="currentFiance">No Response</option>
-                          </select>
-                          <label for="floatingSelect">Place of Incident</label>
-                        </div>
-                  </div><!--End of col-->
-                  <div class="col-lg-4 col-md-4 col-sm-8">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                        <label for="floatingInput">Street</label>
-                      </div>
-                </div><!--End of col-->
-                <div class="col-lg-4 col-md-4 col-sm-8">
-                  <div class="form-floating mb-3">
-                      <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                      <label for="floatingInput">Barangay</label>
-                    </div>
-              </div><!--End of col-->
-              </div><!--end or row-->
-              <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-8">
-                  <div class="form-floating mb-3">
-                      <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                      <label for="floatingInput">Province</label>
-                    </div>
-              </div><!--End of col-->
-              <div class="col-lg-4 col-md-4 col-sm-8">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga City">
-                    <label for="floatingInput">City / Mun</label>
-                  </div>
-            </div><!--End of col-->
-            <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
-              <div class="form-floating">
-                  <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                      <option value="region-I">Region I – Ilocos Region</option>
-                      <option value="region-II">Region II – Cagayan Valley</option>
-                      <option value="region-III">Region III – Central Luzon</option>
-                      <option value="region-IV">Region IV‑A – CALABARZON</option>
-                      <option value="mimaropa">MIMAROPA Region</option>
-                      <option value="region-V">Region V – Bicol Region</option>
-                      <option value="region-VI">Region VI – Western Visayas</option>
-                      <option value="region-VII">Region VII – Central Visayas</option>
-                      <option value="region-VIII">Region VIII – Eastern Visayas</option>
-                      <option value="region-IX">Region IX – Zamboanga Peninsula</option>
-                      <option value="region-X">Region X – Northern Mindanao</option>
-                      <option value="region-XI">Region XI – Davao Region</option>
-                      <option value="region-XII">Region XII – SOCCSKSARGEN</option>
-                      <option value="region-XIII">Region XIII – Caraga</option>
-                      <option value="ncr">NCR – National Capital Region</option>
-                      <option value="car">CAR – Cordillera Administrative Region</option>
-                      <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
-                  </select>
-                  <label for="floatingSelect">Region</label>
-                </div>
-          </div><!--End of col-->
-              </div><!--end of row-->
-        
-                <div class="pt-3">
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Description of Incident</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                      </div>
-                </div>
-                 
-                <div class="row pt-3+">
-                  <div class="mb-3">
-                      <label for="formFileMultiple" class="form-label"><strong>Upload Evidences:</strong></label>
-                      <input class="form-control" type="file" id="formFileMultiple" multiple>
-                    </div><!--form to upload-->
-          </div><!--End or row-->
-        
-                  <hr class="pt-3">
-                  <div class="row">
-                    <h3>Witness/es:</h3> 
-                    <p class="opacity-50 pb-3">(This will not be showed to others)</p>
+                        </div><!--End of col-->
                     </div><!--End of row-->
-        
+
+                    <div class="pt-5">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_8353" name="checkbox_ra_8353">
+                        <label class="form-check-label" for="checkbox_ra_8353">
+                            <strong> RA 8353: Anti-Rape Law of 1995</strong>
+                        </label>
+                    </div><!--End of title-->
+                    <div class="row pt-3">
+                        <div class="col-lg-6 col-md-6 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_rape_by_sexual_intercourse" name="checkbox_rape_by_sexual_intercourse">
+                            <label class="form-check-label" for="checkbox_rape_by_sexual_intercourse">Rape by sexual intercourse</label>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_rape_by_sexual_assault" name="checkbox_rape_by_sexual_assault">
+                            <label class="form-check-label" for="checkbox_rape_by_sexual_assault">Rape by sexual assault</label>
+                        </div>
+                    </div><!--End of row-->
+
+                    <div class="pt-5">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_art_336" name="checkbox_art_336">
+                        <label class="form-check-label" for="checkbox_art_336">
+                            <strong> Art 336 of the Revised Penal Code</strong>
+                        </label>
+                    </div><!--End of title-->
+                    <div class="row pt-3">
+                        <div class="col-lg-12 col-md-12 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_acts_of_lasciviousness" name="checkbox_acts_of_lasciviousness">
+                            <label class="form-check-label" for="checkbox_acts_of_lasciviousness">Acts of lasciviousness</label>
+                        </div>
+                    </div><!--End of row-->
+
+                    <div class="col-lg-12 col-md-12 col-sm-8 pt-5">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_7877" name="checkbox_ra_7877">
+                        <label class="form-check-label" for="checkbox_ra_7877">
+                            <strong> RA 7877: Anti-Sexual Harassment Act</strong>
+                        </label>
+                    </div><!--End of title-->
+                    <div class="row pt-3">
+                        <div class="col-lg-3 col-md-12 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_verbal" name="checkbox_verbal">
+                            <label class="form-check-label" for="checkbox_verbal">Verbal</label>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_physical" name="checkbox_physical">
+                            <label class="form-check-label" for="checkbox_physical">Physical</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-8">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_use_of_objects" name="checkbox_use_of_objects">
+                            <label class="form-check-label" for="checkbox_use_of_objects">Use of objects, pictures, letters or notes with sexual under-pinnings</label>
+                        </div>
+                    </div><!--End of row-->
+
+
+                    <div class="pt-5">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_a_7610" name="checkbox_a_7610">
+                        <label class="form-check-label" for="checkbox_a_7610">
+                            <strong> A 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</strong>
+                        </label>
+                    </div><!--End of title-->
+                    <div class="row pb-3">
+                        <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_engage_prostitution" name="checkbox_engage_prostitution">
+                            <label class="form-check-label" for="checkbox_engage_prostitution">Engage, facilitate, promote or attempt to commit prostitution</label>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
+                            <input class="form-check-input" type="checkbox" value="true" id="checkbox_sexual_lascivious_conduct" name="checkbox_sexual_lascivious_conduct">
+                            <label class="form-check-label" for="checkbox_sexual_lascivious_conduct">Sexual intercourse or lascivious conduct</label>
+                        </div>
+                    </div><!--End of row-->
+                    <div class="pt-5">
+                        <input class="form-check-input" type="checkbox" value="true" id="checkbox_ra_9775" name="checkbox_ra_9775">
+                        <label class="form-check-label" for="checkbox_ra_9775">
+                            <strong> RA 9775 Anti-Child Pornography Act</strong>
+                        </label>
+                    </div><!--End of title-->
+
+                    <div class="pt-4">
+                    <hr>
+                    </div>
+
+                    <h4 class="pt-3">Accident Information</h4>
+
+                    <div class="row pt-2 pb-3">
+                        <div class="col-lg-4 col-md-4 col-sm-8 pt-3">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="date_latest_incident" name="date_latest_incident" value="{{ case.date_latest_incident|date:'Y-m-d' }}">
+                                <label for="date_latest_incident">Date of Latest Incident</label>
+                            </div>
+                            <input class="form-check-input" type="checkbox" value="true" id="incomplete_date" name="incomplete_date" {% if case.incomplete_date %} checked {% endif %}>
+                            <label class="form-check-label" for="incomplete_date"> Incomplete Date</label>
+                        </div><!--end of col-->
+                    </div><!--End of row-->
+
+                    <h5 class="pt-3 pb-3">Place of Incident:</h5>
+
                     <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-8">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                            <label for="floatingInput">Name</label>
-                          </div>
-                    </div><!--End of col-->
-                    <div class="col-lg-3 col-md-3 col-sm-8">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                            <label for="floatingInput">Address</label>
-                          </div>
-                    </div><!--End of col-->
-                    <div class="col-lg-3 col-md-3 col-sm-8">
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                            <label for="floatingInput">Contact Number</label>
-                          </div>
-                    </div><!--End of col-->
-                    <div class="col-lg-3 col-md-3 col-sm-8">
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
-                            <label for="floatingInput">Eye-Witness Account</label>
-                          </div>
-                    </div><!--End of col-->
-                  </div><!--End of row-->
-                  <div class="pt-3">
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3 pb-3">
-                        <button class="btn btn-primary" type="button">Save</button>
-                      </div>
-                  </div><!--padding top-->
-                </div><!--end of container-->
+                        <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="place_of_incident" name="place_of_incident" aria-label="Floating label select example">
+                                    <option value="house" {% if case.place_of_incident == 'house' %} selected {% endif %}>House</option>
+                                    <option value="work" {% if case.place_of_incident == 'work' %} selected {% endif %}>Work</option>
+                                    <option value="school" {% if case.place_of_incident == 'school' %} selected {% endif %}>School</option>
+                                    <option value="commercialPlaces" {% if case.place_of_incident == 'commercialPlaces' %} selected {% endif %}>Commercial Places</option>
+                                    <option value="religion" {% if case.place_of_incident == 'religion' %} selected {% endif %}>Religious Institutions</option>
+                                    <option value="placeOfMedicalTreatment" {% if case.place_of_incident == 'placeOfMedicalTreatment' %} selected {% endif %}>Place of Medical Treatment</option>
+                                    <option value="transport" {% if case.place_of_incident == 'transport' %} selected {% endif %}>Transport & Connecting Sites</option>
+                                    <option value="brothels" {% if case.place_of_incident == 'brothels' %} selected {% endif %}>Brothels and Similar Establishments</option>
+                                    <option value="others" {% if case.place_of_incident == 'others' %} selected {% endif %}>Others</option>
+                                    <option value="noResponse" {% if case.place_of_incident == 'noResponse' %} selected {% endif %}>No Response</option>
+                                </select>
+                                <label for="place_of_incident">Place of Incident</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-4 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="street" name="street" placeholder="Zamboanga Del Sur" value="{{ case.street }}">
+                                <label for="street">Street</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-4 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="barangay" name="barangay" placeholder="Zamboanga Del Sur" value="{{ case.barangay }}">
+                                <label for="barangay">Barangay</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--end or row-->
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="province" name="province" placeholder="Zamboanga Del Sur" value="{{ case.province }}">
+                                <label for="province">Province</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-4 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="city" name="city" placeholder="Zamboanga City" value="{{ case.city }}">
+                                <label for="city">City / Mun</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="region" name="region" aria-label="Floating label select example">
+                                    <option value="region-I" {% if case.region == 'region-I' %} selected {% endif %}>Region I – Ilocos Region</option>
+                                    <option value="region-II" {% if case.region == 'region-II' %} selected {% endif %}>Region II – Cagayan Valley</option>
+                                    <option value="region-III" {% if case.region == 'region-III' %} selected {% endif %}>Region III – Central Luzon</option>
+                                    <option value="region-IV" {% if case.region == 'region-IV' %} selected {% endif %}>Region IV‑A – CALABARZON</option>
+                                    <option value="mimaropa" {% if case.region == 'mimaropa' %} selected {% endif %}>MIMAROPA Region</option>
+                                    <option value="region-V" {% if case.region == 'region-V' %} selected {% endif %}>Region V – Bicol Region</option>
+                                    <option value="region-VI" {% if case.region == 'region-VI' %} selected {% endif %}>Region VI – Western Visayas</option>
+                                    <option value="region-VII" {% if case.region == 'region-VII' %} selected {% endif %}>Region VII – Central Visayas</option>
+                                    <option value="region-VIII" {% if case.region == 'region-VIII' %} selected {% endif %}>Region VIII – Eastern Visayas</option>
+                                    <option value="region-IX" {% if case.region == 'region-IX' %} selected {% endif %}>Region IX – Zamboanga Peninsula</option>
+                                    <option value="region-X" {% if case.region == 'region-X' %} selected {% endif %}>Region X – Northern Mindanao</option>
+                                    <option value="region-XI" {% if case.region == 'region-XI' %} selected {% endif %}>Region XI – Davao Region</option>
+                                    <option value="region-XII" {% if case.region == 'region-XII' %} selected {% endif %}>Region XII – SOCCSKSARGEN</option>
+                                    <option value="region-XIII" {% if case.region == 'region-XIII' %} selected {% endif %}>Region XIII – Caraga</option>
+                                    <option value="ncr" {% if case.region == 'ncr' %} selected {% endif %}>NCR – National Capital Region</option>
+                                    <option value="car" {% if case.region == 'car' %} selected {% endif %}>CAR – Cordillera Administrative Region</option>
+                                    <option value="barmm" {% if case.region == 'barmm' %} selected {% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                </select>
+                                <label for="region">Region</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="pt-3">
+                        <div class="mb-3">
+                            <label for="description_of_incident" class="form-label">Description of Incident</label>
+                            <textarea class="form-control" id="description_of_incident" name="description_of_incident" rows="3">{{ case.description_of_incident }}</textarea>
+                        </div>
+                    </div>
+
+                    <h3>Evidences:</h3>
+                    {% if case.evidence.all %}
+                        <div class="row">
+                            {% for evidence in case.evidence.all %}
+                                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
+                                        <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
+                                        <img src="{{ evidence.file.url }}" alt="Evidence Image" class="img-fluid">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No evidence available.</p>
+                    {% endif %}
+
+                    <div class="row pt-3">
+                        <div class="mb-3">
+                            <label for="evidence_file" class="form-label"><strong>Upload Evidences:</strong></label>
+                            <input class="form-control" type="file" id="evidence_file" name="evidence_file" multiple>
+                        </div><!--form to upload-->
+                    </div><!--End or row-->
+                    <hr class="pt-3">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+                        <button class="btn btn-primary" id="btnsubmitincident" type="button">Save</button>
+                    </div>
+                </form>
+
             </div><!--end of container-->
 
-        </div>
-        <div class="tab-pane fade" id="nav-service" role="tabpanel" aria-labelledby="nav-service">
-            5
-        </div>
-
+        </div> <!--end of incident tab pane-->
     </div>
 </div>
 <!-- Add the toast container to your HTML, make sure it's placed in a suitable location -->
@@ -970,6 +961,39 @@
         
         // Set the value of the date input field to today's date
         $('#status_date').val(today);
+        
+        $('#btnsubmitincident').click(function() {
+            // Prevent default form submission
+            event.preventDefault();
+            
+            // Create FormData object from the form
+            var formData = new FormData($('#incident-form')[0]);
+        
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/process_incident_form/',
+                data: formData,
+                contentType: false, // Prevent jQuery from automatically setting contentType
+                processData: false, // Prevent jQuery from automatically processing data
+                dataType: 'json', // Expect JSON response
+                success: function(response) {
+                    // Show success toast
+                    $('#successToast .toast-body').text(response.message);
+                    $('#successToast').toast('show');
+                    
+                    // Reload page after 3 seconds
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                },
+                error: function(xhr, errmsg, err) {
+                    // Show error toast
+                    $('#errorToast .toast-body').text('Error occurred while processing the form.');
+                    $('#errorToast').toast('show');
+                }
+            });
+        });
 
         // Event handler for radio button clicks
         $('.btn-check-update').click(function() {

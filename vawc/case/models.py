@@ -59,7 +59,7 @@ class Case(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     region = models.CharField(max_length=250,choices=REGION_CHOICES, null=True, blank=True)
-    description_of_evidence = models.TextField(null=True, blank=True)
+    description_of_incident = models.TextField(null=True, blank=True)
 
     STATUS_ACTIVE = 'Active'
     STATUS_CLOSE = 'Close'
@@ -74,6 +74,27 @@ class Case(models.Model):
     status_date = models.DateField(null=True, blank=True)
     
     date_added = models.DateField(null=True, blank=True)
+
+    checkbox_ra_9262 = models.BooleanField(default=False)
+    checkbox_sexual_abuse = models.BooleanField(default=False)
+    checkbox_psychological_abuse = models.BooleanField(default=False)
+    checkbox_physical_abuse = models.BooleanField(default=False)
+    checkbox_economic_abuse = models.BooleanField(default=False)
+    checkbox_others = models.BooleanField(default=False)
+    others_input = models.CharField(max_length=100, null=True, blank=True)
+    checkbox_ra_8353 = models.BooleanField(default=False)
+    checkbox_rape_by_sexual_intercourse = models.BooleanField(default=False)
+    checkbox_rape_by_sexual_assault = models.BooleanField(default=False)
+    checkbox_art_336 = models.BooleanField(default=False)
+    checkbox_acts_of_lasciviousness = models.BooleanField(default=False)
+    checkbox_ra_7877 = models.BooleanField(default=False)
+    checkbox_verbal = models.BooleanField(default=False)
+    checkbox_physical = models.BooleanField(default=False)
+    checkbox_use_of_objects = models.BooleanField(default=False)
+    checkbox_a_7610 = models.BooleanField(default=False)
+    checkbox_engage_prostitution = models.BooleanField(default=False)
+    checkbox_sexual_lascivious_conduct = models.BooleanField(default=False)
+    checkbox_ra_9775 = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Case ID: {self.id}, Case Number: {self.case_number}"
