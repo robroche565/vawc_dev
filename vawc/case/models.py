@@ -69,8 +69,10 @@ class Case(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
 
-    status_description = models.TextField()
+    status_description = models.TextField(default='No Status Yet.')
 
+    status_date = models.DateField(null=True, blank=True)
+    
     date_added = models.DateField(null=True, blank=True)
 
     def __str__(self):

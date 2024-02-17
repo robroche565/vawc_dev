@@ -51,6 +51,10 @@ def barangay_dashboard_view (request):
     return render(request, 'barangay-admin/dashboard.html')
 
 @login_required
+def barangay_settings_view (request):
+    return render(request, 'barangay-admin/settings.html')
+
+@login_required
 def barangay_case_view(request):
     cases = Case.objects.all()  # Retrieve all cases from the database
     return render(request, 'barangay-admin/case/case.html', {'cases': cases})
@@ -230,41 +234,41 @@ def handle_evidence_files(files, case_instance):
 
 def get_victim_data(post_data, prefix, index):
     victim_data = {
-        'first_name': post_data.get(f'{prefix}firstname_{index}'),
-        'middle_name': post_data.get(f'{prefix}middlename_{index}'),
-        'last_name': post_data.get(f'{prefix}lastname_{index}'),
+        'first_name': post_data.get(f'{prefix}firstname_{index}').capitalize(),
+        'middle_name': post_data.get(f'{prefix}middlename_{index}').capitalize(),
+        'last_name': post_data.get(f'{prefix}lastname_{index}').capitalize(),
         'suffix': post_data.get(f'{prefix}Suffix_{index}'),
         'sex': post_data.get(f'{prefix}sex_{index}'),
         'date_of_birth': post_data.get(f'{prefix}date-of-birth_{index}'),
         'civil_status': post_data.get(f'{prefix}civilstatus_{index}'),
-        'nationality': post_data.get(f'{prefix}nationality_{index}'),
+        'nationality': post_data.get(f'{prefix}nationality_{index}').capitalize(),
         'contact_number': post_data.get(f'{prefix}contact-number_{index}'),
         'telephone_number': post_data.get(f'{prefix}tel-number_{index}'),
-        'house_information': post_data.get(f'{prefix}house-info_{index}'),
-        'street': post_data.get(f'{prefix}street_{index}'),
-        'barangay': post_data.get(f'{prefix}barangay_{index}'),
-        'province': post_data.get(f'{prefix}province_{index}'),
-        'city': post_data.get(f'{prefix}city_{index}'),
-        'region': post_data.get(f'{prefix}region_{index}'),
+        'house_information': post_data.get(f'{prefix}house-info_{index}').capitalize(),
+        'street': post_data.get(f'{prefix}street_{index}').capitalize(),
+        'barangay': post_data.get(f'{prefix}barangay_{index}').capitalize(),
+        'province': post_data.get(f'{prefix}province_{index}').capitalize(),
+        'city': post_data.get(f'{prefix}city_{index}').capitalize(),
+        'region': post_data.get(f'{prefix}region_{index}').capitalize(),
     }
     return victim_data
 
 def get_perpetrator_data(post_data, index):
     perpetrator_data = {
-        'first_name': post_data.get(f'perp-firstname_{index}'),
-        'middle_name': post_data.get(f'perp-middlename_{index}'),
-        'last_name': post_data.get(f'perp-lastname_{index}'),
+        'first_name': post_data.get(f'perp-firstname_{index}').capitalize(),
+        'middle_name': post_data.get(f'perp-middlename_{index}').capitalize(),
+        'last_name': post_data.get(f'perp-lastname_{index}').capitalize(),
         'suffix': post_data.get(f'perp-Suffix_{index}'),
-        'alias': post_data.get(f'perp-alias_{index}'),
+        'alias': post_data.get(f'perp-alias_{index}').capitalize(),
         'sex': post_data.get(f'perp-sex_{index}'),
         'date_of_birth': post_data.get(f'perp-date-of-birth_{index}'),
-        'nationality': post_data.get(f'perp-nationality_{index}'),
-        'identifying_marks': post_data.get(f'perp-identifying-marks_{index}'),
-        'house_information': post_data.get(f'perp-address-info_{index}'),
-        'street': post_data.get(f'perp-street_{index}'),
-        'barangay': post_data.get(f'perp-barangay_{index}'),
-        'province': post_data.get(f'perp-province_{index}'),
-        'city': post_data.get(f'perp-city_{index}'),
+        'nationality': post_data.get(f'perp-nationality_{index}').capitalize(),
+        'identifying_marks': post_data.get(f'perp-identifying-marks_{index}').capitalize(),
+        'house_information': post_data.get(f'perp-address-info_{index}').capitalize(),
+        'street': post_data.get(f'perp-street_{index}').capitalize(),
+        'barangay': post_data.get(f'perp-barangay_{index}').capitalize(),
+        'province': post_data.get(f'perp-province_{index}').capitalize(),
+        'city': post_data.get(f'perp-city_{index}').capitalize(),
         'region': post_data.get(f'perp-region_{index}'),
         'relationship_to_victim': post_data.get(f'perp-relationsip-victim_{index}'),
     }
@@ -272,15 +276,15 @@ def get_perpetrator_data(post_data, index):
 
 def get_contact_person_data(post_data):
     contact_person_data = {
-        'first_name': post_data.get('contact-firstname'),
-        'middle_name': post_data.get('contact-midname'),
-        'last_name': post_data.get('contact-lastname'),
+        'first_name': post_data.get('contact-firstname').capitalize(),
+        'middle_name': post_data.get('contact-midname').capitalize(),
+        'last_name': post_data.get('contact-lastname').capitalize(),
         'suffix': post_data.get('contact-Suffix'),
         'relationship': post_data.get('relationship'),
-        'street': post_data.get('contact-street'),
-        'barangay': post_data.get('contact-barangay'),
-        'city': post_data.get('contact-city'),
-        'province': post_data.get('contact-province'),
+        'street': post_data.get('contact-street').capitalize(),
+        'barangay': post_data.get('contact-barangay').capitalize(),
+        'city': post_data.get('contact-city').capitalize(),
+        'province': post_data.get('contact-province').capitalize(),
         'contact_number': post_data.get('contact-number'),
         'telephone_number': post_data.get('contact-tel'),
         'region': post_data.get('contact-region'),
@@ -319,9 +323,9 @@ def save_victim_data(request, victim_id):
         victim = get_object_or_404(Victim, id=victim_id)
 
         # Update victim data
-        victim.first_name = request.POST.get('victim_first_name_' + str(victim_id))
-        victim.middle_name = request.POST.get('victim_middle_name_' + str(victim_id))
-        victim.last_name = request.POST.get('victim_last_name_' + str(victim_id))
+        victim.first_name = request.POST.get('victim_first_name_' + str(victim_id)).capitalize()
+        victim.middle_name = request.POST.get('victim_middle_name_' + str(victim_id)).capitalize()
+        victim.last_name = request.POST.get('victim_last_name_' + str(victim_id)).capitalize()
         victim.suffix = request.POST.get('victim_suffix_name_' + str(victim_id))
         victim.sex = request.POST.get('victim_sex_' + str(victim_id))
         victim.type_of_disability = request.POST.get('victim_type_of_disability_' + str(victim_id))
@@ -330,14 +334,14 @@ def save_victim_data(request, victim_id):
         victim.contact_number = request.POST.get('victim_contact_number_' + str(victim_id))
         victim.telephone_number = request.POST.get('victim_telephone_number_' + str(victim_id))
         victim.educational_attainment = request.POST.get('victim_educational_attainment_' + str(victim_id))
-        victim.occupation = request.POST.get('victim_occupation_' + str(victim_id))
+        victim.occupation = request.POST.get('victim_occupation_' + str(victim_id)).capitalize()
         victim.nationality = request.POST.get('victim_nationality_' + str(victim_id))
-        victim.religion = request.POST.get('victim_religion_' + str(victim_id))
-        victim.house_information = request.POST.get('victim_house_information_' + str(victim_id))
-        victim.street = request.POST.get('victim_street_' + str(victim_id))
-        victim.barangay = request.POST.get('victim_barangay_' + str(victim_id))
-        victim.province = request.POST.get('victim_province_' + str(victim_id))
-        victim.city = request.POST.get('victim_city_' + str(victim_id))
+        victim.religion = request.POST.get('victim_religion_' + str(victim_id)).capitalize()
+        victim.house_information = request.POST.get('victim_house_information_' + str(victim_id)).capitalize()
+        victim.street = request.POST.get('victim_street_' + str(victim_id)).capitalize()
+        victim.barangay = request.POST.get('victim_barangay_' + str(victim_id)).capitalize()
+        victim.province = request.POST.get('victim_province_' + str(victim_id)).capitalize()
+        victim.city = request.POST.get('victim_city_' + str(victim_id)).capitalize()
         victim.region = request.POST.get('victim_region_' + str(victim_id))
 
         # Save victim data
@@ -353,12 +357,12 @@ def save_perpetrator_data(request, perpetrator_id):
         perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
         
         # Update perpetrator data
-        perpetrator.first_name = request.POST.get('perpetrator_first_name_' + str(perpetrator_id))
-        perpetrator.middle_name = request.POST.get('perpetrator_middle_name_' + str(perpetrator_id))
-        perpetrator.last_name = request.POST.get('perpetrator_last_name_' + str(perpetrator_id))
+        perpetrator.first_name = request.POST.get('perpetrator_first_name_' + str(perpetrator_id)).capitalize()
+        perpetrator.middle_name = request.POST.get('perpetrator_middle_name_' + str(perpetrator_id)).capitalize()
+        perpetrator.last_name = request.POST.get('perpetrator_last_name_' + str(perpetrator_id)).capitalize()
         perpetrator.suffix = request.POST.get('perpetrator_suffix_name_' + str(perpetrator_id))
-        perpetrator.identifying_marks = request.POST.get('perpetrator_identifying_marks_' + str(perpetrator_id))
-        perpetrator.alias = request.POST.get('perpetrator_alias_' + str(perpetrator_id))
+        perpetrator.identifying_marks = request.POST.get('perpetrator_identifying_marks_' + str(perpetrator_id)).capitalize()
+        perpetrator.alias = request.POST.get('perpetrator_alias_' + str(perpetrator_id)).capitalize()
         perpetrator.relationship_to_victim = request.POST.get('perp-relationship-victim_' + str(perpetrator_id))
         perpetrator.sex = request.POST.get('perpetrator_sex_' + str(perpetrator_id))
         perpetrator.type_of_disability = request.POST.get('perpetrator_type_of_disability_' + str(perpetrator_id))
@@ -367,14 +371,14 @@ def save_perpetrator_data(request, perpetrator_id):
         perpetrator.contact_number = request.POST.get('perpetrator_contact_number_' + str(perpetrator_id))
         perpetrator.telephone_number = request.POST.get('perpetrator_telephone_number_' + str(perpetrator_id))
         perpetrator.educational_attainment = request.POST.get('perpetrator_educational_attainment_' + str(perpetrator_id))
-        perpetrator.occupation = request.POST.get('perpetrator_occupation_' + str(perpetrator_id))
-        perpetrator.nationality = request.POST.get('perpetrator_nationality_' + str(perpetrator_id))
+        perpetrator.occupation = request.POST.get('perpetrator_occupation_' + str(perpetrator_id)).capitalize()
+        perpetrator.nationality = request.POST.get('perpetrator_nationality_' + str(perpetrator_id)).capitalize()
         perpetrator.religion = request.POST.get('perpetrator_religion_' + str(perpetrator_id))
-        perpetrator.house_information = request.POST.get('perpetrator_house_information_' + str(perpetrator_id))
-        perpetrator.street = request.POST.get('perpetrator_street_' + str(perpetrator_id))
-        perpetrator.barangay = request.POST.get('perpetrator_barangay_' + str(perpetrator_id))
-        perpetrator.province = request.POST.get('perpetrator_province_' + str(perpetrator_id))
-        perpetrator.city = request.POST.get('perpetrator_city_' + str(perpetrator_id))
+        perpetrator.house_information = request.POST.get('perpetrator_house_information_' + str(perpetrator_id)).capitalize()
+        perpetrator.street = request.POST.get('perpetrator_street_' + str(perpetrator_id)).capitalize()
+        perpetrator.barangay = request.POST.get('perpetrator_barangay_' + str(perpetrator_id)).capitalize()
+        perpetrator.province = request.POST.get('perpetrator_province_' + str(perpetrator_id)).capitalize()
+        perpetrator.city = request.POST.get('perpetrator_city_' + str(perpetrator_id)).capitalize()
         perpetrator.region = request.POST.get('perpetrator_region_' + str(perpetrator_id))
 
         # Save perpetrator data
@@ -385,10 +389,45 @@ def save_perpetrator_data(request, perpetrator_id):
         return JsonResponse({'success': False, 'message': str(e)})
 
 
-def add_parent(request, case_id, victim_id):
+def add_parent_view(request, case_id, victim_id):
     case = Case.objects.get(id=case_id)
     victim = Victim.objects.get(id=victim_id)
     return render(request, 'barangay-admin/case/add-parent.html', {
             'victim': victim,
             'case': case,  # Include the 'case' variable in the context
         })
+
+@require_POST
+def update_status(request):
+    case_id = request.POST.get('case_id')
+    status_text = request.POST.get('status_text')
+    status_date = request.POST.get('status_date')
+    
+    # Retrieve the Case object
+    case = Case.objects.get(id=case_id)
+    
+    # Update the status fields
+    if status_text:
+        status_text = status_text.capitalize()
+        case.status_description = status_text
+    if status_date:
+        case.status_date = status_date
+    case.save()  # Save the changes
+    
+    # Return the updated status as JSON response
+    return JsonResponse({'status_description': status_text, 'status_date': status_date})
+
+@require_POST
+def update_status_case(request):
+    case_id = request.POST.get('case_id')
+    status = request.POST.get('status_case')
+    
+    print (status)
+
+    # Update the status for the given case_id
+    case = Case.objects.get(id=case_id)
+    case.status = status
+    case.save()
+
+    # Return success response
+    return JsonResponse({'status': 'success'})

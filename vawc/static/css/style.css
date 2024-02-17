@@ -118,6 +118,14 @@ main {
     color: #ffffff !important;
 }
 
+/* Add styles for the checked state */
+.btn-check:checked + .btn-outline-primary,
+.btn-outline-primary.active {
+    background-color: #6717b2 !important;
+    border-color: #6717b2 !important;
+    color: #ffffff !important;
+}
+
 .text-cust-color {
     color: #6717b2 !important;
 }

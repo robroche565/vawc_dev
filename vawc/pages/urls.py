@@ -23,12 +23,19 @@ urlpatterns = [
 
     #barangay admin side
     path('admin-barangay-vawc/dashboard/', views.barangay_dashboard_view, name='barangay dashboard'),
+    path('admin-barangay-vawc/settings/', views.barangay_settings_view, name='barangay settings'),
 
     path('admin-barangay-vawc/case/', views.barangay_case_view, name='barangay case'),
     path('admin-barangay-vawc/view-case/<int:case_id>/', views.view_case, name='barangay case view'),
+    
+    path('update_status/', views.update_status, name='update_status'),
+    path('update_status_case/', views.update_status_case, name='update_status_case'),
+
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
-    path('add_parent/<int:case_id>/<int:victim_id>/', views.add_parent, name='add_parent'),
+
+    path('add_parent/<int:case_id>/<int:victim_id>/', views.add_parent_view, name='add_parent'),
+
 
 ]
 

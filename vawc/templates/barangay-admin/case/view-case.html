@@ -24,6 +24,26 @@
     background-color: #d0b6e7 !important;
     color: #9a71c1  !important; /* Change the background color for active, focus, and hover states */
 }
+.btn-danger {
+    background-color: #D22B2B !important;
+    border-color: #D22B2B !important;
+}
+
+.btn-danger:hover {
+    background-color: #a31414  !important;
+    border-color: #a31414 !important;
+}
+
+.btn-secondary {
+    background-color: #A9A9A9 !important;
+    border-color: #A9A9A9 !important;
+}
+
+.btn-secondary:hover {
+    background-color: #818589 !important;
+    border-color: #818589 !important;
+}
+
 </style>
 {% endblock %}
 {% block content %}
@@ -31,8 +51,10 @@
     <div class="pt-1 row">
         <a class="col text-decoration-none text-dark" href="{% url 'barangay case' %}" role="button"><i class='bx bx-arrow-back'></i> Back</a>
     </div>
-    <h2>Case Number: {{ case.case_number }}</h2>
-    <h2>Case id: {{ case.id }}</h2>
+    <div class="d-flex justify-content-between">
+        <h2>Case Number: {{ case.case_number }} <span class="h5">(Date Added:{{ case.date_added }})</span>  </h2>
+        <button class="btn btn-danger"><i class='bx bx-trash me-2' ></i>Delete Case</button>
+    </div>
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
           <button class="nav-link custom-tab text-dark fs-4" id="nav-status-tab" data-bs-toggle="tab" data-bs-target="#nav-status" type="button" role="tab" aria-controls="nav-status" aria-selected="true">Status</button>
@@ -47,8 +69,57 @@
     </nav>
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade" id="nav-status" role="tabpanel" aria-labelledby="nav-status">
-            status
-        </div> <!--end of div of nav tab-->
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between py-3">
+                <h2>Status</h2>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bx bx-plus"></i> Add/Edit Status</button>
+            </div><!--end of row-->
+
+            <div class="pt-2">
+                <div class="card shadow-lg rounded border border-dark border-1 border-opacity-10">
+                    <div class="card-body card-status">
+                        <span id="case-status-desc" class="fs-5">
+                            {% if case.status_description %}
+                                {{ case.status_description }}.
+                            {% else %}
+                                No Status Yet.
+                            {% endif %}
+                        </span>
+                        <br>
+                        <span id="case-status-date">({{ case.status_date }})</span>
+                    </div>
+                </div>
+            </div><!--end of status box-->
+
+            <div class="container pt-3 pb-3">
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-8">
+                        <h3>Warrantless Arrest</h3>
+                    </div><!--end of col-->
+                    <div class="col-lg-1 col-md-1 col-sm-8">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#warrantlessArrest">
+                            Send
+                        </button>
+                    </div><!--end of col-->
+                </div><!--end of row-->
+            </div><!--end of container-->
+
+            <div class="container pt-3">
+                <div class="d-flex align-items-center">
+                    <h4><strong>CASE STATUS:</strong></h4>
+                    <input type="radio" class="btn-check btn-check-update" name="status_case" value="Active" id="option1" autocomplete="off" {% if case.status == 'Active' %}checked{% endif %} data-status="Active">
+                    <label class="btn btn-outline-primary mx-2" for="option1">Active</label>
+            
+                    <input type="radio" class="btn-check btn-check-update" name="status_case" value="Close" id="option2" autocomplete="off" {% if case.status == 'Close' %}checked{% endif %} data-status="Close">
+                    <label class="btn btn-outline-primary" for="option2">Closed</label>
+                </div>
+            </div><!--end of container-->
+
+        </div><!--end of container-->
+
+        </div> <!--end of div of status tab-->
+
         <div class="tab-pane fade" id="nav-victim" role="tabpanel" aria-labelledby="nav-victim">
             <h2 class="pt-3 text-center">VICTIM SURVIVOR INFORMATION</h2>
             <div class="d-flex align-items-start mt-3">
@@ -70,15 +141,15 @@
                     {% for victim in victims %}
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-victim-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-victim-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
-                            <div class="d-flex justify-content-end mb-3">
+                            <div class="d-flex justify-content-between mb-3">
                                 <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id %}" class="btn btn-primary me-2">
-                                    <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
-                                    <span>Add Parent/s</span>
+                                    <i class='bx bx-body'></i>
+                                    <span>Add, View, or Delete Parent/s</span>
                                 </a>
-                                <button class="btn btn-primary">
-                                    <i class="bx bx-show-alt" style="vertical-align: middle;"></i>
-                                    <span>View Parent/s</span>
-                                </button>
+                                <a href="#" class="btn btn-danger me-2">
+                                    <i class='bx bx-trash'></i>
+                                    <span>Delete Victim</span>
+                                </a>
                             </div>
                             <form id="victim_form_{{ victim.id }}">
                                 {% csrf_token %}
@@ -90,7 +161,7 @@
                                                 <label for="victim_first_name_{{ victim.id }}">First Name</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" id="victim_middle_name_{{ victim.id }}" name="victim_middle_name_{{ victim.id }}" value="{{ victim.middle_name }}">
                                                 <label for="victim_middle_name_{{ victim.id }}">Middle Name</label>
@@ -102,7 +173,7 @@
                                                 <label for="victim_last_name_{{ victim.id }}">Last Name</label>
                                             </div>
                                         </div>
-                                        <div class="col-3 mb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_suffix_name_{{ victim.id }}" name="victim_suffix_name_{{ victim.id }}">
                                                     <option value="none" {% if victim.suffix == 'none' %}selected{% endif %}>N/A</option>
@@ -117,7 +188,7 @@
                                         </div><!--End of col-->
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-3 form-floating mb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_sex_{{ victim.id }}" name="victim_sex_{{ victim.id }}">
                                                     <option value="Male" {% if victim.sex == 'Male' %}selected{% endif %}>Male</option>
@@ -126,7 +197,7 @@
                                                 <label for="victim_sex_{{ victim.id }}">Suffix</label>
                                             </div>
                                         </div><!--End of col-->
-                                        <div class="col-lg-3 form-floating mb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_type_of_disability_{{ victim.id }}" name="victim_type_of_disability_{{ victim.id }}">
                                                     <option value="none" {% if victim.type_of_disability == 'none' %}selected{% endif %}>N/A</option>
@@ -137,13 +208,13 @@
                                                 <label for="victim_type_of_disability_{{ victim.id }}">Type of Disability</label>
                                             </div>
                                         </div><!--End of col-->
-                                        <div class="col-lg-3 form-floating mb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="{{ victim.date_of_birth|date:'Y-m-d' }}">
                                                 <label for="victim_date_of_birth_{{ victim.id }}">Date of Birth: </label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8 pb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_civil_status_{{ victim.id }}" name="victim_civil_status_{{ victim.id }}">
                                                   <option value="single" {% if victim.civil_status == 'none' %}selected{% endif %}>Single</option>
@@ -157,14 +228,14 @@
                                         </div><!--End of col-->
                                     </div><!--End of row-->
                                     <div class="row">
-                                        <div class="col-lg-6 col-md-4 col-sm-8">
+                                        <div class="col-lg-6 col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="victim_contact_number_{{ victim.id }}" name="victim_contact_number_{{ victim.id }}" value="{{ victim.contact_number }}">
                                                 <label for="victim_contact_number_{{ victim.id }}">Contact Number</label>
                                             </div>
                                         </div><!--End of col-->
                                         
-                                        <div class="col-lg-6 col-md-4 col-sm-8">
+                                        <div class="col-lg-6 col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="victim_telephone_number_{{ victim.id }}" name="victim_telephone_number_{{ victim.id }}" value="{{ victim.telephone_number }}">
                                                 <label for="victim_telephone_number_{{ victim.id }}">Telephone Number</label>
@@ -172,7 +243,7 @@
                                         </div><!--End of col-->
                                     </div><!--End of row-->
                                     <div class="row">
-                                        <div class="col-lg-3 col-md-3 col-sm-8 pb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_educational_attainment_{{ victim.id }}" name="victim_educational_attainment_{{ victim.id }}">
                                                     <option value="none"{% if victim.educational_attainment == 'none' %}selected{% endif %}>None</option>
@@ -186,19 +257,19 @@
                                                 <label for="victim_educational_attainment_{{ victim.id }}">Highest Educational Attainment</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8">
-                                            <div class="form-floating mb-3">
+                                        <div class="col-lg-3 mb-3">
+                                            <div class="form-floating">
                                                 <input type="text" class="form-control" id="victim_occupation_{{ victim.id }}" name="victim_occupation_{{ victim.id }}" value="{{ victim.occupation}}">
                                                 <label for="victim_occupation_{{ victim.id }}">Occupation</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8">
-                                            <div class="form-floating mb-3">
+                                        <div class="col-lg-3 mb-3">
+                                            <div class="form-floating">
                                                 <input type="text" class="form-control" id="victim_nationality_{{ victim.id }}" name="victim_nationality_{{ victim.id }}" value="{{ victim.nationality }}">
                                                 <label for="victim_nationality_{{ victim.id }}">Nationality</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-8 pb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_religion_{{ victim.id }}" name="victim_religion_{{ victim.id }}">
                                                     <option value="none" {% if victim.religion == 'none' %}selected{% endif %}>None</option>
@@ -234,19 +305,19 @@
                                         </div><!--End of col-->
                                     </div><!--End of row-->
                                     <div class="row">
-                                        <div class="col-lg-3 col-md-4 col-sm-8">
-                                            <div class="form-floating mb-3">
+                                        <div class="col-lg-3 mb-3">
+                                            <div class="form-floating">
                                                 <input type="text" class="form-control" id="victim_province_{{ victim.id }}" name="victim_province_{{ victim.id }}" value="{{ victim.province }}">
                                                 <label for="victim_province_{{ victim.id }}">Province</label>
                                             </div>
                                         </div><!--End of col-->
-                                        <div class="col-lg-3 col-md-4 col-sm-8">
+                                        <div class="col-lg-3 col-12">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="victim_city_{{ victim.id }}" name="victim_city_{{ victim.id }}" value="{{ victim.city }}">
                                                 <label for="victim_city_{{ victim.id }}">City</label>
                                             </div>
                                         </div><!--End of col-->
-                                        <div class="col-lg-6 col-md-4 col-sm-8 pb-3">
+                                        <div class="col-lg-6 col-12">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_region_{{ victim.id }}" name="victim_region_{{ victim.id }}">
                                                     <option value="region-I" {% if victim.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
@@ -272,7 +343,7 @@
                                         </div><!--End of col-->
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-end">
+                                <div class="d-flex justify-content-end mt-lg-2 mt-2">
                                     <button class="btn btn-primary save-btn-victim_{{ victim.id }}" type="submit">Save</button>
                                 </div>
                             </form>
@@ -319,7 +390,7 @@
                                                 <label for="perpetrator_first_name_{{ perpetrator.id }}">First Name</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" id="perpetrator_middle_name_{{ perpetrator.id }}" name="perpetrator_middle_name_{{ perpetrator.id }}" value="{{ perpetrator.middle_name }}">
                                                 <label for="perpetrator_middle_name_{{ perpetrator.id }}">Middle Name</label>
@@ -331,7 +402,7 @@
                                                 <label for="perpetrator_last_name_{{ perpetrator.id }}">Last Name</label>
                                             </div>
                                         </div>
-                                        <div class="col-3 mb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_suffix_name_{{ perpetrator.id }}" name="perpetrator_suffix_name_{{ perpetrator.id }}">
                                                     <option value="none" {% if perpetrator.suffix == 'none' %}selected{% endif %}>N/A</option>
@@ -358,7 +429,7 @@
                                                 <label for="perpetrator_alias_{{ perpetrator.id }}">Alias</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 mb-3">
+                                        <div class="col-lg-6 col-12 mb-3">
                                             <div class="form-floating">
                                                 <select id="perp-relationship-victim_{{ perpetrator.id }}" name="perp-relationship-victim_{{ perpetrator.id }}" class="form-select">
                                                     <option value="currentSpouse" {% if perpetrator.relationship_to_victim == 'currentSpouse' %}selected{% endif %}>Current spouse / partner</option>
@@ -407,7 +478,7 @@
                                                 <label for="perpetrator_date_of_birth_{{ perpetrator.id }}">Date of Birth</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8 pb-3">
+                                        <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_civil_status_{{ perpetrator.id }}" name="perpetrator_civil_status_{{ perpetrator.id }}">
                                                     <option value="single" {% if perpetrator.civil_status == 'single' %}selected{% endif %}>Single</option>
@@ -421,15 +492,15 @@
                                         </div><!--End of col-->
                                     </div><!--End of row-->
 
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-4 col-sm-8">
+                                    <div class="row mb-1">
+                                        <div class="col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="perpetrator_contact_number_{{ perpetrator.id }}" name="perpetrator_contact_number_{{ perpetrator.id }}" value="{{ perpetrator.contact_number }}">
                                                 <label for="perpetrator_contact_number_{{ perpetrator.id }}">Contact Number</label>
                                             </div>
                                         </div><!--End of col-->
 
-                                        <div class="col-lg-6 col-md-4 col-sm-8">
+                                        <div class="col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="perpetrator_telephone_number_{{ perpetrator.id }}" name="perpetrator_telephone_number_{{ perpetrator.id }}" value="{{ perpetrator.telephone_number }}">
                                                 <label for="perpetrator_telephone_number_{{ perpetrator.id }}">Telephone Number</label>
@@ -437,7 +508,7 @@
                                         </div><!--End of col-->
                                     </div><!--End of row-->
                                     <div class="row">
-                                        <div class="col-lg-3 col-md-3 col-sm-8 pb-3">
+                                        <div class="col-lg-3 col-6">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_educational_attainment_{{ perpetrator.id }}" name="perpetrator_educational_attainment_{{ perpetrator.id }}">
                                                     <option value="none"{% if perpetrator.educational_attainment == 'none' %}selected{% endif %}>None</option>
@@ -451,19 +522,19 @@
                                                 <label for="perpetrator_educational_attainment_{{ perpetrator.id }}">Highest Educational Attainment</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8">
+                                        <div class="col-lg-3 col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="perpetrator_occupation_{{ perpetrator.id }}" name="perpetrator_occupation_{{ perpetrator.id }}" value="{{ perpetrator.occupation}}">
                                                 <label for="perpetrator_occupation_{{ perpetrator.id }}">Occupation</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-8">
+                                        <div class="col-lg-3 col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="perpetrator_nationality_{{ perpetrator.id }}" name="perpetrator_nationality_{{ perpetrator.id }}" value="{{ perpetrator.nationality }}">
                                                 <label for="perpetrator_nationality_{{ perpetrator.id }}">Nationality</label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-8 pb-3">
+                                        <div class="col-lg-3 col-6">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_religion_{{ perpetrator.id }}" name="perpetrator_religion_{{ perpetrator.id }}">
                                                     <option value="none" {% if perpetrator.religion == 'none' %}selected{% endif %}>None</option>
@@ -480,7 +551,7 @@
                                     </div><!--End of row-->
 
                                     <div class="row">
-                                        <div class="col-lg-6 col-md-4 col-sm-8">
+                                        <div class="col-lg-6 col-12">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="perpetrator_house_information_{{ perpetrator.id }}" name="perpetrator_house_information_{{ perpetrator.id }}" value="{{ perpetrator.house_information }}">
                                                 <label for="perpetrator_house_information_{{ perpetrator.id }}">House Information</label>
@@ -498,9 +569,6 @@
                                                 <label for="perpetrator_barangay_{{ perpetrator.id }}">Barangay</label>
                                             </div>
                                         </div><!--End of col-->
-                                    </div><!--End of row-->
-
-                                    <div class="row">
                                         <div class="col-lg-3 col-md-4 col-sm-8">
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="perpetrator_province_{{ perpetrator.id }}" name="perpetrator_province_{{ perpetrator.id }}" value="{{ perpetrator.province }}">
@@ -513,7 +581,7 @@
                                                 <label for="perpetrator_city_{{ perpetrator.id }}">City</label>
                                             </div>
                                         </div><!--End of col-->
-                                        <div class="col-lg-6 col-md-4 col-sm-8 pb-3">
+                                        <div class="col-lg-6 col-8">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_region_{{ perpetrator.id }}" name="perpetrator_region_{{ perpetrator.id }}">
                                                     <option value="region-I" {% if perpetrator.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
@@ -537,7 +605,7 @@
                                                 <label for="perpetrator_region_{{ perpetrator.id }}">Region</label>
                                             </div>
                                         </div><!--End of col-->
-                                    </div>
+                                    </div><!--End of row-->
                                 </div>
                                 <div class="d-flex justify-content-end">
                                     <button class="btn btn-primary save-btn-perpetrator_{{ perpetrator.id }}" type="submit">Save</button>
@@ -550,12 +618,255 @@
             </div>
         </div>
         <div class="tab-pane fade" id="nav-incident" role="tabpanel" aria-labelledby="nav-incident">
-            4
+            <div class="container pt-3">
+                <h2 class="pt-1 text-center">INCIDENT INFORMATION</h2>
+
+                <div class="pt-2">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <strong> RA 9262: Anti Violence against Women and Their Children Act</strong></label>
+                </div><!--End of title-->
+                <div class="row pt-3">
+                    <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">Sexual Abuse</label>
+                      </div><!--End of col-->
+                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">Psychological</label>
+                      </div><!--End of col-->
+                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">Physical</label>
+                      </div><!--End of col-->
+                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">Economic</label>
+                      </div><!--End of col-->
+                      <div class="col-lg-2 col-md-2 col-sm-8 pt-2">
+                        <div class="input-group">
+                            <div class="input-group-text">
+                              <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" placeholder="Others">
+                          </div>
+                      </div><!--End of col-->
+                </div><!--End of row-->
+                <div class="pt-5">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <strong> RA 8353: Anti-Rape Law of 1995</strong></label>
+                </div><!--End of title-->
+                <div class="row pt-3">
+                    <div class="col-lg-6 col-md-6 col-sm-8">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Rape by sexual intercourse</label>
+                    </div>
+            
+                    <div class="col-lg-6 col-md-6 col-sm-8">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Rape by sexual assault</label>
+                    </div>
+                  </div><!--End of row-->
+                  <div class="pt-5">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <strong> Art 336 of the Revised Penal Code</strong></label>
+                </div><!--End of title-->
+                <div class="row pt-3">
+                    <div class="col-lg-12 col-md-12 col-sm-8">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Acts of lasciviousness</label>
+                    </div>
+                  </div><!--End of row-->
+                  <div class="col-lg-12 col-md-12 col-sm-8 pt-5">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <strong> RA 7877: Anti-Sexual Harassment Act</strong></label>
+                </div><!--End of title-->
+                <div class="row pt-3">
+                    <div class="col-lg-3 col-md-12 col-sm-8">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Verbal</label>
+                    </div>
+                    <div class="col-lg-3 col-md-12 col-sm-8">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Pyhsical</label>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-8">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Use of objects, pictures, letters or notes with sexual under-pinnings</label>
+                    </div>
+                  </div><!--End of row-->
+                  <div class="pt-5">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <strong> A 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</strong></label>
+                </div><!--End of title-->
+                <div class="row pb-3">
+                    <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Engage, facilitate, promote or attempt to commit prostitution</label>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-8 pt-3">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                      <label class="form-check-label" for="flexCheckDefault">Sexual intercourse or lascivious conduct</label>
+                    </div>
+                  </div><!--End of row-->
+                  <div class="pt-5">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    <strong> RA 9775 Anti-Child Pornography Act</strong></label>
+                </div><!--End of title-->
+        
+                <div class="pt-4">
+                  <hr>
+                </div>
+        
+                <h4 class="pt-3">Accident Information</h4>
+        
+                <div class="row pt-2 pb-3">
+                  <div class="col-lg-4 col-md-4 col-sm-8 pt-3">
+                      <div class="form-floating mb-3">
+                          <input type="date" class="form-control" id="floatingInput" placeholder="name@example.com">
+                          <label for="floatingInput">Date of Latest Incident</label>
+                        </div>
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault"> Incomplete Date</label>
+                  </div><!--end of col-->
+                </div><!--End of row-->
+        
+                <h5 class="pt-3 pb-3">Place of Incident:</h5>
+        
+                <div class="row">
+                  <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
+                      <div class="form-floating">
+                          <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                              <option value="Home">Home</option>
+                              <option value="work">Work</option>
+                              <option value="school">School</option>
+                              <option value="commercial-places">Commercial Places</option>
+                              <option value="religious-institutions">Religious Institutions</option>
+                              <option value="placeOfMedicalTreatment">Place of Medical Treatment</option>
+                              <option value="transport-ConnectingSites">Transport & Connecting Sites</option>
+                              <option value="brothels-SimilarEstablishments">Brothels and Similar Extablishments</option>
+                              <option value="peopleOfAuthority">Others</option>
+                              <option value="currentFiance">No Response</option>
+                          </select>
+                          <label for="floatingSelect">Place of Incident</label>
+                        </div>
+                  </div><!--End of col-->
+                  <div class="col-lg-4 col-md-4 col-sm-8">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                        <label for="floatingInput">Street</label>
+                      </div>
+                </div><!--End of col-->
+                <div class="col-lg-4 col-md-4 col-sm-8">
+                  <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                      <label for="floatingInput">Barangay</label>
+                    </div>
+              </div><!--End of col-->
+              </div><!--end or row-->
+              <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-8">
+                  <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                      <label for="floatingInput">Province</label>
+                    </div>
+              </div><!--End of col-->
+              <div class="col-lg-4 col-md-4 col-sm-8">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga City">
+                    <label for="floatingInput">City / Mun</label>
+                  </div>
+            </div><!--End of col-->
+            <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
+              <div class="form-floating">
+                  <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                      <option value="region-I">Region I – Ilocos Region</option>
+                      <option value="region-II">Region II – Cagayan Valley</option>
+                      <option value="region-III">Region III – Central Luzon</option>
+                      <option value="region-IV">Region IV‑A – CALABARZON</option>
+                      <option value="mimaropa">MIMAROPA Region</option>
+                      <option value="region-V">Region V – Bicol Region</option>
+                      <option value="region-VI">Region VI – Western Visayas</option>
+                      <option value="region-VII">Region VII – Central Visayas</option>
+                      <option value="region-VIII">Region VIII – Eastern Visayas</option>
+                      <option value="region-IX">Region IX – Zamboanga Peninsula</option>
+                      <option value="region-X">Region X – Northern Mindanao</option>
+                      <option value="region-XI">Region XI – Davao Region</option>
+                      <option value="region-XII">Region XII – SOCCSKSARGEN</option>
+                      <option value="region-XIII">Region XIII – Caraga</option>
+                      <option value="ncr">NCR – National Capital Region</option>
+                      <option value="car">CAR – Cordillera Administrative Region</option>
+                      <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                  </select>
+                  <label for="floatingSelect">Region</label>
+                </div>
+          </div><!--End of col-->
+              </div><!--end of row-->
+        
+                <div class="pt-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description of Incident</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                      </div>
+                </div>
+                 
+                <div class="row pt-3+">
+                  <div class="mb-3">
+                      <label for="formFileMultiple" class="form-label"><strong>Upload Evidences:</strong></label>
+                      <input class="form-control" type="file" id="formFileMultiple" multiple>
+                    </div><!--form to upload-->
+          </div><!--End or row-->
+        
+                  <hr class="pt-3">
+                  <div class="row">
+                    <h3>Witness/es:</h3> 
+                    <p class="opacity-50 pb-3">(This will not be showed to others)</p>
+                    </div><!--End of row-->
+        
+                    <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-8">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                            <label for="floatingInput">Name</label>
+                          </div>
+                    </div><!--End of col-->
+                    <div class="col-lg-3 col-md-3 col-sm-8">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                            <label for="floatingInput">Address</label>
+                          </div>
+                    </div><!--End of col-->
+                    <div class="col-lg-3 col-md-3 col-sm-8">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                            <label for="floatingInput">Contact Number</label>
+                          </div>
+                    </div><!--End of col-->
+                    <div class="col-lg-3 col-md-3 col-sm-8">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="floatingInput" placeholder="Zamboanga Del Sur">
+                            <label for="floatingInput">Eye-Witness Account</label>
+                          </div>
+                    </div><!--End of col-->
+                  </div><!--End of row-->
+                  <div class="pt-3">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3 pb-3">
+                        <button class="btn btn-primary" type="button">Save</button>
+                      </div>
+                  </div><!--padding top-->
+                </div><!--end of container-->
+            </div><!--end of container-->
+
         </div>
         <div class="tab-pane fade" id="nav-service" role="tabpanel" aria-labelledby="nav-service">
             5
         </div>
-        
+
     </div>
 </div>
 <!-- Add the toast container to your HTML, make sure it's placed in a suitable location -->
@@ -581,10 +892,111 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="warrantlessArrest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="warrantlessArrestLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="warrantlessArrestLabel">Warrantless Arrest Confirmation</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center fs-4">
+            Are you sure you want to send a warrantless report? This cannot be undone.
+          </div>
+        </div><!--end of body-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal status add -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Adding Status</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form>
+            {% csrf_token %}
+            <div class="modal-body">
+                <input type="hidden" value="{{ case.id }}">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="status_text" name="status_text">{{ case.status_description }}</textarea>
+                    <label for="status_text">Status</label>
+                </div><!--end of status-->
+                <div class="form-floating mb-3">
+                  <input type="date" class="form-control" id="status_date" name="status_date">
+                  <label for="status_date">Date</label>
+                </div><!--end of status-->
+              </div><!--end of body-->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="submit_status" class="btn btn-primary">Done</button>
+              </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete Case</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this Case?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Get today's date in the format YYYY-MM-DD
+        var today = new Date().toISOString().split('T')[0];
+        
+        // Set the value of the date input field to today's date
+        $('#status_date').val(today);
+
+        // Event handler for radio button clicks
+        $('.btn-check-update').click(function() {
+            var status = $(this).val(); // Get the value of the selected radio button
+            var caseId = '{{ case.id }}'; // Get the case ID
+
+            console.log(status);
+            console.log(caseId);
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '{% url "update_status_case" %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'case_id': caseId,
+                    'status_case': status
+                },
+                success: function(response) {
+                    $('#successToast .toast-body').text('Status updated successfully!');
+                    $('#successToast').toast('show');
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    $('#errorToast .toast-body').text('Error updating status: ' + errorThrown);
+                    $('#errorToast').toast('show');
+                }
+            });
+        });
         // Function to set the active tab
         function setActiveTab() {
             // Get the ID of the last active tab from localStorage
@@ -716,6 +1128,45 @@
                 localStorage.setItem('activeTab', tabId);
             });
         });
+
+        
+
+        // Event handler for form submission to update status_text and status_date
+        $('#submit_status').click(function(e){
+            e.preventDefault();
+
+            var status_text = $('#status_text').val();
+            var status_date = $('#status_date').val();
+            var case_id = {{ case.id }};
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "update_status" %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'case_id': case_id,
+                    'status_text': status_text,
+                    'status_date': status_date
+                },
+                success: function(response){
+                    // Append period if missing
+                    if (!status_text.endsWith('.')) {
+                        status_text += '.';
+                    }
+                    $('#case-status-date').text('(' + response.status_date + ')');
+                    $('#staticBackdrop').modal('hide');
+                    // Show success toast
+                    $('#successToast .toast-body').text('Status updated successfully!');
+                    $('#successToast').toast('show');
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    // Show error toast
+                    $('#errorToast .toast-body').text('Error updating status: ' + errorThrown);
+                    $('#errorToast').toast('show');
+                }
+            });
+        });
+
     });
 
 </script>
