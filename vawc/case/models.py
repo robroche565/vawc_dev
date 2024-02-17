@@ -120,7 +120,7 @@ class Evidence(models.Model):
     file = models.FileField()
 
 class Victim(models.Model):
-    case_victim = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='victim',null=True, blank=True)
+    case_victim = models.ForeignKey(Case, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
@@ -158,6 +158,9 @@ class Victim(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     region = models.CharField(max_length=250,choices=REGION_CHOICES, null=True, blank=True)
+    
+    def __str__(self):
+        return f"Victim ID: {self.id}"
 
 
 class Perpetrator(models.Model):
@@ -211,7 +214,7 @@ class Perpetrator(models.Model):
 
 
 class Parent(models.Model):
-    victim_parent = models.ForeignKey(Victim, on_delete=models.CASCADE, related_name='parent',null=True, blank=True)
+    victim_parent = models.ForeignKey(Victim, on_delete=models.SET_NULL, related_name='parents', null=True, blank=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)

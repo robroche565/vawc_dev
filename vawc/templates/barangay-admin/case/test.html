@@ -1,0 +1,212 @@
+<!-- Modal -->
+<div class="modal fade" id="addVictimModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Add Victim</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="add_new_victim_form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <input type="hidden" name="victim_id" value="{{ victim.id }}">
+                <div class="h-100">
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="victim_first_name" name="victim_first_name">
+                                <label for="victim_first_name">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="victim_middle_name" name="victim_middle_name">
+                                <label for="victim_middle_name">Middle Name</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="victim_last_name" name="victim_last_name">
+                                <label for="victim_last_name">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_suffix_name" name="victim_suffix_name">
+                                    <option value="none">N/A</option>
+                                    <option value="sr">Sr</option>
+                                    <option value="jr">Jr</option>
+                                    <option value="ii">II</option>
+                                    <option value="iii">III</option>
+                                    <option value="iv">IV</option>
+                                </select>
+                                <label for="victim_suffix_name">Suffix</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_sex" name="victim_sex">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <label for="victim_sex">Suffix</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_type_of_disability" name="victim_type_of_disability">
+                                    <option value="none">N/A</option>
+                                    <option value="With Disability">With Disability</option>
+                                    <option value="Permanent Disability">Permanent Disability</option>
+                                    <option value="Temporary Disability">Temporary Disability</option>
+                                </select>
+                                <label for="victim_type_of_disability">Type of Disability</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="victim_date_of_birth" name="victim_date_of_birth">
+                                <label for="victim_date_of_birth">Date of Birth: </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_civil_status" name="victim_civil_status">
+                                    <option value="single">Single</option>
+                                    <option value="married">Married</option>
+                                    <option value="live-in">Live-In</option>
+                                    <option value="widowed">Widowed</option>
+                                    <option value="separated">Separated</option>
+                                </select>
+                                <label for="victim_civil_status">Civil Status</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-6 col-6">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="victim_contact_number" name="victim_contact_number">
+                                <label for="victim_contact_number">Contact Number</label>
+                            </div>
+                        </div><!--End of col-->
+                        
+                        <div class="col-lg-6 col-6">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="victim_telephone_number" name="victim_telephone_number">
+                                <label for="victim_telephone_number">Telephone Number</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_educational_attainment" name="victim_educational_attainment">
+                                    <option value="none">None</option>
+                                    <option value="highschool">High School Level</option>
+                                    <option value="vocational">Vocational</option>
+                                    <option value="collegeLevel">College Level</option>
+                                    <option value="post-grad">Post Graduated</option>
+                                    <option value="no-response">No Response</option>
+                                    <option value="educt-others">Others</option>
+                                </select>
+                                <label for="victim_educational_attainment">Highest Educational Attainment</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="victim_occupation" name="victim_occupation">
+                                <label for="victim_occupation">Occupation</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="victim_nationality" name="victim_nationality">
+                                <label for="victim_nationality">Nationality</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_religion" name="victim_religion">
+                                    <option value="none">None</option>
+                                    <option value="roman-catholic">Roman Catholic</option>
+                                    <option value="islam">Islam</option>
+                                    <option value="protestant">Protestant</option>
+                                    <option value="iglesia-ni-kristo">Iglesia ni Kristo</option>
+                                    <option value="aglipayan">Aglipayan</option>
+                                    <option value="other-religion">Others</option>
+                                </select>
+                                <label for="victim_religion">Religion</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="victim_house_information" name="victim_house_information">
+                                <label for="victim_house_information">House Information</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="victim_street" name="victim_street">
+                                <label for="victim_street">Street</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="victim_barangay" name="victim_barangay">
+                                <label for="victim_barangay">Barangay</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="victim_province" name="victim_province">
+                                <label for="victim_province">Province</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="victim_city" name="victim_city">
+                                <label for="victim_city">City</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-6 col-12">
+                            <div class="form-floating">
+                                <select class="form-select" id="victim_region" name="victim_region">
+                                    <option value="region-I">Region I – Ilocos Region</option>
+                                    <option value="region-II">Region II – Cagayan Valley</option>
+                                    <option value="region-III">Region III – Central Luzon</option>
+                                    <option value="region-IV">Region IV‑A – CALABARZON</option>
+                                    <option value="mimaropa">MIMAROPA Region</option>
+                                    <option value="region-V">Region V – Bicol Region</option>
+                                    <option value="region-VI">Region VI – Western Visayas</option>
+                                    <option value="region-VII">Region VII – Central Visayas</option>
+                                    <option value="region-VIII">Region VIII – Eastern Visayas</option>
+                                    <option value="region-IX">Region IX – Zamboanga Peninsula</option>
+                                    <option value="region-X">Region X – Northern Mindanao</option>
+                                    <option value="region-XI">Region XI – Davao Region</option>
+                                    <option value="region-XII">Region XII – SOCCSKSARGEN</option>
+                                    <option value="region-XIII">Region XIII – Caraga</option>
+                                    <option value="ncr">NCR – National Capital Region</option>
+                                    <option value="car">CAR – Cordillera Administrative Region</option>
+                                    <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                </select>
+                                <label for="victim_region">Region</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary add-btn-victim" type="submit">Add</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>

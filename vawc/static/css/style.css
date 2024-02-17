@@ -7,6 +7,47 @@ body {
 main {
     flex: 1;
 }
+.custom-tab.active {
+    background: transparent !important;
+    color: black !important;
+    border-bottom: 2px solid #6717b2 !important;
+    border-radius: 0px !important;
+}
+
+.custom-nav-link{
+    color: black !important;
+}
+
+/* Custom CSS for the active state of custom-nav-link */
+.custom-nav-link.active, .custom-nav-link:focus{
+    background-color: #6717b2  !important;
+    color: white  !important;
+}
+
+.custom-nav-link:hover {
+    background-color: #d0b6e7 !important;
+    color: #9a71c1  !important; /* Change the background color for active, focus, and hover states */
+}
+
+.btn-danger {
+    background-color: #D22B2B !important;
+    border-color: #D22B2B !important;
+}
+
+.btn-danger:hover {
+    background-color: #a31414  !important;
+    border-color: #a31414 !important;
+}
+
+.btn-secondary {
+    background-color: #A9A9A9 !important;
+    border-color: #A9A9A9 !important;
+}
+
+.btn-secondary:hover {
+    background-color: #818589 !important;
+    border-color: #818589 !important;
+}
 
 .custom-btn {
     width: 100%;

@@ -32,10 +32,18 @@ urlpatterns = [
     path('update_status_case/', views.update_status_case, name='update_status_case'),
 
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
+    path('add_new_victim_data/', views.add_new_victim, name='add_new_victim'),
+    path('delete_victim_data/', views.delete_parent, name='delete_victim'),
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
+    path('delete_perpetrator_data/', views.delete_perpetrator, name='delete_perpetrator'),
     path('process_incident_form/', views.process_incident_form, name='process_incident_form'),
+    
 
-    path('add_parent/<int:case_id>/<int:victim_id>/', views.add_parent_view, name='add_parent'),
+    path('admin-barangay-vawc/parent/<int:case_id>/<int:victim_id>/', views.add_parent_view, name='add_parent'),
+    path('save_parent_data/<int:parent_id>/', views.save_parent_data, name='save_parent_data'),
+    path('add_new_parent_data/', views.add_new_parent_form, name='add_new_parent_form'),
+    path('check_parent_count/', views.check_parent_count, name='check_parent_count'),
+    path('delete_parent_data/', views.delete_parent, name='delete_parent'),
 
 
 ]

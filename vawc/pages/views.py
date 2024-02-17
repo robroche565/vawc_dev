@@ -336,7 +336,7 @@ def save_victim_data(request, victim_id):
         victim.educational_attainment = request.POST.get('victim_educational_attainment_' + str(victim_id))
         victim.occupation = request.POST.get('victim_occupation_' + str(victim_id)).capitalize()
         victim.nationality = request.POST.get('victim_nationality_' + str(victim_id))
-        victim.religion = request.POST.get('victim_religion_' + str(victim_id)).capitalize()
+        victim.religion = request.POST.get('victim_religion_' + str(victim_id))
         victim.house_information = request.POST.get('victim_house_information_' + str(victim_id)).capitalize()
         victim.street = request.POST.get('victim_street_' + str(victim_id)).capitalize()
         victim.barangay = request.POST.get('victim_barangay_' + str(victim_id)).capitalize()
@@ -350,6 +350,69 @@ def save_victim_data(request, victim_id):
         return JsonResponse({'success': True, 'message': 'Victim data saved successfully'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+@require_POST
+def add_new_victim(request):
+    try:
+        case_id = request.POST.get('case_id')
+        
+        case_instance = get_object_or_404(Case, id=case_id)
+        # Extract form data
+        first_name = request.POST.get('victim_first_name')
+        middle_name = request.POST.get('victim_middle_name')
+        last_name = request.POST.get('victim_last_name')
+        suffix = request.POST.get('victim_suffix_name')
+        date_of_birth = request.POST.get('victim_date_of_birth')
+        sex = request.POST.get('victim_sex')
+        civil_status = request.POST.get('victim_civil_status')
+        educational_attainment = request.POST.get('victim_educational_attainment')
+        occupation = request.POST.get('victim_occupation')
+        type_of_disability = request.POST.get('victim_type_of_disability')
+        nationality = request.POST.get('victim_nationality')
+        religion = request.POST.get('victim_religion')
+        contact_number = request.POST.get('victim_contact_number')
+        telephone_number = request.POST.get('victim_telephone_number')
+        house_information = request.POST.get('victim_house_information')
+        street = request.POST.get('victim_street')
+        barangay = request.POST.get('victim_barangay')
+        province = request.POST.get('victim_province')
+        city = request.POST.get('victim_city')
+        region = request.POST.get('victim_region')
+
+        print(case_id)
+        print(first_name)
+        print(last_name)
+        # Create and save the new victim instance
+        victim = Victim.objects.create(
+            case_victim=case_instance,
+            first_name=first_name,
+            middle_name=middle_name,
+            last_name=last_name,
+            suffix=suffix,
+            date_of_birth=date_of_birth,
+            sex=sex,
+            civil_status=civil_status,
+            educational_attainment=educational_attainment,
+            occupation=occupation,
+            type_of_disability=type_of_disability,
+            nationality=nationality,
+            religion=religion,
+            contact_number=contact_number,
+            telephone_number=telephone_number,
+            house_information=house_information,
+            street=street,
+            barangay=barangay,
+            province=province,
+            city=city,
+            region=region
+        )
+
+        # Return success response
+        return JsonResponse({'success': True, 'message': 'Victim added successfully'})
+    except Exception as e:
+        # Return error response
+        return JsonResponse({'success': False, 'message': str(e)})
+
 
 @require_POST
 def save_perpetrator_data(request, perpetrator_id):
@@ -388,14 +451,151 @@ def save_perpetrator_data(request, perpetrator_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
+@require_POST
+def delete_perpetrator(request):
+    perpetrator_id = request.POST.get('perpetrator_id')
+    perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
+    perpetrator.delete()
+    return JsonResponse({'success': True, 'message': 'Perpetrator deleted successfully'})
 
 def add_parent_view(request, case_id, victim_id):
+    # Get the Case and Victim objects
     case = Case.objects.get(id=case_id)
     victim = Victim.objects.get(id=victim_id)
+
+    # Query Parent objects related to the Victim
+    parent = Parent.objects.filter(victim_parent=victim)
+
     return render(request, 'barangay-admin/case/add-parent.html', {
-            'victim': victim,
-            'case': case,  # Include the 'case' variable in the context
-        })
+        'victim': victim,
+        'case': case,
+        'parents': parent,
+    })
+
+@require_POST
+def save_parent_data(request, parent_id):
+    try:
+        parent = get_object_or_404(Parent, id=parent_id)
+
+        # Update parent data
+        parent.first_name = request.POST.get('parent_first_name_' + str(parent_id)).capitalize()
+        parent.middle_name = request.POST.get('parent_middle_name_' + str(parent_id)).capitalize()
+        parent.last_name = request.POST.get('parent_last_name_' + str(parent_id)).capitalize()
+        parent.suffix = request.POST.get('parent_suffix_name_' + str(parent_id))
+        parent.sex = request.POST.get('parent_sex_' + str(parent_id))
+        parent.type_of_disability = request.POST.get('parent_type_of_disability_' + str(parent_id))
+        parent.date_of_birth = request.POST.get('parent_date_of_birth_' + str(parent_id))
+        parent.civil_status = request.POST.get('parent_civil_status_' + str(parent_id))
+        parent.contact_number = request.POST.get('parent_contact_number_' + str(parent_id))
+        parent.telephone_number = request.POST.get('parent_telephone_number_' + str(parent_id))
+        parent.educational_attainment = request.POST.get('parent_educational_attainment_' + str(parent_id))
+        parent.occupation = request.POST.get('parent_occupation_' + str(parent_id)).capitalize()
+        parent.nationality = request.POST.get('parent_nationality_' + str(parent_id))
+        parent.religion = request.POST.get('parent_religion_' + str(parent_id))
+        parent.house_information = request.POST.get('parent_house_information_' + str(parent_id))
+        parent.street = request.POST.get('parent_street_' + str(parent_id)).capitalize()
+        parent.barangay = request.POST.get('parent_barangay_' + str(parent_id)).capitalize()
+        parent.province = request.POST.get('parent_province_' + str(parent_id)).capitalize()
+        parent.city = request.POST.get('parent_city_' + str(parent_id)).capitalize()
+        parent.region = request.POST.get('parent_region_' + str(parent_id))
+
+        # Save parent data
+        parent.save()
+
+        return JsonResponse({'success': True, 'message': 'Parent data saved successfully'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@require_POST
+def add_new_parent_form(request):
+    try:
+        victim_id = request.POST.get('victim_id')
+        # Extract form data
+        first_name = request.POST.get('parent_first_name')
+        middle_name = request.POST.get('parent_middle_name')
+        last_name = request.POST.get('parent_last_name')
+        suffix = request.POST.get('parent_suffix_name')
+        date_of_birth = request.POST.get('parent_date_of_birth')
+        sex = request.POST.get('parent_sex')
+        civil_status = request.POST.get('parent_civil_status')
+        educational_attainment = request.POST.get('parent_educational_attainment')
+        occupation = request.POST.get('parent_occupation')
+        type_of_disability = request.POST.get('parent_type_of_disability')
+        nationality = request.POST.get('parent_nationality')
+        religion = request.POST.get('parent_religion')
+        contact_number = request.POST.get('parent_contact_number')
+        telephone_number = request.POST.get('parent_telephone_number')
+        house_information = request.POST.get('parent_house_information')
+        street = request.POST.get('parent_street')
+        barangay = request.POST.get('parent_barangay')
+        province = request.POST.get('parent_province')
+        city = request.POST.get('parent_city')
+        region = request.POST.get('parent_region')
+
+        # Create and save the new parent instance
+        parent = Parent.objects.create(
+            victim_parent_id=victim_id,
+            first_name=first_name,
+            middle_name=middle_name,
+            last_name=last_name,
+            suffix=suffix,
+            date_of_birth=date_of_birth,
+            sex=sex,
+            civil_status=civil_status,
+            educational_attainment=educational_attainment,
+            occupation=occupation,
+            type_of_disability=type_of_disability,
+            nationality=nationality,
+            religion=religion,
+            contact_number=contact_number,
+            telephone_number=telephone_number,
+            house_information=house_information,
+            street=street,
+            barangay=barangay,
+            province=province,
+            city=city,
+            region=region
+        )
+
+        # Return success response
+        return JsonResponse({'success': True, 'message': 'Parent added successfully'})
+    except Exception as e:
+        # Return error response
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@require_POST
+def delete_victim(request):
+    if request.method == 'POST':
+        victim_id = request.POST.get('victim_id')
+        print(victim_id)
+        if victim_id:
+            victim = get_object_or_404(Victim, id=victim_id)
+            victim.delete()
+            return JsonResponse({'success': True, 'message': 'Victim deleted successfully'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid victim ID'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+def check_parent_count(request):
+    # Count the number of parents
+    parent_count = Parent.objects.count()
+    print (parent_count)
+
+    # Return a success response if the limit is not exceeded
+    return JsonResponse({'success': parent_count})
+
+@require_POST
+def delete_parent(request):
+    try:
+        parent_id = request.POST.get('parent_id')
+        parent = Parent.objects.get(id=parent_id)
+        parent.delete()
+        return JsonResponse({'success': True, 'message': 'Parent deleted successfully'})
+    except Parent.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Parent does not exist'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
 
 @require_POST
 def update_status(request):
