@@ -20,4 +20,4 @@ def decrypt_data(encrypted_data):
 # print(tese)
 
 
-#print(decrypt_data("Gaaaaabl0qxltof94ap0d1mbuyax_rkb7bldllwhqhbzhr67vbbtnkc4krcuh6gaa-pj6pv8nuqqiwum9ysss45plku6uh4ccq=="))
+print(decrypt_data('gAAAAABl0y3epzAJH7tlB2pyPf9Me1iHPTK23y4ghUUi_71gh97nBJDSi2er37suhKRtkaJauRc9MvbOUZ_-3yMhpB0IkEoEyg=='))

@@ -216,7 +216,7 @@ class Parent(models.Model):
     first_name = models.CharField(max_length=100, null=True, blank=True)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
-    suffix = models.CharField(max_length=10, null=True, blank=True)
+    suffix = models.CharField(max_length=100, null=True, blank=True)
     date_of_birth = models.CharField(max_length=150, null=True, blank=True)
     MALE, FEMALE = 'Male', 'Female'
     SEX_CHOICES = [(MALE, 'Male'), (FEMALE, 'Female')]
@@ -235,11 +235,11 @@ class Parent(models.Model):
         max_length=100,
         null=True,
         blank=True)
-    educational_attainment = models.CharField(max_length=50, null=True, blank=True)
-    occupation = models.CharField(max_length=50, null=True, blank=True)
-    type_of_disability = models.CharField(max_length=50, null=True, blank=True)
-    nationality = models.CharField(max_length=50, null=True, blank=True)
-    religion = models.CharField(max_length=50, null=True, blank=True)
+    educational_attainment = models.CharField(max_length=150, null=True, blank=True)
+    occupation = models.CharField(max_length=150, null=True, blank=True)
+    type_of_disability = models.CharField(max_length=150, null=True, blank=True)
+    nationality = models.CharField(max_length=150, null=True, blank=True)
+    religion = models.CharField(max_length=150, null=True, blank=True)
     contact_number = models.CharField(max_length=100,null=True, blank=True)
     telephone_number = models.CharField(max_length=100,null=True, blank=True)
     house_information = models.CharField(max_length=250, null=True, blank=True)
