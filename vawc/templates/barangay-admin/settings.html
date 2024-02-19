@@ -1,11 +1,76 @@
 {% extends "../base/base_barangay.html" %}
-{% block title %}Home | Dashboard{% endblock %}
+{% block title %}Home | Settings {% endblock %}
 {% load static %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="pt-5">Settings</h1>
+    <h1 class="pt-2">Settings</h1>
+
+    <form id="encrypt_form" method="post">
+        {% csrf_token %}
+
+        {% comment %} <p class="data_encrypt">{{ global.security_status }}</p> {% endcomment %}
+
+        {% comment %} hidden {% endcomment %}
+        <input type="hidden" class="security_status" name="security_status" value="{{ global.security_status }}">
+        
+        {% if global.security_status == "encrypted" %}
+            <input type="text" class="user_passkey" name="user_passkey" value="currentSpouse">      
+            <button class="btn_security_status">Decrypt</button>
+        {% else %}
+            <button class="btn_security_status">Encrypt</button>
+        {% endif %}
+    </form>   
+
+
+
 
 </div>
 {% endblock content %}
 {% block scripts %}
+<script>
+    console.log("test")
+
+    const userPasskey = document.querySelector(".user_passkey")
+    const dataEncrypt = document.querySelector(".data_encrypt")
+    const buttonDecrypt = document.querySelector(".btn_security_status")
+
+    const correctPasskey = "tite"
+
+    buttonDecrypt.addEventListener("click", function(e) {
+        $('#encrypt_form').submit(function(event) {
+            event.preventDefault();
+
+            const security_status = document.querySelector(".security_status")
+            console.log(security_status.innerHTML)
+
+            var formData = $(this).serialize();
+
+            console.log(formData)
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "tite" %}',
+                data: formData,
+                success: function(response) {
+                    console.log(response.message)
+
+                    if (response.success) {
+                        console.log("good")
+                        location.reload();
+                    } else {
+                        console.log("bad")
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    $('#errorMessage').text('Error occurred. Please try again.');
+                }
+            });
+        });
+
+    })
+ 
+ 
+ </script>
+
 {% endblock scripts %}
+

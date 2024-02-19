@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, QueryDict
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.http import require_POST
@@ -22,6 +22,9 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 # Create your views here.
+
+from .utils import encrypt_data, decrypt_data
+import base64
 
 #models
 from case.models import *
@@ -52,12 +55,18 @@ def barangay_dashboard_view (request):
 
 @login_required
 def barangay_settings_view (request):
-    return render(request, 'barangay-admin/settings.html')
+    return render(request, 'barangay-admin/settings.html', {'global': request.session})
 
 @login_required
 def barangay_case_view(request):
     cases = Case.objects.all()  # Retrieve all cases from the database
-    return render(request, 'barangay-admin/case/case.html', {'cases': cases})
+    
+    print(request.session['security_status'])
+    
+    return render(request, 'barangay-admin/case/case.html', {
+        'cases': cases,
+        'global': request.session
+    })
 
 
 def send_otp_email(email, otp):
@@ -134,6 +143,9 @@ def verify_otp(request):
                         # Print a success message
                         print("User logged in successfully")
                         print(account_type)
+                        
+                        request.session['security_status'] = "encrypted"
+                        print(request.session['security_status'])
 
                         # Return success along with account type
                         return JsonResponse({'success': True, 'message': 'Login successful.', 'account_type': account_type, 'otp_expiry': otp_expiry_str})
@@ -179,6 +191,35 @@ def behalf_victim_view (request):
 
 def add_case(request):
     if request.method == 'POST':
+        
+        # Create a new QueryDict object
+        modified_post_data = QueryDict('', mutable=True)
+        
+        # Attributes to ignore for encryption
+        ignore_key = [
+            'type_of_case',
+            'victim_count',
+            'perpetrator_count',
+            'incomplete-date',
+            'service',
+            'csrfmiddlewaretoken',
+            'status_date',
+            'date_added'
+        ]
+
+        for key, values in request.POST.lists():
+            modified_values = []
+
+            if key in ignore_key:
+                for value in values:
+                    modified_values.append(value)
+            else:
+                for value in values:
+                    modified_values.append(encrypt_data(value).decode('utf-8'))
+            modified_post_data.setlist(key, modified_values)
+        
+        request.POST = modified_post_data
+        
         case_data = {
             'case_number': get_next_case_number(),
             'date_latest_incident': request.POST.get('date-latest-incident'),
@@ -303,6 +344,31 @@ def view_case(request, case_id):
         victims = Victim.objects.filter(case_victim=case)
         perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
         parents = Parent.objects.filter(victim_parent__in=victims)
+        
+        print(request.session['security_status'])
+        
+        if request.session['security_status'] == "decrypted":
+            case.street = decrypt_data(case.street)
+            case.barangay = decrypt_data(case.barangay)
+            case.date_latest_incident = decrypt_data(case.date_latest_incident)
+            case.place_of_incident = decrypt_data(case.place_of_incident)
+            case.province = decrypt_data(case.province)
+            case.region = decrypt_data(case.region)
+            case.description_of_incident = decrypt_data(case.description_of_incident)
+            case.city = decrypt_data(case.city)
+            
+        # print(case.barangay)
+
+        #print(decrypt_data(case.street))
+        # if isinstance(encrypted_data_from_db, bytes):
+        #     print("Decrypted: ", decrypt_data(encrypted_data_from_db))
+        # else:
+        #     print("Decrypted: ", decrypt_data())
+        
+        # for victim in victims:
+        #     encryted_value = encrypt_data(victim.first_name)
+        #     print("Encrypted: ", encryted_value)
+        #     print("Decrypted: ", decrypt_data(encryted_value))
 
         # Render the view-case.html template with the case and related objects as context
         return render(request, 'barangay-admin/case/view-case.html', {
@@ -312,6 +378,7 @@ def view_case(request, case_id):
             'victims': victims,
             'perpetrators': perpetrators,
             'parents': parents,
+            'global': request.session
         })
     except Case.DoesNotExist:
         # Handle case not found appropriately, for example, return a 404 page
@@ -409,6 +476,74 @@ def add_new_victim(request):
 
         # Return success response
         return JsonResponse({'success': True, 'message': 'Victim added successfully'})
+    except Exception as e:
+        # Return error response
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@require_POST
+def add_new_perpetrator(request):
+    try:
+        case_id = request.POST.get('case_id')
+        
+        case_instance = get_object_or_404(Case, id=case_id)
+        # Extract form data
+        first_name = request.POST.get('perpetrator_first_name')
+        middle_name = request.POST.get('perpetrator_middle_name')
+        last_name = request.POST.get('perpetrator_last_name')
+        suffix = request.POST.get('perpetrator_suffix_name')
+        perpetrator_identifying_marks = request.POST.get('perpetrator_identifying_marks')
+        perpetrator_alias = request.POST.get('perpetrator_alias')
+        perp_relationship_victim = request.POST.get('perp-relationship-victim')
+        date_of_birth = request.POST.get('perpetrator_date_of_birth')
+        sex = request.POST.get('perpetrator_sex')
+        civil_status = request.POST.get('perpetrator_civil_status')
+        educational_attainment = request.POST.get('perpetrator_educational_attainment')
+        occupation = request.POST.get('perpetrator_occupation')
+        type_of_disability = request.POST.get('perpetrator_type_of_disability')
+        nationality = request.POST.get('perpetrator_nationality')
+        religion = request.POST.get('perpetrator_religion')
+        contact_number = request.POST.get('perpetrator_contact_number')
+        telephone_number = request.POST.get('perpetrator_telephone_number')
+        house_information = request.POST.get('perpetrator_house_information')
+        street = request.POST.get('perpetrator_street')
+        barangay = request.POST.get('perpetrator_barangay')
+        province = request.POST.get('perpetrator_province')
+        city = request.POST.get('perpetrator_city')
+        region = request.POST.get('perpetrator_region')
+
+        print(case_id)
+        print(first_name)
+        print(last_name)
+        # Create and save the new perpetrator instance
+        perpetrator = Perpetrator.objects.create(
+            case_perpetrator=case_instance,
+            first_name=first_name,
+            middle_name=middle_name,
+            last_name=last_name,
+            suffix=suffix,
+            identifying_marks=perpetrator_identifying_marks,
+            alias=perpetrator_alias,
+            relationship_to_victim=perp_relationship_victim,
+            date_of_birth=date_of_birth,
+            sex=sex,
+            civil_status=civil_status,
+            educational_attainment=educational_attainment,
+            occupation=occupation,
+            type_of_disability=type_of_disability,
+            nationality=nationality,
+            religion=religion,
+            contact_number=contact_number,
+            telephone_number=telephone_number,
+            house_information=house_information,
+            street=street,
+            barangay=barangay,
+            province=province,
+            city=city,
+            region=region
+        )
+
+        # Return success response
+        return JsonResponse({'success': True, 'message': 'Perpetrator added successfully'})
     except Exception as e:
         # Return error response
         return JsonResponse({'success': False, 'message': str(e)})
@@ -569,9 +704,17 @@ def delete_victim(request):
         victim_id = request.POST.get('victim_id')
         print(victim_id)
         if victim_id:
-            victim = get_object_or_404(Victim, id=victim_id)
-            victim.delete()
-            return JsonResponse({'success': True, 'message': 'Victim deleted successfully'})
+            try:
+                victim = Victim.objects.get(id=victim_id)
+                # Delete related Parent instances
+                Parent.objects.filter(victim_parent=victim).delete()
+                # Delete the victim instance
+                victim.delete()
+                return JsonResponse({'success': True, 'message': 'Victim and related Parents deleted successfully'})
+            except Victim.DoesNotExist:
+                return JsonResponse({'success': False, 'message': 'Victim does not exist'})
+            except Exception as e:
+                return JsonResponse({'success': False, 'message': str(e)})
         else:
             return JsonResponse({'success': False, 'message': 'Invalid victim ID'})
     else:
@@ -702,3 +845,23 @@ def process_incident_form(request):
             'message': 'Invalid request method.'
         }
         return JsonResponse(response_data)
+
+
+def tite(request):
+    # check if what the button want to do. 
+    action = request.POST.get('security_status')
+    
+    if action == "decrypted":
+        request.session['security_status'] = "encrypted"
+        return JsonResponse({'success': True, 'message': 'encryted successfully.'})
+    
+    real_passkey = 'gAAAAABlyy1ztYGcI6Qkx3bOjkMbGsEzhFFYlOU8ph3a-mGEG2yqmoKX07sIGc0bpOX2qNQcBRctnzF8GAqOI2pTNwiMo2m9SQ=='
+    user_passkey = request.POST.get('user_passkey')
+    
+    decrypt_real_pk = decrypt_data(real_passkey)
+    
+    if decrypt_real_pk == user_passkey:
+        request.session['security_status'] = "decrypted"
+        return JsonResponse({'success': True, 'message': 'Valid passkey.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid passkey.'})

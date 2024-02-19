@@ -13,6 +13,7 @@
     </div>
     <div class="d-flex justify-content-between">
         <h2>Case Number: {{ case.case_number }} <span class="h5">(Date Added:{{ case.date_added }})</span>  </h2>
+        <p>{{global.security_status}}</p>
         <button class="btn btn-danger"><i class='bx bx-trash me-2' ></i>Delete Case</button>
     </div>
     <nav>
@@ -125,11 +126,11 @@
             <div class="d-flex align-items-start mt-3">
                 <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     {% for victim in victims %}
-                    {% if forloop.first %}
-                    <button class="nav-link custom-nav-link active mb-2" id="v-pills-victim-{{ forloop.counter }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-victim-{{ forloop.counter }}" type="button" role="tab" aria-controls="v-pills-victim-{{ forloop.counter }}" aria-selected="true">Victim No. {{ forloop.counter }}</button>
-                    {% else %}
-                    <button class="nav-link custom-nav-link mb-2" id="v-pills-victim-{{ forloop.counter }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-victim-{{ forloop.counter }}" type="button" role="tab" aria-controls="v-pills-victim-{{ forloop.counter }}" aria-selected="false">Victim No. {{ forloop.counter }}</button>
-                    {% endif %}
+                        {% if forloop.first %}
+                            <button class="nav-link custom-nav-link active mb-2" id="v-pills-victim-{{ forloop.counter }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-victim-{{ forloop.counter }}" type="button" role="tab" aria-controls="v-pills-victim-{{ forloop.counter }}" aria-selected="true">Victim No. {{ forloop.counter }}</button>
+                        {% else %}
+                            <button class="nav-link custom-nav-link mb-2" id="v-pills-victim-{{ forloop.counter }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-victim-{{ forloop.counter }}" type="button" role="tab" aria-controls="v-pills-victim-{{ forloop.counter }}" aria-selected="false">Victim No. {{ forloop.counter }}</button>
+                        {% endif %}
                     {% endfor %}
                     <hr>
                     <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addVictimModal">
@@ -176,12 +177,16 @@
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_suffix_name_{{ victim.id }}" name="victim_suffix_name_{{ victim.id }}">
-                                                    <option value="none" {% if victim.suffix == 'none' %}selected{% endif %}>N/A</option>
-                                                    <option value="sr" {% if victim.suffix == 'sr' %}selected{% endif %}>Sr</option>
-                                                    <option value="jr" {% if victim.suffix == 'jr' %}selected{% endif %}>Jr</option>
-                                                    <option value="ii" {% if victim.suffix == 'ii' %}selected{% endif %}>II</option>
-                                                    <option value="iii" {% if victim.suffix == 'iii' %}selected{% endif %}>III</option>
-                                                    <option value="iv" {% if victim.suffix == 'iv' %}selected{% endif %}>IV</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none" {% if victim.suffix == 'none' %}selected{% endif %}>N/A</option>
+                                                        <option value="sr" {% if victim.suffix == 'sr' %}selected{% endif %}>Sr</option>
+                                                        <option value="jr" {% if victim.suffix == 'jr' %}selected{% endif %}>Jr</option>
+                                                        <option value="ii" {% if victim.suffix == 'ii' %}selected{% endif %}>II</option>
+                                                        <option value="iii" {% if victim.suffix == 'iii' %}selected{% endif %}>III</option>
+                                                        <option value="iv" {% if victim.suffix == 'iv' %}selected{% endif %}>IV</option>
+                                                    {% else %}
+                                                        <option value="ii" selected >{{ victim.suffix }}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_suffix_name_{{ victim.id }}">Suffix</label>
                                             </div>
@@ -191,8 +196,12 @@
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_sex_{{ victim.id }}" name="victim_sex_{{ victim.id }}">
+                                                    {% if global.security_status == "decrypted" %}
                                                     <option value="Male" {% if victim.sex == 'Male' %}selected{% endif %}>Male</option>
                                                     <option value="Female" {% if victim.sex == 'Female' %}selected{% endif %}>Female</option>
+                                                    {% else %}
+                                                        <option value="Female" selected>:{{ victim.sex }}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_sex_{{ victim.id }}">Suffix</label>
                                             </div>
@@ -200,64 +209,86 @@
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_type_of_disability_{{ victim.id }}" name="victim_type_of_disability_{{ victim.id }}">
-                                                    <option value="none" {% if victim.type_of_disability == 'none' %}selected{% endif %}>N/A</option>
-                                                    <option value="With Disability" {% if victim.type_of_disability == 'With Disability' %}selected{% endif %}>With Disability</option>
-                                                    <option value="Permanent Disability" {% if victim.type_of_disability == 'Permanent Disability' %}selected{% endif %}>Permanent Disability</option>
-                                                    <option value="Temporary Disability" {% if victim.type_of_disability == 'Temporary Disability' %}selected{% endif %}>Temporary Disability</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none" {% if victim.type_of_disability == 'none' %}selected{% endif %}>N/A</option>
+                                                        <option value="With Disability" {% if victim.type_of_disability == 'With Disability' %}selected{% endif %}>With Disability</option>
+                                                        <option value="Permanent Disability" {% if victim.type_of_disability == 'Permanent Disability' %}selected{% endif %}>Permanent Disability</option>
+                                                        <option value="Temporary Disability" {% if victim.type_of_disability == 'Temporary Disability' %}selected{% endif %}>Temporary Disability</option>
+                                                    {% else %}
+                                                       <option value="Temporary Disability" selected>{{victim.type_of_disability}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_type_of_disability_{{ victim.id }}">Type of Disability</label>
                                             </div>
                                         </div><!--End of col-->
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
-                                                <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="{{ victim.date_of_birth|date:'Y-m-d' }}">
+
+                                                {% if global.security_status == "decrypted" %}
+                                                    <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="{{ victim.date_of_birth|date:'Y-m-d' }}">
+                                                {% else %}
+                                                    <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="2000-01-01" disabled>
+                                                {% endif %}
+
                                                 <label for="victim_date_of_birth_{{ victim.id }}">Date of Birth: </label>
                                             </div>
                                         </div>
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_civil_status_{{ victim.id }}" name="victim_civil_status_{{ victim.id }}">
-                                                  <option value="single" {% if victim.civil_status == 'none' %}selected{% endif %}>Single</option>
-                                                  <option value="married" {% if victim.civil_status == 'married' %}selected{% endif %}>Married</option>
-                                                  <option value="live-in" {% if victim.civil_status == 'live-in' %}selected{% endif %}>Live-In</option>
-                                                  <option value="widowed" {% if victim.civil_status == 'widowed' %}selected{% endif %}>Widowed</option>
-                                                  <option value="separated" {% if victim.civil_status == 'separated' %}selected{% endif %}>Separated</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="single" {% if victim.civil_status == 'none' %}selected{% endif %}>Single</option>
+                                                        <option value="married" {% if victim.civil_status == 'married' %}selected{% endif %}>Married</option>
+                                                        <option value="live-in" {% if victim.civil_status == 'live-in' %}selected{% endif %}>Live-In</option>
+                                                        <option value="widowed" {% if victim.civil_status == 'widowed' %}selected{% endif %}>Widowed</option>
+                                                        <option value="separated" {% if victim.civil_status == 'separated' %}selected{% endif %}>Separated</option>
+                                                    {% else %}
+                                                        <option value="separated" selected>{{victim.civil_status}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_civil_status_{{ victim.id }}">Civil Status</label>
                                               </div>
                                         </div><!--End of col-->
                                     </div><!--End of row-->
                                     <div class="row">
+                                        <!--contact num-->
                                         <div class="col-lg-6 col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="victim_contact_number_{{ victim.id }}" name="victim_contact_number_{{ victim.id }}" value="{{ victim.contact_number }}">
                                                 <label for="victim_contact_number_{{ victim.id }}">Contact Number</label>
                                             </div>
-                                        </div><!--End of col-->
-                                        
+                                        </div>
+
+                                        <!--telephone num-->
                                         <div class="col-lg-6 col-6">
                                             <div class="form-floating mb-3">
                                                 <input type="number" class="form-control" id="victim_telephone_number_{{ victim.id }}" name="victim_telephone_number_{{ victim.id }}" value="{{ victim.telephone_number }}">
                                                 <label for="victim_telephone_number_{{ victim.id }}">Telephone Number</label>
                                             </div>
-                                        </div><!--End of col-->
+                                        </div>
+
                                     </div><!--End of row-->
                                     <div class="row">
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_educational_attainment_{{ victim.id }}" name="victim_educational_attainment_{{ victim.id }}">
-                                                    <option value="none"{% if victim.educational_attainment == 'none' %}selected{% endif %}>None</option>
-                                                    <option value="highschool"{% if victim.educational_attainment == 'highschool' %}selected{% endif %}>High School Level</option>
-                                                    <option value="vocational"{% if victim.educational_attainment == 'vocational' %}selected{% endif %}>Vocational</option>
-                                                    <option value="collegeLevel"{% if victim.educational_attainment == 'collegeLevel' %}selected{% endif %}>College Level</option>
-                                                    <option value="post-grad"{% if victim.educational_attainment == 'post-grad' %}selected{% endif %}>Post Graduated</option>
-                                                    <option value="no-response"{% if victim.educational_attainment == 'no-response' %}selected{% endif %}>No Response</option>
-                                                    <option value="educt-others"{% if victim.educational_attainment == 'educt-others' %}selected{% endif %}>Others</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none"{% if victim.educational_attainment == 'none' %}selected{% endif %}>None</option>
+                                                        <option value="highschool"{% if victim.educational_attainment == 'highschool' %}selected{% endif %}>High School Level</option>
+                                                        <option value="vocational"{% if victim.educational_attainment == 'vocational' %}selected{% endif %}>Vocational</option>
+                                                        <option value="collegeLevel"{% if victim.educational_attainment == 'collegeLevel' %}selected{% endif %}>College Level</option>
+                                                        <option value="post-grad"{% if victim.educational_attainment == 'post-grad' %}selected{% endif %}>Post Graduated</option>
+                                                        <option value="no-response"{% if victim.educational_attainment == 'no-response' %}selected{% endif %}>No Response</option>
+                                                        <option value="educt-others"{% if victim.educational_attainment == 'educt-others' %}selected{% endif %}>Others</option>
+                                                    {% else %}
+                                                        <option value="educt-others"selected>{{victim.educational_attainment}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_educational_attainment_{{ victim.id }}">Highest Educational Attainment</label>
                                             </div>
                                         </div>
                                         <div class="col-lg-3 mb-3">
+                                            
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" id="victim_occupation_{{ victim.id }}" name="victim_occupation_{{ victim.id }}" value="{{ victim.occupation}}">
                                                 <label for="victim_occupation_{{ victim.id }}">Occupation</label>
@@ -272,13 +303,17 @@
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_religion_{{ victim.id }}" name="victim_religion_{{ victim.id }}">
-                                                    <option value="none" {% if victim.religion == 'none' %}selected{% endif %}>None</option>
-                                                    <option value="roman-catholic" {% if victim.religion == 'roman-catholic' %}selected{% endif %}>Roman Catholic</option>
-                                                    <option value="islam" {% if victim.religion == 'islam' %}selected{% endif %}>Islam</option>
-                                                    <option value="protestant" {% if victim.religion == 'protestant' %}selected{% endif %}>Protestant</option>
-                                                    <option value="iglesia-ni-kristo" {% if victim.religion == 'iglesia-ni-kristo' %}selected{% endif %}>Iglesia ni Kristo</option>
-                                                    <option value="aglipayan" {% if victim.religion == 'aglipayan' %}selected{% endif %}>Aglipayan</option>
-                                                    <option value="other-religion" {% if victim.religion == 'other-religion' %}selected{% endif %}>Others</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none" {% if victim.religion == 'none' %}selected{% endif %}>None</option>
+                                                        <option value="roman-catholic" {% if victim.religion == 'roman-catholic' %}selected{% endif %}>Roman Catholic</option>
+                                                        <option value="islam" {% if victim.religion == 'islam' %}selected{% endif %}>Islam</option>
+                                                        <option value="protestant" {% if victim.religion == 'protestant' %}selected{% endif %}>Protestant</option>
+                                                        <option value="iglesia-ni-kristo" {% if victim.religion == 'iglesia-ni-kristo' %}selected{% endif %}>Iglesia ni Kristo</option>
+                                                        <option value="aglipayan" {% if victim.religion == 'aglipayan' %}selected{% endif %}>Aglipayan</option>
+                                                        <option value="other-religion" {% if victim.religion == 'other-religion' %}selected{% endif %}>Others</option>
+                                                    {% else %}
+                                                        <option value="other-religion" selected>{{victim.religion}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_religion_{{ victim.id }}">Religion</label>
                                             </div>
@@ -320,23 +355,27 @@
                                         <div class="col-lg-6 col-12">
                                             <div class="form-floating">
                                                 <select class="form-select" id="victim_region_{{ victim.id }}" name="victim_region_{{ victim.id }}">
-                                                    <option value="region-I" {% if victim.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
-                                                    <option value="region-II" {% if victim.region == 'region-II' %}selected{% endif %}>Region II – Cagayan Valley</option>
-                                                    <option value="region-III" {% if victim.region == 'region-III' %}selected{% endif %}>Region III – Central Luzon</option>
-                                                    <option value="region-IV" {% if victim.region == 'region-IV' %}selected{% endif %}>Region IV‑A – CALABARZON</option>
-                                                    <option value="mimaropa" {% if victim.region == 'mimaropa' %}selected{% endif %}>MIMAROPA Region</option>
-                                                    <option value="region-V" {% if victim.region == 'region-V' %}selected{% endif %}>Region V – Bicol Region</option>
-                                                    <option value="region-VI" {% if victim.region == 'region-VI' %}selected{% endif %}>Region VI – Western Visayas</option>
-                                                    <option value="region-VII" {% if victim.region == 'region-VII' %}selected{% endif %}>Region VII – Central Visayas</option>
-                                                    <option value="region-VIII" {% if victim.region == 'region-VIII' %}selected{% endif %}>Region VIII – Eastern Visayas</option>
-                                                    <option value="region-IX" {% if victim.region == 'region-IX' %}selected{% endif %}>Region IX – Zamboanga Peninsula</option>
-                                                    <option value="region-X" {% if victim.region == 'region-X' %}selected{% endif %}>Region X – Northern Mindanao</option>
-                                                    <option value="region-XI" {% if victim.region == 'region-XI' %}selected{% endif %}>Region XI – Davao Region</option>
-                                                    <option value="region-XII" {% if victim.region == 'region-XII' %}selected{% endif %}>Region XII – SOCCSKSARGEN</option>
-                                                    <option value="region-XIII" {% if victim.region == 'region-XIII' %}selected{% endif %}>Region XIII – Caraga</option>
-                                                    <option value="ncr" {% if victim.region == 'ncr' %}selected{% endif %}>NCR – National Capital Region</option>
-                                                    <option value="car" {% if victim.region == 'car' %}selected{% endif %}>CAR – Cordillera Administrative Region</option>
-                                                    <option value="barmm" {% if victim.region == 'barmm' %}selected{% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="region-I" {% if victim.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
+                                                        <option value="region-II" {% if victim.region == 'region-II' %}selected{% endif %}>Region II – Cagayan Valley</option>
+                                                        <option value="region-III" {% if victim.region == 'region-III' %}selected{% endif %}>Region III – Central Luzon</option>
+                                                        <option value="region-IV" {% if victim.region == 'region-IV' %}selected{% endif %}>Region IV‑A – CALABARZON</option>
+                                                        <option value="mimaropa" {% if victim.region == 'mimaropa' %}selected{% endif %}>MIMAROPA Region</option>
+                                                        <option value="region-V" {% if victim.region == 'region-V' %}selected{% endif %}>Region V – Bicol Region</option>
+                                                        <option value="region-VI" {% if victim.region == 'region-VI' %}selected{% endif %}>Region VI – Western Visayas</option>
+                                                        <option value="region-VII" {% if victim.region == 'region-VII' %}selected{% endif %}>Region VII – Central Visayas</option>
+                                                        <option value="region-VIII" {% if victim.region == 'region-VIII' %}selected{% endif %}>Region VIII – Eastern Visayas</option>
+                                                        <option value="region-IX" {% if victim.region == 'region-IX' %}selected{% endif %}>Region IX – Zamboanga Peninsula</option>
+                                                        <option value="region-X" {% if victim.region == 'region-X' %}selected{% endif %}>Region X – Northern Mindanao</option>
+                                                        <option value="region-XI" {% if victim.region == 'region-XI' %}selected{% endif %}>Region XI – Davao Region</option>
+                                                        <option value="region-XII" {% if victim.region == 'region-XII' %}selected{% endif %}>Region XII – SOCCSKSARGEN</option>
+                                                        <option value="region-XIII" {% if victim.region == 'region-XIII' %}selected{% endif %}>Region XIII – Caraga</option>
+                                                        <option value="ncr" {% if victim.region == 'ncr' %}selected{% endif %}>NCR – National Capital Region</option>
+                                                        <option value="car" {% if victim.region == 'car' %}selected{% endif %}>CAR – Cordillera Administrative Region</option>
+                                                        <option value="barmm" {% if victim.region == 'barmm' %}selected{% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                                    {% else %}
+                                                        <option value="barmm" selected>{{victim.region}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="victim_region_{{ victim.id }}">Region</label>
                                             </div>
@@ -371,7 +410,7 @@
                     {% endif %}
                     {% endfor %}
                     <hr>
-                    <button class="btn btn-primary mt-4">
+                    <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addPerpModal">
                         <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
                         <span>Add Perpetrator</span>
                     </button>
@@ -438,19 +477,23 @@
                                         <div class="col-lg-6 col-12 mb-3">
                                             <div class="form-floating">
                                                 <select id="perp-relationship-victim_{{ perpetrator.id }}" name="perp-relationship-victim_{{ perpetrator.id }}" class="form-select">
-                                                    <option value="currentSpouse" {% if perpetrator.relationship_to_victim == 'currentSpouse' %}selected{% endif %}>Current spouse / partner</option>
-                                                    <option value="formerSpouse" {% if perpetrator.relationship_to_victim == 'formerSpouse' %}selected{% endif %}>Former spouse / partner</option>
-                                                    <option value="currentFiance" {% if perpetrator.relationship_to_victim == 'currentFiance' %}selected{% endif %}>Current fiance / dating relationship</option>
-                                                    <option value="formerFiance" {% if perpetrator.relationship_to_victim == 'formerFiance' %}selected{% endif %}>Former fiance / dating relationship</option>
-                                                    <option value="employer" {% if perpetrator.relationship_to_victim == 'employer' %}selected{% endif %}>Employer / manager / supervisor</option>
-                                                    <option value="agentOfEmployer" {% if perpetrator.relationship_to_victim == 'agentOfEmployer' %}selected{% endif %}>Agent of Employer</option>
-                                                    <option value="teacher" {% if perpetrator.relationship_to_victim == 'teacher' %}selected{% endif %}>Teacher / instructor / professor</option>
-                                                    <option value="coach" {% if perpetrator.relationship_to_victim == 'coach' %}selected{% endif %}>Coach / trainer</option>
-                                                    <option value="immediateFamily" {% if perpetrator.relationship_to_victim == 'immediateFamily' %}selected{% endif %}>Immediate family</option>
-                                                    <option value="otherRelatives" {% if perpetrator.relationship_to_victim == 'otherRelatives' %}selected{% endif %}>Other relatives</option>
-                                                    <option value="peopleOfAuthority" {% if perpetrator.relationship_to_victim == 'peopleOfAuthority' %}selected{% endif %}>People of authority / service provider</option>
-                                                    <option value="neighbors" {% if perpetrator.relationship_to_victim == 'neighbors' %}selected{% endif %}>Neighbors / peers / coworkers / classmates</option>
-                                                    <option value="stranger" {% if perpetrator.relationship_to_victim == 'stranger' %}selected{% endif %}>Stranger</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="currentSpouse" {% if perpetrator.relationship_to_victim == 'currentSpouse' %}selected{% endif %}>Current spouse / partner</option>
+                                                        <option value="formerSpouse" {% if perpetrator.relationship_to_victim == 'formerSpouse' %}selected{% endif %}>Former spouse / partner</option>
+                                                        <option value="currentFiance" {% if perpetrator.relationship_to_victim == 'currentFiance' %}selected{% endif %}>Current fiance / dating relationship</option>
+                                                        <option value="formerFiance" {% if perpetrator.relationship_to_victim == 'formerFiance' %}selected{% endif %}>Former fiance / dating relationship</option>
+                                                        <option value="employer" {% if perpetrator.relationship_to_victim == 'employer' %}selected{% endif %}>Employer / manager / supervisor</option>
+                                                        <option value="agentOfEmployer" {% if perpetrator.relationship_to_victim == 'agentOfEmployer' %}selected{% endif %}>Agent of Employer</option>
+                                                        <option value="teacher" {% if perpetrator.relationship_to_victim == 'teacher' %}selected{% endif %}>Teacher / instructor / professor</option>
+                                                        <option value="coach" {% if perpetrator.relationship_to_victim == 'coach' %}selected{% endif %}>Coach / trainer</option>
+                                                        <option value="immediateFamily" {% if perpetrator.relationship_to_victim == 'immediateFamily' %}selected{% endif %}>Immediate family</option>
+                                                        <option value="otherRelatives" {% if perpetrator.relationship_to_victim == 'otherRelatives' %}selected{% endif %}>Other relatives</option>
+                                                        <option value="peopleOfAuthority" {% if perpetrator.relationship_to_victim == 'peopleOfAuthority' %}selected{% endif %}>People of authority / service provider</option>
+                                                        <option value="neighbors" {% if perpetrator.relationship_to_victim == 'neighbors' %}selected{% endif %}>Neighbors / peers / coworkers / classmates</option>
+                                                        <option value="stranger" {% if perpetrator.relationship_to_victim == 'stranger' %}selected{% endif %}>Stranger</option>
+                                                    {% else %}
+                                                        <option value="stranger" selected>{{perpetrator.relationship_to_victim}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="perp-relationship-victim_{{ perpetrator.id }}" class="form-label">Relationship of Perpetrator to the Victim: </label>
                                             </div>
@@ -461,8 +504,12 @@
                                         <div class="col-lg-3 form-floating mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_sex_{{ perpetrator.id }}" name="perpetrator_sex_{{ perpetrator.id }}">
-                                                    <option value="Male" {% if perpetrator.sex == 'Male' %}selected{% endif %}>Male</option>
-                                                    <option value="Female" {% if perpetrator.sex == 'Female' %}selected{% endif %}>Female</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="Male" {% if perpetrator.sex == 'Male' %}selected{% endif %}>Male</option>
+                                                        <option value="Female" {% if perpetrator.sex == 'Female' %}selected{% endif %}>Female</option>
+                                                    {% else %}
+                                                        <option value="Female" selected>{{ perpetrator.sex }}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="perpetrator_sex_{{ perpetrator.id }}">Sex</label>
                                             </div>
@@ -470,28 +517,42 @@
                                         <div class="col-lg-3 form-floating mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_type_of_disability_{{ perpetrator.id }}" name="perpetrator_type_of_disability_{{ perpetrator.id }}">
-                                                    <option value="none" {% if perpetrator.type_of_disability == 'none' %}selected{% endif %}>N/A</option>
-                                                    <option value="With Disability" {% if perpetrator.type_of_disability == 'With Disability' %}selected{% endif %}>With Disability</option>
-                                                    <option value="Permanent Disability" {% if perpetrator.type_of_disability == 'Permanent Disability' %}selected{% endif %}>Permanent Disability</option>
-                                                    <option value="Temporary Disability" {% if perpetrator.type_of_disability == 'Temporary Disability' %}selected{% endif %}>Temporary Disability</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none" {% if perpetrator.type_of_disability == 'none' %}selected{% endif %}>N/A</option>
+                                                        <option value="With Disability" {% if perpetrator.type_of_disability == 'With Disability' %}selected{% endif %}>With Disability</option>
+                                                        <option value="Permanent Disability" {% if perpetrator.type_of_disability == 'Permanent Disability' %}selected{% endif %}>Permanent Disability</option>
+                                                        <option value="Temporary Disability" {% if perpetrator.type_of_disability == 'Temporary Disability' %}selected{% endif %}>Temporary Disability</option>
+                                                    {% else %}
+                                                        <option value="Temporary Disability" selected>{{perpetrator.type_of_disability}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="perpetrator_type_of_disability_{{ perpetrator.id }}">Type of Disability</label>
                                             </div>
                                         </div><!--End of col-->
                                         <div class="col-lg-3 form-floating mb-3">
                                             <div class="form-floating">
-                                                <input type="date" class="form-control" id="perpetrator_date_of_birth_{{ perpetrator.id }}" name="perpetrator_date_of_birth_{{ perpetrator.id }}" value="{{ perpetrator.date_of_birth|date:'Y-m-d' }}">
+                                                
+                                                {% if global.security_status == "decrypted" %}
+                                                    <input type="date" class="form-control" id="perpetrator_date_of_birth_{{ perpetrator.id }}" name="perpetrator_date_of_birth_{{ perpetrator.id }}" value="{{ perpetrator.date_of_birth|date:'Y-m-d' }}">
+                                                {% else %}
+                                                    <input type="date" class="form-control" id="perpetrator_date_of_birth_{{ perpetrator.id }}" name="perpetrator_date_of_birth_{{ perpetrator.id }}" value="2000-01-01" disabled>
+                                                {% endif %}
+
                                                 <label for="perpetrator_date_of_birth_{{ perpetrator.id }}">Date of Birth</label>
                                             </div>
                                         </div>
                                         <div class="col-lg-3 mb-3">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_civil_status_{{ perpetrator.id }}" name="perpetrator_civil_status_{{ perpetrator.id }}">
-                                                    <option value="single" {% if perpetrator.civil_status == 'single' %}selected{% endif %}>Single</option>
-                                                    <option value="married" {% if perpetrator.civil_status == 'married' %}selected{% endif %}>Married</option>
-                                                    <option value="live-in" {% if perpetrator.civil_status == 'live-in' %}selected{% endif %}>Live-In</option>
-                                                    <option value="widowed" {% if perpetrator.civil_status == 'widowed' %}selected{% endif %}>Widowed</option>
-                                                    <option value="separated" {% if perpetrator.civil_status == 'separated' %}selected{% endif %}>Separated</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="single" {% if perpetrator.civil_status == 'single' %}selected{% endif %}>Single</option>
+                                                        <option value="married" {% if perpetrator.civil_status == 'married' %}selected{% endif %}>Married</option>
+                                                        <option value="live-in" {% if perpetrator.civil_status == 'live-in' %}selected{% endif %}>Live-In</option>
+                                                        <option value="widowed" {% if perpetrator.civil_status == 'widowed' %}selected{% endif %}>Widowed</option>
+                                                        <option value="separated" {% if perpetrator.civil_status == 'separated' %}selected{% endif %}>Separated</option>
+                                                    {% else %}
+                                                        <option value="separated" selected>{{perpetrator.civil_status}}</option>
+                                                    {% endif %}
                                                 </select>
                                                 <label for="perpetrator_civil_status_{{ perpetrator.id }}">Civil Status</label>
                                             </div>
@@ -517,13 +578,19 @@
                                         <div class="col-lg-3 col-6">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_educational_attainment_{{ perpetrator.id }}" name="perpetrator_educational_attainment_{{ perpetrator.id }}">
-                                                    <option value="none"{% if perpetrator.educational_attainment == 'none' %}selected{% endif %}>None</option>
-                                                    <option value="highschool"{% if perpetrator.educational_attainment == 'highschool' %}selected{% endif %}>High School Level</option>
-                                                    <option value="vocational"{% if perpetrator.educational_attainment == 'vocational' %}selected{% endif %}>Vocational</option>
-                                                    <option value="collegeLevel"{% if perpetrator.educational_attainment == 'collegeLevel' %}selected{% endif %}>College Level</option>
-                                                    <option value="post-grad"{% if perpetrator.educational_attainment == 'post-grad' %}selected{% endif %}>Post Graduated</option>
-                                                    <option value="no-response"{% if perpetrator.educational_attainment == 'no-response' %}selected{% endif %}>No Response</option>
-                                                    <option value="educt-others"{% if perpetrator.educational_attainment == 'educt-others' %}selected{% endif %}>Others</option>
+                                                    
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none"{% if perpetrator.educational_attainment == 'none' %}selected{% endif %}>None</option>
+                                                        <option value="highschool"{% if perpetrator.educational_attainment == 'highschool' %}selected{% endif %}>High School Level</option>
+                                                        <option value="vocational"{% if perpetrator.educational_attainment == 'vocational' %}selected{% endif %}>Vocational</option>
+                                                        <option value="collegeLevel"{% if perpetrator.educational_attainment == 'collegeLevel' %}selected{% endif %}>College Level</option>
+                                                        <option value="post-grad"{% if perpetrator.educational_attainment == 'post-grad' %}selected{% endif %}>Post Graduated</option>
+                                                        <option value="no-response"{% if perpetrator.educational_attainment == 'no-response' %}selected{% endif %}>No Response</option>
+                                                        <option value="educt-others"{% if perpetrator.educational_attainment == 'educt-others' %}selected{% endif %}>Others</option>
+                                                    {% else %}
+                                                        <option value="educt-others" selected>{{perpetrator.educational_attainment}}</option>
+                                                    {% endif %}
+                                                
                                                 </select>
                                                 <label for="perpetrator_educational_attainment_{{ perpetrator.id }}">Highest Educational Attainment</label>
                                             </div>
@@ -543,13 +610,19 @@
                                         <div class="col-lg-3 col-6">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_religion_{{ perpetrator.id }}" name="perpetrator_religion_{{ perpetrator.id }}">
-                                                    <option value="none" {% if perpetrator.religion == 'none' %}selected{% endif %}>None</option>
-                                                    <option value="roman-catholic" {% if perpetrator.religion == 'roman-catholic' %}selected{% endif %}>Roman Catholic</option>
-                                                    <option value="islam" {% if perpetrator.religion == 'islam' %}selected{% endif %}>Islam</option>
-                                                    <option value="protestant" {% if perpetrator.religion == 'protestant' %}selected{% endif %}>Protestant</option>
-                                                    <option value="iglesia-ni-kristo" {% if perpetrator.religion == 'iglesia-ni-kristo' %}selected{% endif %}>Iglesia ni Kristo</option>
-                                                    <option value="aglipayan" {% if perpetrator.religion == 'aglipayan' %}selected{% endif %}>Aglipayan</option>
-                                                    <option value="other-religion" {% if perpetrator.religion == 'other-religion' %}selected{% endif %}>Others</option>
+                                                    
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="none" {% if perpetrator.religion == 'none' %}selected{% endif %}>None</option>
+                                                        <option value="roman-catholic" {% if perpetrator.religion == 'roman-catholic' %}selected{% endif %}>Roman Catholic</option>
+                                                        <option value="islam" {% if perpetrator.religion == 'islam' %}selected{% endif %}>Islam</option>
+                                                        <option value="protestant" {% if perpetrator.religion == 'protestant' %}selected{% endif %}>Protestant</option>
+                                                        <option value="iglesia-ni-kristo" {% if perpetrator.religion == 'iglesia-ni-kristo' %}selected{% endif %}>Iglesia ni Kristo</option>
+                                                        <option value="aglipayan" {% if perpetrator.religion == 'aglipayan' %}selected{% endif %}>Aglipayan</option>
+                                                        <option value="other-religion" {% if perpetrator.religion == 'other-religion' %}selected{% endif %}>Others</option>
+                                                    {% else %}
+                                                        <option value="aglipayan" selected>{{perpetrator.religion}}</option>
+                                                    {% endif %}
+                                                    
                                                 </select>
                                                 <label for="perpetrator_religion_{{ perpetrator.id }}">Religion</label>
                                             </div>
@@ -590,23 +663,28 @@
                                         <div class="col-lg-6 col-8">
                                             <div class="form-floating">
                                                 <select class="form-select" id="perpetrator_region_{{ perpetrator.id }}" name="perpetrator_region_{{ perpetrator.id }}">
-                                                    <option value="region-I" {% if perpetrator.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
-                                                    <option value="region-II" {% if perpetrator.region == 'region-II' %}selected{% endif %}>Region II – Cagayan Valley</option>
-                                                    <option value="region-III" {% if perpetrator.region == 'region-III' %}selected{% endif %}>Region III – Central Luzon</option>
-                                                    <option value="region-IV" {% if perpetrator.region == 'region-IV' %}selected{% endif %}>Region IV‑A – CALABARZON</option>
-                                                    <option value="mimaropa" {% if perpetrator.region == 'mimaropa' %}selected{% endif %}>MIMAROPA Region</option>
-                                                    <option value="region-V" {% if perpetrator.region == 'region-V' %}selected{% endif %}>Region V – Bicol Region</option>
-                                                    <option value="region-VI" {% if perpetrator.region == 'region-VI' %}selected{% endif %}>Region VI – Western Visayas</option>
-                                                    <option value="region-VII" {% if perpetrator.region == 'region-VII' %}selected{% endif %}>Region VII – Central Visayas</option>
-                                                    <option value="region-VIII" {% if perpetrator.region == 'region-VIII' %}selected{% endif %}>Region VIII – Eastern Visayas</option>
-                                                    <option value="region-IX" {% if perpetrator.region == 'region-IX' %}selected{% endif %}>Region IX – Zamboanga Peninsula</option>
-                                                    <option value="region-X" {% if perpetrator.region == 'region-X' %}selected{% endif %}>Region X – Northern Mindanao</option>
-                                                    <option value="region-XI" {% if perpetrator.region == 'region-XI' %}selected{% endif %}>Region XI – Davao Region</option>
-                                                    <option value="region-XII" {% if perpetrator.region == 'region-XII' %}selected{% endif %}>Region XII – SOCCSKSARGEN</option>
-                                                    <option value="region-XIII" {% if perpetrator.region == 'region-XIII' %}selected{% endif %}>Region XIII – Caraga</option>
-                                                    <option value="ncr" {% if perpetrator.region == 'ncr' %}selected{% endif %}>NCR – National Capital Region</option>
-                                                    <option value="car" {% if perpetrator.region == 'car' %}selected{% endif %}>CAR – Cordillera Administrative Region</option>
-                                                    <option value="barmm" {% if perpetrator.region == 'barmm' %}selected{% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                                    {% if global.security_status == "decrypted" %}
+                                                        <option value="region-I" {% if perpetrator.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
+                                                        <option value="region-II" {% if perpetrator.region == 'region-II' %}selected{% endif %}>Region II – Cagayan Valley</option>
+                                                        <option value="region-III" {% if perpetrator.region == 'region-III' %}selected{% endif %}>Region III – Central Luzon</option>
+                                                        <option value="region-IV" {% if perpetrator.region == 'region-IV' %}selected{% endif %}>Region IV‑A – CALABARZON</option>
+                                                        <option value="mimaropa" {% if perpetrator.region == 'mimaropa' %}selected{% endif %}>MIMAROPA Region</option>
+                                                        <option value="region-V" {% if perpetrator.region == 'region-V' %}selected{% endif %}>Region V – Bicol Region</option>
+                                                        <option value="region-VI" {% if perpetrator.region == 'region-VI' %}selected{% endif %}>Region VI – Western Visayas</option>
+                                                        <option value="region-VII" {% if perpetrator.region == 'region-VII' %}selected{% endif %}>Region VII – Central Visayas</option>
+                                                        <option value="region-VIII" {% if perpetrator.region == 'region-VIII' %}selected{% endif %}>Region VIII – Eastern Visayas</option>
+                                                        <option value="region-IX" {% if perpetrator.region == 'region-IX' %}selected{% endif %}>Region IX – Zamboanga Peninsula</option>
+                                                        <option value="region-X" {% if perpetrator.region == 'region-X' %}selected{% endif %}>Region X – Northern Mindanao</option>
+                                                        <option value="region-XI" {% if perpetrator.region == 'region-XI' %}selected{% endif %}>Region XI – Davao Region</option>
+                                                        <option value="region-XII" {% if perpetrator.region == 'region-XII' %}selected{% endif %}>Region XII – SOCCSKSARGEN</option>
+                                                        <option value="region-XIII" {% if perpetrator.region == 'region-XIII' %}selected{% endif %}>Region XIII – Caraga</option>
+                                                        <option value="ncr" {% if perpetrator.region == 'ncr' %}selected{% endif %}>NCR – National Capital Region</option>
+                                                        <option value="car" {% if perpetrator.region == 'car' %}selected{% endif %}>CAR – Cordillera Administrative Region</option>
+                                                        <option value="barmm" {% if perpetrator.region == 'barmm' %}selected{% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                                    {% else %}
+                                                        <option value="barmm" selected>{{perpetrator.region}}</option>
+                                                    {% endif %}
+                                                
                                                 </select>
                                                 <label for="perpetrator_region_{{ perpetrator.id }}">Region</label>
                                             </div>
@@ -746,7 +824,13 @@
                     <div class="row pt-2 pb-3">
                         <div class="col-lg-4 col-md-4 col-sm-8 pt-3">
                             <div class="form-floating mb-3">
-                                <input type="date" class="form-control" id="date_latest_incident" name="date_latest_incident" value="{{ case.date_latest_incident|date:'Y-m-d' }}">
+                                
+                                {% if global.security_status == "decrypted" %}
+                                    <input type="date" class="form-control" id="date_latest_incident" name="date_latest_incident" value="{{ case.date_latest_incident }}">
+                                {% else %}
+                                    <input type="date" class="form-control" id="date_latest_incident" name="date_latest_incident" value="2000-01-01" disabled>
+                                {% endif %}
+                                
                                 <label for="date_latest_incident">Date of Latest Incident</label>
                             </div>
                             <input class="form-check-input" type="checkbox" value="true" id="incomplete_date" name="incomplete_date" {% if case.incomplete_date %} checked {% endif %}>
@@ -758,8 +842,10 @@
 
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
+                            
                             <div class="form-floating">
                                 <select class="form-select" id="place_of_incident" name="place_of_incident" aria-label="Floating label select example">
+                                    {% if global.security_status == "decrypted" %}
                                     <option value="house" {% if case.place_of_incident == 'house' %} selected {% endif %}>House</option>
                                     <option value="work" {% if case.place_of_incident == 'work' %} selected {% endif %}>Work</option>
                                     <option value="school" {% if case.place_of_incident == 'school' %} selected {% endif %}>School</option>
@@ -770,9 +856,13 @@
                                     <option value="brothels" {% if case.place_of_incident == 'brothels' %} selected {% endif %}>Brothels and Similar Establishments</option>
                                     <option value="others" {% if case.place_of_incident == 'others' %} selected {% endif %}>Others</option>
                                     <option value="noResponse" {% if case.place_of_incident == 'noResponse' %} selected {% endif %}>No Response</option>
+                                    {% else %}
+                                        <option value="house" {% if case.place_of_incident == 'house' %} selected {% endif %}>{{ case.place_of_incident }}</option>
+                                    {% endif %}
                                 </select>
                                 <label for="place_of_incident">Place of Incident</label>
                             </div>
+
                         </div><!--End of col-->
                         <div class="col-lg-4 col-md-4 col-sm-8">
                             <div class="form-floating mb-3">
@@ -804,23 +894,29 @@
                         <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
                             <div class="form-floating">
                                 <select class="form-select" id="region" name="region" aria-label="Floating label select example">
-                                    <option value="region-I" {% if case.region == 'region-I' %} selected {% endif %}>Region I – Ilocos Region</option>
-                                    <option value="region-II" {% if case.region == 'region-II' %} selected {% endif %}>Region II – Cagayan Valley</option>
-                                    <option value="region-III" {% if case.region == 'region-III' %} selected {% endif %}>Region III – Central Luzon</option>
-                                    <option value="region-IV" {% if case.region == 'region-IV' %} selected {% endif %}>Region IV‑A – CALABARZON</option>
-                                    <option value="mimaropa" {% if case.region == 'mimaropa' %} selected {% endif %}>MIMAROPA Region</option>
-                                    <option value="region-V" {% if case.region == 'region-V' %} selected {% endif %}>Region V – Bicol Region</option>
-                                    <option value="region-VI" {% if case.region == 'region-VI' %} selected {% endif %}>Region VI – Western Visayas</option>
-                                    <option value="region-VII" {% if case.region == 'region-VII' %} selected {% endif %}>Region VII – Central Visayas</option>
-                                    <option value="region-VIII" {% if case.region == 'region-VIII' %} selected {% endif %}>Region VIII – Eastern Visayas</option>
-                                    <option value="region-IX" {% if case.region == 'region-IX' %} selected {% endif %}>Region IX – Zamboanga Peninsula</option>
-                                    <option value="region-X" {% if case.region == 'region-X' %} selected {% endif %}>Region X – Northern Mindanao</option>
-                                    <option value="region-XI" {% if case.region == 'region-XI' %} selected {% endif %}>Region XI – Davao Region</option>
-                                    <option value="region-XII" {% if case.region == 'region-XII' %} selected {% endif %}>Region XII – SOCCSKSARGEN</option>
-                                    <option value="region-XIII" {% if case.region == 'region-XIII' %} selected {% endif %}>Region XIII – Caraga</option>
-                                    <option value="ncr" {% if case.region == 'ncr' %} selected {% endif %}>NCR – National Capital Region</option>
-                                    <option value="car" {% if case.region == 'car' %} selected {% endif %}>CAR – Cordillera Administrative Region</option>
-                                    <option value="barmm" {% if case.region == 'barmm' %} selected {% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                    
+                                    {% if global.security_status == "decrypted" %}
+                                        <option value="region-I" {% if case.region == 'region-I' %} selected {% endif %}>Region I – Ilocos Region</option>
+                                        <option value="region-II" {% if case.region == 'region-II' %} selected {% endif %}>Region II – Cagayan Valley</option>
+                                        <option value="region-III" {% if case.region == 'region-III' %} selected {% endif %}>Region III – Central Luzon</option>
+                                        <option value="region-IV" {% if case.region == 'region-IV' %} selected {% endif %}>Region IV‑A – CALABARZON</option>
+                                        <option value="mimaropa" {% if case.region == 'mimaropa' %} selected {% endif %}>MIMAROPA Region</option>
+                                        <option value="region-V" {% if case.region == 'region-V' %} selected {% endif %}>Region V – Bicol Region</option>
+                                        <option value="region-VI" {% if case.region == 'region-VI' %} selected {% endif %}>Region VI – Western Visayas</option>
+                                        <option value="region-VII" {% if case.region == 'region-VII' %} selected {% endif %}>Region VII – Central Visayas</option>
+                                        <option value="region-VIII" {% if case.region == 'region-VIII' %} selected {% endif %}>Region VIII – Eastern Visayas</option>
+                                        <option value="region-IX" {% if case.region == 'region-IX' %} selected {% endif %}>Region IX – Zamboanga Peninsula</option>
+                                        <option value="region-X" {% if case.region == 'region-X' %} selected {% endif %}>Region X – Northern Mindanao</option>
+                                        <option value="region-XI" {% if case.region == 'region-XI' %} selected {% endif %}>Region XI – Davao Region</option>
+                                        <option value="region-XII" {% if case.region == 'region-XII' %} selected {% endif %}>Region XII – SOCCSKSARGEN</option>
+                                        <option value="region-XIII" {% if case.region == 'region-XIII' %} selected {% endif %}>Region XIII – Caraga</option>
+                                        <option value="ncr" {% if case.region == 'ncr' %} selected {% endif %}>NCR – National Capital Region</option>
+                                        <option value="car" {% if case.region == 'car' %} selected {% endif %}>CAR – Cordillera Administrative Region</option>
+                                        <option value="barmm" {% if case.region == 'barmm' %} selected {% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                    {% else %}
+                                        <option value="house" {% if case.case.region == 'house' %} selected {% endif %}>{{ case.region }}</option>
+                                    {% endif %}
+                                    
                                 </select>
                                 <label for="region">Region</label>
                             </div>
@@ -960,7 +1056,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal add victim -->
 <div class="modal fade" id="addVictimModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog modal-xl">
       <div class="modal-content">
@@ -976,7 +1072,7 @@
                     <div class="row">
                         <div class="col-lg-3 mb-3">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="victim_first_name" name="victim_first_name">
+                                <input type="text" class="form-control" id="victim_first_name" name="victim_first_name" >
                                 <label for="victim_first_name">First Name</label>
                             </div>
                         </div>
@@ -1173,7 +1269,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal confrim victim delete -->
 <div class="modal fade" id="confirmVictimDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -1191,7 +1287,7 @@
         </div>
     </div>
 </div>
-<!-- Modal -->
+<!-- Modal confirm perp delete -->
 <div class="modal fade" id="confirmPerpetratorDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -1209,6 +1305,251 @@
         </div>
     </div>
 </div>
+
+<!-- Modal add perpetrator -->
+<div class="modal fade" id="addPerpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Add Perpetrator</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="add_new_perpetrator_form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <input type="hidden" name="case_id" value="{{ case.id }}">
+                <div class="h-100">
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_first_name" name="perpetrator_first_name">
+                                <label for="perpetrator_first_name">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_middle_name" name="perpetrator_middle_name">
+                                <label for="perpetrator_middle_name">Middle Name</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_last_name" name="perpetrator_last_name">
+                                <label for="perpetrator_last_name">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_suffix_name" name="perpetrator_suffix_name">
+                                    <option value="none">N/A</option>
+                                    <option value="sr">Sr</option>
+                                    <option value="jr">Jr</option>
+                                    <option value="ii">II</option>
+                                    <option value="iii">III</option>
+                                    <option value="iv">IV</option>
+                                </select>
+                                <label for="perpetrator_suffix_name">Suffix</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_identifying_marks" name="perpetrator_identifying_marks">
+                                <label for="perpetrator_identifying_marks">Identifying Marks</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_alias" name="perpetrator_alias">
+                                <label for="perpetrator_alias">Alias</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12 mb-3">
+                            <div class="form-floating">
+                                <select id="perp-relationship-victim" name="perp-relationship-victim" class="form-select">
+                                    <option value="currentSpouse">Current spouse / partner</option>
+                                    <option value="formerSpouse">Former spouse / partner</option>
+                                    <option value="currentFiance">Current fiance / dating relationship</option>
+                                    <option value="formerFiance">Former fiance / dating relationship</option>
+                                    <option value="employer">Employer / manager / supervisor</option>
+                                    <option value="agentOfEmployer">Agent of Employer</option>
+                                    <option value="teacher">Teacher / instructor / professor</option>
+                                    <option value="coach">Coach / trainer</option>
+                                    <option value="immediateFamily">Immediate family</option>
+                                    <option value="otherRelatives">Other relatives</option>
+                                    <option value="peopleOfAuthority">People of authority / service provider</option>
+                                    <option value="neighbors">Neighbors / peers / coworkers / classmates</option>
+                                    <option value="stranger" selected>Stranger</option>
+                                </select>
+                                <label for="perp-relationship-victim" class="form-label">Relationship of Perpetrator to the Victim: </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_sex" name="perpetrator_sex">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <label for="perpetrator_sex">Suffix</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_type_of_disability" name="perpetrator_type_of_disability">
+                                    <option value="none">N/A</option>
+                                    <option value="With Disability">With Disability</option>
+                                    <option value="Permanent Disability">Permanent Disability</option>
+                                    <option value="Temporary Disability">Temporary Disability</option>
+                                </select>
+                                <label for="perpetrator_type_of_disability">Type of Disability</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="perpetrator_date_of_birth" name="perpetrator_date_of_birth">
+                                <label for="perpetrator_date_of_birth">Date of Birth: </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_civil_status" name="perpetrator_civil_status">
+                                    <option value="single">Single</option>
+                                    <option value="married">Married</option>
+                                    <option value="live-in">Live-In</option>
+                                    <option value="widowed">Widowed</option>
+                                    <option value="separated">Separated</option>
+                                </select>
+                                <label for="perpetrator_civil_status">Civil Status</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-6 col-6">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="perpetrator_contact_number" name="perpetrator_contact_number">
+                                <label for="perpetrator_contact_number">Contact Number</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-6 col-6">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="perpetrator_telephone_number" name="perpetrator_telephone_number">
+                                <label for="perpetrator_telephone_number">Telephone Number</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_educational_attainment" name="perpetrator_educational_attainment">
+                                    <option value="none">None</option>
+                                    <option value="highschool">High School Level</option>
+                                    <option value="vocational">Vocational</option>
+                                    <option value="collegeLevel">College Level</option>
+                                    <option value="post-grad">Post Graduated</option>
+                                    <option value="no-response">No Response</option>
+                                    <option value="educt-others">Others</option>
+                                </select>
+                                <label for="perpetrator_educational_attainment">Highest Educational Attainment</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_occupation" name="perpetrator_occupation">
+                                <label for="perpetrator_occupation">Occupation</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_nationality" name="perpetrator_nationality">
+                                <label for="perpetrator_nationality">Nationality</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_religion" name="perpetrator_religion">
+                                    <option value="none">None</option>
+                                    <option value="roman-catholic">Roman Catholic</option>
+                                    <option value="islam">Islam</option>
+                                    <option value="protestant">Protestant</option>
+                                    <option value="iglesia-ni-kristo">Iglesia ni Kristo</option>
+                                    <option value="aglipayan">Aglipayan</option>
+                                    <option value="other-religion">Others</option>
+                                </select>
+                                <label for="perpetrator_religion">Religion</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="perpetrator_house_information" name="perpetrator_house_information">
+                                <label for="perpetrator_house_information">House Information</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="perpetrator_street" name="perpetrator_street">
+                                <label for="perpetrator_street">Street</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 col-md-4 col-sm-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="perpetrator_barangay" name="perpetrator_barangay">
+                                <label for="perpetrator_barangay">Barangay</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div><!--End of row-->
+                    <div class="row">
+                        <div class="col-lg-3 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="perpetrator_province" name="perpetrator_province">
+                                <label for="perpetrator_province">Province</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-3 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="perpetrator_city" name="perpetrator_city">
+                                <label for="perpetrator_city">City</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-6 col-12">
+                            <div class="form-floating">
+                                <select class="form-select" id="perpetrator_region" name="perpetrator_region">
+                                    <option value="region-I">Region I – Ilocos Region</option>
+                                    <option value="region-II">Region II – Cagayan Valley</option>
+                                    <option value="region-III">Region III – Central Luzon</option>
+                                    <option value="region-IV">Region IV‑A – CALABARZON</option>
+                                    <option value="mimaropa">MIMAROPA Region</option>
+                                    <option value="region-V">Region V – Bicol Region</option>
+                                    <option value="region-VI">Region VI – Western Visayas</option>
+                                    <option value="region-VII">Region VII – Central Visayas</option>
+                                    <option value="region-VIII">Region VIII – Eastern Visayas</option>
+                                    <option value="region-IX">Region IX – Zamboanga Peninsula</option>
+                                    <option value="region-X">Region X – Northern Mindanao</option>
+                                    <option value="region-XI">Region XI – Davao Region</option>
+                                    <option value="region-XII">Region XII – SOCCSKSARGEN</option>
+                                    <option value="region-XIII">Region XIII – Caraga</option>
+                                    <option value="ncr">NCR – National Capital Region</option>
+                                    <option value="car">CAR – Cordillera Administrative Region</option>
+                                    <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                </select>
+                                <label for="perpetrator_region">Region</label>
+                            </div>
+                        </div><!--End of col-->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary add-btn-perpetrator" type="submit">Add</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
 {% endblock content %}
 {% block scripts %}
 <script>
@@ -1223,8 +1564,90 @@
         $('#add_new_victim_form').submit(function(event) {
             event.preventDefault(); // Prevent default form submission
 
+            // Disable the submit button to prevent multiple submissions
+            $('#add-new-victim-btn').prop('disabled', true);
+
             $.ajax({
                 url: '{% url "add_new_victim" %}',
+                method: 'POST',
+                data: $(this).serialize(), // Serialize form data
+                success: function(response) {
+                    if (response.success) {
+                        // Display success message and reload page after 2 seconds
+                        $('#successToast .toast-body').text(response.message);
+                        $('#successToast').toast('show');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        // Display error message
+                        $('#errorToast .toast-body').text(response.message);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                },
+                complete: function() {
+                    // Re-enable the submit button after the AJAX request is complete
+                    $('#add-new-victim-btn').prop('disabled', false);
+                }
+            });
+        });
+
+        // Attach the form submission function to the click event of the submit button
+        $('#add-new-victim-btn').click(function() {
+            $('#add_new_victim_form').submit(); // Trigger form submission when the button is clicked
+        });
+
+        // Function to handle the confirmation of victim deletion
+        $('.btn-confirm-delete-victim').click(function() {
+            var victimId = $(this).data('victim-id');
+            $('#confirmVictimDelete').modal('show'); // Show the confirmation modal
+            // Set the victimId as data attribute of the confirmation button
+            $('#confirmDeleteBtn').data('victim-id', victimId);
+        });
+
+        // Function to handle the actual deletion after confirmation
+        $('#confirmDeleteBtn').click(function() {
+            var victimId = $(this).data('victim-id');
+            
+            // Send AJAX request to delete the victim
+            $.ajax({
+                url: '{% url "delete_victim" %}',
+                method: 'POST',
+                data: {
+                    victim_id: victimId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Display success message
+                        $('#successToast .toast-body').text(response.message);
+                        $('#successToast').toast('show');
+                        // Reload the page after 2 seconds
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        // Display error message
+                        $('#errorToast .toast-body').text(response.message);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    console.error(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+
+
+        // Function to handle form submission
+        $('#add_new_perpetrator_form').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            $.ajax({
+                url: '{% url "add_new_perpetrator" %}',
                 method: 'POST',
                 data: $(this).serialize(), // Serialize form data
                 success: function(response) {
@@ -1248,13 +1671,13 @@
         });
 
         // Attach the form submission function to the click event of the submit button
-        $('#add-new-victim-btn').click(function() {
-            $('#add_new_victim_form').submit(); // Trigger form submission when the button is clicked
+        $('#add-new-perpetrator-btn').click(function() {
+            $('#add_new_perpetrator_form').submit(); // Trigger form submission when the button is clicked
         });
 
         $('#confirmPerpetratorBtn').click(function() {
             var perpetratorId = $('.btn-delete-perpetrator').data('perpetrator-id');
-            
+
             $.ajax({
                 url: '{% url "delete_perpetrator" %}',
                 method: 'POST',

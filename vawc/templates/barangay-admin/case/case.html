@@ -42,7 +42,7 @@
             <select name="status" id="status" class="form-select me-md-2">
                 <option value="">All Status</option>
                 <option value="Active">Active</option>
-                <option value="Closed">Closed</option>
+                <option value="Close">Close</option>
             </select>
         </div>
     </div>
@@ -63,9 +63,21 @@
                 {% for case in cases %}
                 <tr class="border-bottom border-2">
                     <td class="text-center">{{ case.case_number }}</td>
-                    <td>{{ case.get_type_of_case_display }}</td>
-                    <td>{{ case.get_service_information_display }}</td>
-                    <td>{{ case.get_status_display }}</td>
+                    <td>
+                        {% if case.type_of_case == 'Impacted' %}
+                            Impacted Victim
+                        {% elif case.type_of_case == 'Behalf' %}
+                            Behalf of Impacted Victim
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if case.service_information == 'crisis' %}
+                            Crisis Intervention Including Rescue
+                        {% elif case.service_information == 'issuance' %}
+                            Issuance / Enforcement of Barangay Protection Order
+                        {% endif %}
+                    </td>
+                    <td>{{ case.status }}</td>
                     <td>{{ case.date_added|date:"m/d/Y" }}</td>
                     <td class="text-center"><a class="btn btn-outline-success" href="{% url 'barangay case view' case_id=case.id %}" role="button">View</a></td>
                 </tr>

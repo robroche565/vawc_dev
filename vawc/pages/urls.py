@@ -33,7 +33,8 @@ urlpatterns = [
 
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
     path('add_new_victim_data/', views.add_new_victim, name='add_new_victim'),
-    path('delete_victim_data/', views.delete_parent, name='delete_victim'),
+    path('delete_victim_data/', views.delete_victim, name='delete_victim'),
+    path('add_new_perpetrator_data/', views.add_new_perpetrator, name='add_new_perpetrator'),
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
     path('delete_perpetrator_data/', views.delete_perpetrator, name='delete_perpetrator'),
     path('process_incident_form/', views.process_incident_form, name='process_incident_form'),
@@ -45,7 +46,7 @@ urlpatterns = [
     path('check_parent_count/', views.check_parent_count, name='check_parent_count'),
     path('delete_parent_data/', views.delete_parent, name='delete_parent'),
 
-
+    path('tite/', views.tite, name='tite')
 ]
 
 # Serve media files during development
