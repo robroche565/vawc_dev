@@ -10,6 +10,7 @@ urlpatterns = [
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('resend-otp/', views.resend_otp, name='resend_otp'),
     path('logout/', views.logout_view, name='logout'),
+    path('track_case/', views.track_case_view, name='track_case'),
 
     #anonymouse side
     path('report_violence/', views.report_violence_view, name='report violence'),
@@ -42,6 +43,7 @@ urlpatterns = [
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
     path('delete_perpetrator_data/', views.delete_perpetrator, name='delete_perpetrator'),
     path('process_incident_form/', views.process_incident_form, name='process_incident_form'),
+    path('save_contact_person_data/<int:contact_person_id>/', views.save_contact_person_data, name='save_contact_person_data'),
     path('delete_case/', views.delete_case, name='delete_case'),
 
 
@@ -50,6 +52,7 @@ urlpatterns = [
     path('add_new_parent_data/', views.add_new_parent_form, name='add_new_parent_form'),
     path('check_parent_count/', views.check_parent_count, name='check_parent_count'),
     path('delete_parent_data/', views.delete_parent, name='delete_parent'),
+    
     
     path('admin-barangay-vawc/parent_perpetrator/<int:case_id>/<int:perp_id>/', views.add_parent_perp_view, name='add_parent_perp'),
     path('add_new_parent_perp_data/', views.add_new_parent_perp_form, name='add_new_parent_perp_form'),

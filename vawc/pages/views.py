@@ -36,6 +36,9 @@ def home_view (request):
 def login_view (request):
     return render(request, 'login/login.html')
 
+def track_case_view (request):
+    return render(request, 'landing/track_case.html')
+
 @login_required
 def logout_view(request):
     logout(request)
@@ -396,12 +399,12 @@ def view_case(request, case_id):
         victims = Victim.objects.filter(case_victim=case)
         perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
         status_history = Status_History.objects.filter(case_status_history=case)
-        
+
         # Retrieve only the latest status history entry
         latest_status_history = status_history.order_by('-status_date_added').first()
-        
+
         print(request.session['security_status'])
-        
+
         if request.session['security_status'] == "decrypted":
             case.street = decrypt_data(case.street)
             case.barangay = decrypt_data(case.barangay)
@@ -411,7 +414,7 @@ def view_case(request, case_id):
             case.region = decrypt_data(case.region)
             case.description_of_incident = decrypt_data(case.description_of_incident)
             case.city = decrypt_data(case.city)
-            
+
             # for victim in victims:
             #     victim.description
             for victim in victims:
@@ -431,7 +434,7 @@ def view_case(request, case_id):
                 victim.province = decrypt_data(victim.province)
                 victim.city = decrypt_data(victim.city)
                 victim.region = decrypt_data(victim.region)
-                
+
             for perpetrator in perpetrators:
                 perpetrator.relationship_to_victim = decrypt_data(perpetrator.relationship_to_victim)
                 perpetrator.first_name = decrypt_data(perpetrator.first_name)
@@ -441,6 +444,9 @@ def view_case(request, case_id):
                 perpetrator.identifying_marks = decrypt_data(perpetrator.identifying_marks)
                 perpetrator.alias = decrypt_data(perpetrator.alias)
                 perpetrator.sex = decrypt_data(perpetrator.sex)
+                #perpetrator.contact_number = decrypt_data(perpetrator.contact_number)
+                #perpetrator.telephone_number = decrypt_data(perpetrator.telephone_number)
+                print(perpetrator.contact_number)
                 perpetrator.date_of_birth = decrypt_data(perpetrator.date_of_birth)
                 perpetrator.nationality = decrypt_data(perpetrator.nationality)
                 perpetrator.house_information = decrypt_data(perpetrator.house_information)
@@ -448,7 +454,36 @@ def view_case(request, case_id):
                 perpetrator.barangay = decrypt_data(perpetrator.barangay)
                 perpetrator.province = decrypt_data(perpetrator.province)
                 perpetrator.region = decrypt_data(perpetrator.region)
-        
+            
+            print("contact")
+            for contact_person in contact_persons:
+                contact_person.first_name = decrypt_data(contact_person.first_name)
+                contact_person.middle_name = decrypt_data(contact_person.middle_name)
+                contact_person.last_name = decrypt_data(contact_person.last_name)
+                contact_person.barangay = decrypt_data(contact_person.barangay)
+                contact_person.city = decrypt_data(contact_person.city)
+                contact_person.province = decrypt_data(contact_person.province)
+                contact_person.telephone_number = decrypt_data(contact_person.telephone_number)
+
+                # contact num
+                # region
+                # street
+                # relationship
+                # suffix
+
+            # for contact_person in contact_persons:
+            #     contact_person.first_name = decrypt_data(contact_person.first_name)
+            #     contact_person.middle_name = decrypt_data(contact_person.middle_name)
+            #     contact_person.last_name = decrypt_data(contact_person.last_name)
+            #     contact_person.suffix = decrypt_data(contact_person.suffix)
+            #     contact_person.relationship= decrypt_data(contact_person.relationship)
+            #     contact_person.contact_number = decrypt_data(contact_person.contact_number)
+            #     contact_person.telephone_number = decrypt_data(contact_person.telephone_number)
+            #     contact_person.street = decrypt_data(contact_person.street)
+            #     contact_person.city = decrypt_data(contact_person.city)
+            #     contact_person.barangay = decrypt_data(contact_person.barangay)
+            #     contact_person.province = decrypt_data(contact_person.province)
+            #     contact_person.region = decrypt_data(contact_person.region)
 
         #print(decrypt_data(case.street))
         # if isinstance(encrypted_data_from_db, bytes):
@@ -645,7 +680,7 @@ def add_new_perpetrator(request):
 def save_perpetrator_data(request, perpetrator_id):
     try:
         perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
-        
+
         # Update perpetrator data
         perpetrator.first_name = request.POST.get('perpetrator_first_name_' + str(perpetrator_id))
         perpetrator.middle_name = request.POST.get('perpetrator_middle_name_' + str(perpetrator_id))
@@ -692,6 +727,34 @@ def delete_case(request):
     case = get_object_or_404(Case, id=case_id)
     case.delete()
     return JsonResponse({'success': True, 'message': 'Case Deleted successfully'})
+
+@require_POST
+def save_contact_person_data(request, contact_person_id):
+    try:
+        contact_person = get_object_or_404(Contact_Person, id=contact_person_id)
+
+        # Update contact_person data
+        contact_person.first_name = encrypt_data(request.POST.get('contact_person_first_name_' + str(contact_person_id))).decode('utf-8')
+        contact_person.middle_name = encrypt_data(request.POST.get('contact_person_middle_name_' + str(contact_person_id))).decode('utf-8')
+        contact_person.last_name = encrypt_data(request.POST.get('contact_person_last_name_' + str(contact_person_id))).decode('utf-8')
+        # contact_person.suffix = request.POST.get('contact_person_suffix_name_' + str(contact_person_id))
+        # contact_person.relationship = request.POST.get('contact_person-relationship_' + str(contact_person_id))
+        # contact_person.contact_number = request.POST.get('contact_person_contact-number__' + str(contact_person_id))
+        contact_person.telephone_number = encrypt_data(request.POST.get('contact_person_contact-tel_' + str(contact_person_id))).decode('utf-8')
+        # contact_person.street = request.POST.get('contact_person_street_' + str(contact_person_id))
+        contact_person.barangay = encrypt_data(request.POST.get('contact_person_barangay_' + str(contact_person_id))).decode('utf-8')
+        contact_person.province = encrypt_data(request.POST.get('contact_person_province_' + str(contact_person_id))).decode('utf-8')
+        contact_person.city = encrypt_data(request.POST.get('contact_person_city_' + str(contact_person_id))).decode('utf-8')
+        # contact_person.region = request.POST.get('contact_person_region_' + str(contact_person_id))
+
+        # Save contact_person data
+        contact_person.save()
+
+        return JsonResponse({'success': True, 'message': 'Contact Person data saved successfully'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
 
 #parent victim data crud ----------------------------------------------------------------
 

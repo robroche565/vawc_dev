@@ -1,0 +1,39 @@
+{% extends "../base/base.html" %}
+{% block title %}Track Case{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container pt-5 pb-5">
+    <div class="card">
+        <div class="card-body">
+            <a href="{% url 'home' %}"><button type="button" class="btn-close d-flex ms-auto" aria-label="Close"></button></a>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-8 text-center">
+                    <img src= "{% static '/img/track_case.png' %}" class="img-fluid" alt="image" style="width:450px;">
+                </div>
+            <div class="col-lg-6 col-md-6 col-sm-8 pt-5">
+                <h2 class="text-center pt-3 pb-3">Track Case</h2>
+                    <form id="loginForm" method="post">
+                        {% csrf_token %}
+                        <div class="row pb-2">
+                            <div class="col-lg-12 col-md-12 col-sm-8 pt-2">
+                                <label for="barangay-email" class="form-label">Enter your Email that was Assocaited with the Case: </label>
+                                <input type="email" class="form-control" id="barangay-email" name="barangay-email" aria-describedby="barangay-emailFeedback">
+                                <div id="barangay-emailFeedback" class="invalid-feedback">
+                                    Account not found.
+                                </div>
+                                <!--invalid feedback-->
+                            </div>
+                        </div><!--First row-->
+                        <div class="col-12 col-md-12 col-sm-8 pt-3 pt-2">
+                            <button id="submitButton" class="btn btn-primary w-100" type="submit">Track Case</button>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+{% endblock scripts %}
