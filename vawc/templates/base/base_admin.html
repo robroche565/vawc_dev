@@ -18,18 +18,17 @@
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
     data-sidebar-position="fixed" data-header-position="fixed">
     {% include 'include/admin/admin-sidenav.html' %}
-    <div class="body-wrapper">
-      {% include 'include/admin/admin-header.html' %}
-      {% block content %}{% endblock %}
-    </div>
+      <div class="body-wrapper">
+        {% include 'include/admin/admin-header.html' %}
+        {% block content %}{% endblock %}
+      </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
+   
     <!-- Core theme JS-->
     <script src="{% static 'js/sidebarmenu.js' %}"></script>
     <script src="{% static 'js/app.min.js' %}"></script>

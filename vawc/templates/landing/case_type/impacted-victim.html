@@ -24,6 +24,7 @@
                 <input type="hidden" name="type_of_case" value="Impacted">
                 <input type="hidden" id="victim_count" name="victim_count" value="1">
                 <input type="hidden" id="perpetrator_count" name="perpetrator_count" value="1">
+                <input type="hidden" id="email-confirmed" name="email-confirmed">
                 <!--single form panel-->
                 <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active" data-animation="slideHorz">
                     <div class="multisteps-form__content">
@@ -32,7 +33,8 @@
                             <div id="victim-form_0">
                                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-1 border-bottom border-3"></div>
                                 <div class="row"><!--First Row-->
-                                    <h5 class="pt-3"><strong>Name:</strong></h5>
+                                    <h5 id="victim_counter">Victim 1 <span></span></h5>
+                                    <h5 class="pt-1"><strong>Name:</strong></h5>
 
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--Firstname-->
                                     <label for="victim-firstname_0" class="form-label">First name: </label>
@@ -52,7 +54,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--suffix-->
                                     <label for="victim-Suffix_0" class="form-label">Suffix: </label>
                                     <select id="victim-Suffix_0" name="victim-Suffix_0" class="form-select">
-                                        <option value="not-available">N/A</option>
+                                        <option value="none">N/A</option>
                                         <option value="sr">Sr</option>
                                         <option value="jr">Jr</option>
                                         <option value="ii">II</option>
@@ -66,14 +68,14 @@
                                     <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
                                     <label for="victim-sex_0" class="form-label">Sex: </label>
                                         <select id="victim-sex_0" name="victim-sex_0" class="form-select">
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                         </select>
                                     </div>
 
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                        <label for="victim-age_0" name="victim-age_0" class="form-label">Age: </label>
-                                        <input type="number" class="form-control" id="victim-age_0" value="0">
+                                    <div class="col-lg-4 col-md-4 col-sm-8 mt-2">
+                                        <label for="victim-date-of-birth_0">Date of Birth: </label>
+                                        <input type="date" class="form-control" id="victim-date-of-birth_0" name="victim-date-of-birth_0" value="2024-03-01">
                                     </div>
 
                                     <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
@@ -114,7 +116,7 @@
 
                                     <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
                                         <label for="victim-street_0" class="form-label">Street: </label>
-                                        <input type="text" class="form-control" id="victim-street_0" name="victim-street_0">
+                                        <input type="text" class="form-control" id="victim-street_0" name="victim-street_0" value="test street">
                                     </div>
 
                                     <div class="col-lg-4 col-md-4 col-sm-8">
@@ -159,10 +161,10 @@
                         </div>
                         <div class="row pt-3">
                             <div class="col">
-                                <button class="btn btn-primary w-100" id="add-victim-form"><i class='bx bx-plus-circle'></i></button>
+                                <button class="btn btn-primary w-100" id="add-victim-form"><i class='bx bx-plus-circle'></i> Add Victim</button>
                             </div>
                             <div class="col">
-                                <button class="btn btn-primary w-100" id="delete-victim-form"><i class='bx bx-minus-circle'></i></button>
+                                <button class="btn btn-primary w-100" id="delete-victim-form"><i class='bx bx-minus-circle'></i> Delete Victim</button>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end mt-4">
@@ -177,6 +179,8 @@
                         <div class="container-fluid scroll overflow-auto" style="max-height: 500px;">
                             <div id="perpetrator-form_0">
                                 <div class="row"><!--First Row-->
+                                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-1 border-bottom border-3"></div>
+                                    <h5 id="perpetrator_counter">Perpetrator 1<span></span></h5>
                                     <h5 class="pt-3"><strong>Name:</strong></h5>
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--Firstname-->
                                         <label for="perp-firstname_0" class="form-label">First name: </label>
@@ -193,7 +197,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--suffix-->
                                         <label for="perp-Suffix_0" class="form-label">Suffix: </label>
                                         <select id="perp-Suffix_0" name="perp-Suffix_0" class="form-select">
-                                            <option value="not-available">N/A</option>
+                                            <option value="none">N/A</option>
                                             <option value="sr">Sr</option>
                                             <option value="jr">Jr</option>
                                             <option value="ii">II</option>
@@ -211,14 +215,14 @@
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2">
                                         <label for="perp-sex_0" class="form-label">Sex: </label>
                                         <select id="perp-sex_0" name="perp-sex_0" class="form-select">
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
                                         </select>
                                     </div><!--End of col-->
     
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2">
-                                        <label for="perp-age_0" class="form-label">Age: </label>
-                                        <input type="number" class="form-control" id="perp-age_0" name="perp-age_0" value="0">
+                                        <label for="perp-date-of-birth_0" class="form-label">Date of Birth: </label>
+                                        <input type="date" class="form-control" id="perp-date-of-birth_0" name="perp-date-of-birth_0" value="2024-03-01">
                                     </div>
     
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2">
@@ -240,7 +244,7 @@
                                     </div><!--End of col-->
                                     <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
                                         <label for="perp-street_0" class="form-label">Street: </label>
-                                        <input type="text" class="form-control" id="perp-street_0" name="perp-street_0">
+                                        <input type="text" class="form-control" id="perp-street_0" name="perp-street_0" value="test street">
                                     </div><!--end of col-->
     
                                     <div class="col-lg-4 col-md-4 col-sm-8">
@@ -305,10 +309,10 @@
                         
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-primary w-100" id="add-perpetrator-form" role="button"><i class='bx bx-plus-circle'></i></button>
+                                <button class="btn btn-primary w-100" id="add-perpetrator-form" role="button"><i class='bx bx-plus-circle'></i> Add Perpetrator</button>
                             </div>
                             <div class="col">
-                                <button class="btn btn-primary w-100" id="delete-perpetrator-form" role="button"><i class='bx bx-minus-circle'></i></button>
+                                <button class="btn btn-primary w-100" id="delete-perpetrator-form" role="button"><i class='bx bx-minus-circle'></i> Delete Perpetrator</button>
                             </div>
                         </div>
                         <div class="d-flex justify-content-between mt-4">
@@ -327,7 +331,7 @@
                                     <label for="date-latest-incident" class="form-label"><strong>Date of Latest Incident: </strong></label>
                                 </div><!--end of col-->
                                 <div class="col-lg-4 col-md-4 col-sm-8">
-                                    <input type="date" class="form-control" name="date-latest-incident" id="date-latest-incident" value="">
+                                    <input type="date" class="form-control" name="date-latest-incident" id="date-latest-incident" value="2024-03-01">
                                 </div><!--emd of col-->
                                 <div class="col-lg-4 col-md-4 col-sm-8 pt-2">
                                     <div class="form-check">
@@ -361,7 +365,7 @@
 
                                 <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
                                     <label for="incident-street" class="form-label">Street: </label>
-                                    <input type="text" class="form-control" id="incident-street" name="incident-street">
+                                    <input type="text" class="form-control" id="incident-street" name="incident-street" value="test street">
                                 </div><!--end of col-->
                                 <div class="col-lg-4 col-md-4 col-sm-8">
                                     <label for="incident-barangay" class="form-label">Barangay: </label>
@@ -440,7 +444,7 @@
 
                         <div class="d-flex justify-content-between mt-4">
                             <button class="btn btn-outline-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                            <button class="btn btn-primary ml-auto" type="submit" title="Send">Submit</button>
+                            <button class="btn btn-primary ml-auto btn-form-submit" type="submit" title="Send" id="submitBtn">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -449,8 +453,8 @@
       </div>
     </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- Modal Success -->
+<div class="modal fade email-form" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header">
@@ -461,11 +465,78 @@
             </svg>
             </div>
             <h3 class="text-center">Success</h3>
-            <p class="py-1 fs-4 text-center">Thank you for reporting! Your report will help us maintain a safe and enjoyable environment for everyone. We'll review the issue promptly. If necessary, we'll take appropriate action. Your contribution is appreciate!</p>
+            <p class="py-1 fs-4 text-center">Thank you for reporting! Your report will help us maintain a safe and enjoyable environment for everyone. We'll review the issue promptly. If necessary, we'll take appropriate action. Your contribution is appreciate! You can check the Progress of Your Case in the Check Status.</p>
         </div>
         <div class="modal-footer">
             <a type="button" class="btn btn-primary" href="{% url 'home' %}">Back to HomePage</a>
         </div>
+        </div>
+    </div>
+</div>
+<!-- Email Modal -->
+<div class="modal fade" id="sendEmail" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Email Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="emailConfirmationForm">
+                <div class="modal-body">
+                    <h3 class="text-center">Before We Can Process Your Case.</h3>
+                    <p class="py-1 fs-4 text-center">Please Enter Your Email First</p>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email-confirm" name="email-confirm" placeholder="name@example.com">
+                        <label for="floatingInput">Email address</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="send_email_confirmation">Confirm Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- OTP Modal -->
+<div class="modal fade" id="otpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="otpModalToggleLabel">One-Time Password Verification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="text-center">Please enter the one-time password to verify your account</h6>
+                <div class="text-center mt-3">
+                    <span>A code has been sent to</span>
+                    <small id="hidden_email">*****gmail.com</small>
+                </div>
+                <form id="otpForm" method="post">
+                    {% csrf_token %}
+                    <div id="otp" class="inputs d-flex justify-content-center mt-4">
+                        <input class="m-2 text-center form-control rounded" type="text" name="otp_1" maxlength="1" />
+                        <input class="m-2 text-center form-control rounded" type="text" name="otp_2" maxlength="1" />
+                        <input class="m-2 text-center form-control rounded" type="text" name="otp_3" maxlength="1" />
+                        <input class="m-2 text-center form-control rounded" type="text" name="otp_4" maxlength="1" />
+                        <input class="m-2 text-center form-control rounded" type="text" name="otp_5" maxlength="1" />
+                        <input class="m-2 text-center form-control rounded" type="text" name="otp_6" maxlength="1" />
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary px-4" type="submit">Validate</button>
+                    </div>
+                    <div class="text-center mt-3 text-danger" style="display: none;">
+                        <i class='bx bx-error-circle'></i>
+                        <span id="otpErrorMessage"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="content d-flex justify-content-center align-items-center">
+                    <span id="resendText">Didn't get the code</span>
+                    <a href="#" id="resendButton" class="text-decoration-none ms-3">Resend</a>
+                    <span id="resendTimer" class="text-decoration-none ms-3"></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -498,26 +569,70 @@
         toast.show();
     }
     $(document).ready(function() {
-        // Intercept the form submission
+
+        let goForSubmission = false
+
         $('#impact-victim-form').submit(function(e) {
             e.preventDefault(); // Prevent the default form submission
-    
-            // Perform an AJAX request
-            var formData = new FormData(this); // Create FormData object from the form
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'), // Get the form's action attribute
-                data: formData, // Use FormData object for file uploads
-                contentType: false, // Prevent jQuery from automatically setting contentType
-                processData: false, // Prevent jQuery from automatically processing data
-                dataType: 'json', // Expect JSON response
-                success: function(response) {
-                    if (response.success) {
-                        $('#staticBackdrop').modal('show'); // Show the success modal
-                    } else {
+
+            if (!goForSubmission) {
+                // Show send email modal
+                $('#sendEmail').modal('show');
+            } else {
+                // Submitting form to database
+
+                var formData = new FormData(this); // Create FormData object from the form
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'), // Get the form's action attribute
+                    data: formData, // Use FormData object for file uploads
+                    contentType: false, // Prevent jQuery from automatically setting contentType
+                    processData: false, // Prevent jQuery from automatically processing data
+                    dataType: 'json', // Expect JSON response
+                    success: function(response) {
+                        if (response.success) {
+                            $('#staticBackdrop').modal('show'); // Show the success modal
+                        } else {
+                            // Show error toast if response indicates failure
+                            showToast('error', 'An error occurred. Please try again.');
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('Error:', errorThrown);
                         // Show error toast if response indicates failure
                         showToast('error', 'An error occurred. Please try again.');
                     }
+                });
+            }
+
+        });
+
+        // email confirmation
+        $('#emailConfirmationForm').submit(function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Check if the input is email address
+            var emailValue = $('#email-confirm').val();
+
+            // For example, you can log it to the console
+            console.log("Email entered: " + emailValue);
+
+            $.ajax({
+                url: '{% url 'email_confirm'  %}', // Modify the URL to point to your Django view endpoint
+                type: 'POST',
+                data: { emailConfirm: emailValue }, // Pass the email value in the data object
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                },
+                success: function(response) {
+                    // Handle success response
+                    console.log(response); // Log the response to the console
+
+                    // Hide the email modal
+                    $('#sendEmail').modal('hide');
+
+                    // Show the OTP modal
+                    $('#otpModal').modal('show');
                 },
                 error: function(xhr, textStatus, errorThrown) {
                     console.error('Error:', errorThrown);
@@ -527,9 +642,96 @@
             });
         });
 
+        // otp checking
+        $('#otpForm').submit(function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "verify_otp_email" %}',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        $('#successMessage').text(response.message);
+                        // hide otp modal
+                        $('#otpModal').modal('hide');
+                        var emailValue = $('#email-confirm').val();
+                        console.log("Email entered(OTP): " + emailValue);
+                        $('#email-confirmed').val(emailValue);
+                        goForSubmission = true
+
+                        // to trigger button of main form
+                        document.querySelector(".btn-form-submit").click()
+                        // Log success message to the console
+                        console.log('OTP verification successful.');
+                    } else {
+                        $('#otpErrorMessage').text(response.message);
+                        if (response.message === 'OTP has expired.' || response.message === 'Incorrect OTP.') {
+                            $('.text-danger').show(); // Show the error message div
+                        }
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    $('#otpErrorMessage').text('Error occurred. Please try again.');
+                    // Log error message to the console
+                    console.error('Error occurred during OTP verification:', errmsg);
+                }
+            });
+        });
+
+
         // Prevent form submission when clicking the buttons inside the form
         $('#add-victim-form, #delete-victim-form, #add-perpetrator-form, #delete-perpetrator-form').click(function(e) {
             e.preventDefault(); // Prevent the default action
+        });
+
+        // Function to update the countdown timer
+        function updateTimer(seconds) {
+            $('#resendTimer').text(`Resend ${seconds}s`);
+        }
+
+        // Function to handle the resend action
+        function resendOTP() {
+            // Disable the resend button
+            $('#resendButton').prop('disabled', true);
+            // Hide the resend button
+            $('#resendButton').hide();
+
+            // Set the initial timer value
+            let secondsRemaining = 30;
+            updateTimer(secondsRemaining);
+
+            // Start the countdown
+            const timerInterval = setInterval(() => {
+                secondsRemaining--;
+                updateTimer(secondsRemaining);
+                if (secondsRemaining === 0) {
+                    // Enable the resend button and clear the timer
+                    clearInterval(timerInterval);
+                    $('#resendButton').prop('disabled', false);
+                    $('#resendButton').show(); // Show the resend button
+                    $('#resendTimer').text('');
+                }
+            }, 1000);
+
+            // Send AJAX request to resend OTP
+            $.ajax({
+                type: 'POST',
+                url: '{% url "resend_otp_email" %}',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }, // Include CSRF token in the headers
+                success: function(response) {
+                    // Handle success response if needed
+                },
+                error: function(xhr, errmsg, err) {
+                    console.error('Error occurred during OTP resend:', errmsg);
+                }
+            });
+        }
+
+        // Click event handler for the resend button
+        $('#resendButton').click(function(event) {
+            event.preventDefault();
+            resendOTP();
         });
 
         // Get the current date
@@ -541,5 +743,6 @@
         // Set the value of the input field to the current date
         $('#date-latest-incident').val(formattedDate);
     });
+
 </script>
 {% endblock scripts %}
