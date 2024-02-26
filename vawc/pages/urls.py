@@ -16,6 +16,9 @@ urlpatterns = [
     path('impact-victim-survivor/', views.impact_victim_view, name='impact victim'),
     path('behalf-victim-survivor/', views.behalf_victim_view, name='behalf impact victim'),
     path('add-case/', views.add_case, name='add_case'),
+    path('email-confrim/', views.email_confirm, name='email_confirm'),
+    path('verify-otp-email/', views.verify_otp_email, name='verify_otp_email'),
+    path('resend-otp-email/', views.resend_otp_email, name='resend_otp_email'),
 
     #super admin side
     path('admin-vawc/dashboard/', views.admin_dashboard_view, name='admin dashboard'),
@@ -28,7 +31,7 @@ urlpatterns = [
     path('add_status/<int:case_id>/', views.add_status, name='add_status'),
     path('edit_status/<int:status_id>/', views.edit_status, name='edit_status'),
     path('delete_status/<int:status_id>/', views.delete_status, name='delete_status'),
-    
+
     path('admin-barangay-vawc/case/', views.barangay_case_view, name='barangay case'),
     path('admin-barangay-vawc/view-case/<int:case_id>/', views.view_case, name='barangay case view'),
 
@@ -39,7 +42,8 @@ urlpatterns = [
     path('save_perpetrator_data/<int:perpetrator_id>/', views.save_perpetrator_data, name='save_perpetrator_data'),
     path('delete_perpetrator_data/', views.delete_perpetrator, name='delete_perpetrator'),
     path('process_incident_form/', views.process_incident_form, name='process_incident_form'),
-    
+    path('delete_case/', views.delete_case, name='delete_case'),
+
 
     path('admin-barangay-vawc/parent_victim/<int:case_id>/<int:victim_id>/', views.add_parent_view, name='add_parent'),
     path('save_parent_data/<int:parent_id>/', views.save_parent_data, name='save_parent_data'),

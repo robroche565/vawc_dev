@@ -13,7 +13,10 @@
     <div class="d-flex justify-content-between">
         <h2>Case Number: {{ case.case_number }} <span class="h5">(Date Added:{{ case.date_added }})</span>  </h2>
         <p>{{global.security_status}}</p>
-        <button class="btn btn-danger"><i class='bx bx-trash me-2' ></i>Delete Case</button>
+        <button class="btn btn-danger btn-confirm-delete-case" data-case-id="{{ case.id }}" data-bs-toggle="modal" data-bs-target="#confirmDeletCase">
+            <i class='bx bx-trash me-2'></i>
+            Delete Case
+        </button>
     </div>
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -76,7 +79,7 @@
                             {% empty %}
                             <tr class="border-bottom border-2">
                                 <td class="text-center"></td>
-                                <td class="text-center">No Status Yet.</td>
+                                <td class="text-start">No Status Yet.</td>
                                 <td class="text-center"></td>
                             </tr>
                             {% endfor %}
@@ -120,6 +123,13 @@
                                 {% elif case.type_of_case == 'Behalf' %}
                                     <h5 class="lead">Reporting on Behalf of Impacted Victim</h5>
                                 {% endif %}
+                            </div><!--end of col-->
+                        </div><!--end of row-->
+
+                        <div class="row">
+                            <div class="d-flex align-items-center">
+                                <h5>Email:</h5>
+                                <h5 class="lead"> {{ case.email }}</h5>
                             </div><!--end of col-->
                         </div><!--end of row-->
 
@@ -174,6 +184,7 @@
                     </button>
                 </div>
                 <div class="tab-content flex-grow-1" id="v-pills-tabContent">
+                {% if victims %}
                     {% for victim in victims %}
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-victim-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-victim-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
@@ -424,6 +435,15 @@
                         </div>
                     </div>
                     {% endfor %}
+                {% else %}
+                <div class="tab-pane fade show active h-100" id="v-pills-no-victim" role="tabpanel" aria-labelledby="v-pills-no-victim-tab" tabindex="0">
+                    <div class="card border border-dark border-1 border-opacity-10 shadow-lg">
+                        <div class="card-body text-center">
+                          No Victim Information Yet. 
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 </div>
             </div>
         </div> <!--end of div of victim tab-->
@@ -451,6 +471,7 @@
                     </button>
                 </div>
                 <div class="tab-content flex-grow-1" id="v-pills-tabContent">
+                {% if perpetrators %}
                     {% for perpetrator in perpetrators %}
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-perpetrator-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-perpetrator-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
@@ -737,6 +758,15 @@
                         </div>
                     </div>
                     {% endfor %}
+                {% else %}
+                    <div class="tab-pane fade show active h-100" id="v-pills-no-perp" role="tabpanel" aria-labelledby="v-pills-no-parent-tab" tabindex="0">
+                        <div class="card border border-dark border-1 border-opacity-10 shadow-lg">
+                            <div class="card-body text-center">
+                              No Perpetrator Information Yet. 
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
                 </div>
             </div>
         </div>
@@ -1120,7 +1150,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="confirmDeletCase" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete Case</h1>
@@ -1131,7 +1161,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Yes</button>
+          <button type="button" class="btn btn-primary" id="confirmDeletCaseBtn">Yes</button>
         </div>
       </div>
     </div>
@@ -1805,10 +1835,49 @@
                 });
             });
         });
+        // Function to handle the confirmation of case deletion
+        $('.btn-confirm-delete-case').click(function() {
+            var caseId = $(this).data('case-id');
+            $('#confirmDeletCase').modal('show'); // Show the confirmation modal
+            // Set the caseId as data attribute of the confirmation button
+            console.log(caseId)
+            $('#confirmDeletCaseBtn').data('case-id', caseId);
+        });
 
-
+        $('#confirmDeletCaseBtn').click(function() {
+            var caseId = $(this).data('case-id');
+        
+            $.ajax({
+                method: 'POST',
+                url: '{% url "delete_case" %}',
+                data: { case_id: caseId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Display success message
+                        $('#successToast .toast-body').text(response.message);
+                        $('#successToast').toast('show');
+                        // Reload the page after 2 seconds
+                        setTimeout(function() {
+                            window.location.href = '{% url "barangay case" %}';
+                        }, 2000);
+                    } else {
+                        // Display error message
+                        $('#errorToast .toast-body').text(response.message);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error('Error deleting case:', error);
+                }
+            });
+        });
     });
+
     document.addEventListener("DOMContentLoaded", function() {
+        
         // Get today's date in the format YYYY-MM-DD
         var today = new Date().toISOString().split('T')[0];
 

@@ -143,7 +143,7 @@ def verify_otp(request):
                         # Print a success message
                         print("User logged in successfully")
                         print(account_type)
-                        
+
                         request.session['security_status'] = "encrypted"
                         print(request.session['security_status'])
 
@@ -179,6 +179,55 @@ def resend_otp(request):
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+def email_confirm(request):
+    if request.method == 'POST':
+        email = request.POST.get('emailConfirm')
+        print('Email Inputted:',email)
+
+        otp = generate_otp()
+        request.session['otp'] = otp
+        request.session['user_email'] = email  # Store user email in session for later retrieval
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+        request.session['otp_expiry'] = otp_expiry.isoformat()  # Convert datetime to string
+        send_otp_email(email, otp)
+        return JsonResponse({'success': True, 'message': 'OTP has been sent to your email.'})
+
+
+def verify_otp_email(request):
+    if request.method == 'POST':
+        otp_entered = ''
+        for i in range(1, 7):  # Iterate through OTP fields from 1 to 6
+            otp_entered += request.POST.get(f'otp_{i}', '')
+
+        otp_saved = request.session.get('otp')
+        otp_expiry_str = request.session.get('otp_expiry')
+        user_email = request.session.get('user_email')  # Retrieving user email from session
+        print(user_email)
+
+        if otp_saved and otp_expiry_str and user_email:  # Check if user_email exists
+            otp_expiry = timezone.datetime.fromisoformat(otp_expiry_str)
+            if timezone.now() < otp_expiry and otp_entered == otp_saved:
+                # Clear session data after successful OTP verification
+                request.session.pop('otp')
+                request.session.pop('otp_expiry')
+                request.session.pop('user_email')
+                return JsonResponse({'success': True, 'message': 'OTP verified successfully.', 'user_email': user_email})
+            elif timezone.now() >= otp_expiry:
+                return JsonResponse({'success': False, 'message': 'OTP has expired.'})
+        return JsonResponse({'success': False, 'message': 'Incorrect OTP.', 'user_email': user_email})
+
+
+def resend_otp_email(request):
+    if request.method == 'GET':
+        user_email = request.session.get('user_email')  # Corrected key
+        otp = generate_otp()  # Assuming you have a function to generate OTP
+        request.session['otp'] = otp
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+        request.session['otp_expiry'] = otp_expiry.isoformat()
+        send_otp_email(user_email, otp)  # Assuming you have a function to send OTP email
+        return JsonResponse({'success': True, 'message': 'OTP resent successfully.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 def report_violence_view (request):
     return render(request, 'landing/report_violence.html')
@@ -191,11 +240,12 @@ def behalf_victim_view (request):
 
 def add_case(request):
     if request.method == 'POST':
-        
-        email = request.POST.get('email-confirm')
+        email = request.POST.get('email-confirmed')
+        print('Entered Email:', email)
+
         # Create a new QueryDict object
         modified_post_data = QueryDict('', mutable=True)
-        
+
         # Attributes to ignore for encryption
         ignore_key = [
             'type_of_case',
@@ -223,7 +273,7 @@ def add_case(request):
         
         case_data = {
             'case_number': get_next_case_number(),
-            'email': email,
+            'email':email,
             'date_latest_incident': request.POST.get('date-latest-incident'),
             'incomplete_date': request.POST.get('incomplete-date'),
             'place_of_incident': request.POST.get('place-incident'),
@@ -633,7 +683,15 @@ def delete_perpetrator(request):
     perpetrator_id = request.POST.get('perpetrator_id')
     perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
     perpetrator.delete()
-    return JsonResponse({'success': True, 'message': 'Perpetrator deleted successfully'})
+    return JsonResponse({'success': True, 'message': 'Perpetrator and related Parents deleted successfully'})
+
+@require_POST
+def delete_case(request):
+    case_id = request.POST.get('case_id')
+    print('Case ID:', case_id)
+    case = get_object_or_404(Case, id=case_id)
+    case.delete()
+    return JsonResponse({'success': True, 'message': 'Case Deleted successfully'})
 
 #parent victim data crud ----------------------------------------------------------------
 
