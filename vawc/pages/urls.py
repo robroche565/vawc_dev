@@ -34,8 +34,11 @@ urlpatterns = [
     path('delete_status/<int:status_id>/', views.delete_status, name='delete_status'),
 
     path('admin-barangay-vawc/case/', views.barangay_case_view, name='barangay case'),
-    path('admin-barangay-vawc/view-case/<int:case_id>/', views.view_case, name='barangay case view'),
+    path('add-new-case/', views.add_new_case, name='add_new_case'),
+    path('admin-barangay-vawc/view-case/behalf/<int:case_id>/', views.view_case_behalf, name='barangay case behalf view'),
+    path('admin-barangay-vawc/view-case/impacted/<int:case_id>/', views.view_case_impact, name='barangay case impacted view'),
 
+    path('add_new_contact_person/', views.add_new_contact_person, name='add_new_contact_person'),
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
     path('add_new_victim_data/', views.add_new_victim, name='add_new_victim'),
     path('delete_victim_data/', views.delete_victim, name='delete_victim'),

@@ -22,9 +22,6 @@
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
           <button class="nav-link custom-tab text-dark fs-4" id="nav-status-tab" data-bs-toggle="tab" data-bs-target="#nav-status" type="button" role="tab" aria-controls="nav-status" aria-selected="true">Status</button>
           <button class="nav-link custom-tab text-dark fs-4" id="nav-victim-tab" data-bs-toggle="tab" data-bs-target="#nav-victim" type="button" role="tab" aria-controls="nav-victim" aria-selected="false">Victim</button>
-          {% if case.type_of_case == 'Behalf' %}
-          <button class="nav-link custom-tab text-dark fs-4" id="nav-contact_pers-tab" data-bs-toggle="tab" data-bs-target="#nav-contact_pers" type="button" role="tab" aria-controls="nav-contact_pers" aria-selected="false">Contact Person</button>
-          {% endif %}
           <button class="nav-link custom-tab text-dark fs-4" id="nav-perpetrator-tab" data-bs-toggle="tab" data-bs-target="#nav-perpetrator" type="button" role="tab" aria-controls="nav-perpetrator" aria-selected="false">Perpetrator</button>
           <button class="nav-link custom-tab text-dark fs-4" id="nav-incident-tab" data-bs-toggle="tab" data-bs-target="#nav-incident" type="button" role="tab" aria-controls="nav-incident" aria-selected="false">Incident</button>
         </div>
@@ -113,15 +110,25 @@
                 </div><!--end of container-->
                 <hr>
                 <div class="container pt-2 pb-3">
-                    <h1 class="text-center">Services Information</h1>
+                    <h1 class="text-center">Case Information</h1>
                     <div class="pt-2">
                         <div class="row">
                             <div class="d-flex align-items-center">
-                                <h5>Service Type:</h5>
+                                <h5>Case Type:</h5>
                                 {% if case.type_of_case == 'Impacted' %}
                                     <h5 class="lead">Impacted Victim</h5>
                                 {% elif case.type_of_case == 'Behalf' %}
                                     <h5 class="lead">Reporting on Behalf of Impacted Victim</h5>
+                                {% endif %}
+                            </div><!--end of col-->
+                        </div><!--end of row-->
+                        <div class="row">
+                            <div class="d-flex align-items-center">
+                                <h5>Service Type:</h5>
+                                {% if case.service_information == 'crisis' %}
+                                    <h5 class="lead">Crisis Intervention Including Rescue</h5>
+                                {% elif case.service_information == 'issuance' %}
+                                    <h5 class="lead">Issuance / Enforcement of Barangay Protection Order</h5>
                                 {% endif %}
                             </div><!--end of col-->
                         </div><!--end of row-->
@@ -447,7 +454,6 @@
                 </div>
             </div>
         </div> <!--end of div of victim tab-->
-        {% if case.type_of_case == 'Behalf' %}
         <div class="tab-pane fade" id="nav-contact_pers" role="tabpanel" aria-labelledby="nav-contact_pers">
             <h2 class="pt-3 text-center">CONTACT PERSON INFORMATION</h2>
             {% if contact_persons  %}
@@ -581,7 +587,6 @@
             </div>
             {% endif %}
         </div>
-        {% endif %}
 
         <div class="tab-pane fade" id="nav-perpetrator" role="tabpanel" aria-labelledby="nav-perpetrator">
             <h2 class="pt-3 text-center">PERPETRATOR INFORMATION</h2>
@@ -2314,56 +2319,6 @@
             });
         });
 
-        // Get all forms for contact person
-        const contactPersonForms = document.querySelectorAll("form[id^='contact_person_form_']");
-
-        // Loop through each contact person form and add a submit event listener
-        contactPersonForms.forEach(function(form) {
-            form.addEventListener("submit", function(event) {
-                event.preventDefault(); // Prevent the default form submission
-                console.log(this.id);
-                // Get the perpetrator ID from the form's ID
-                const contactPersonId = this.id.split('_').pop();
-                console.log(contactPersonId);
-                // Get the form data
-                const formData = new FormData(this);
-
-                // Send an AJAX request to save the data
-                fetch(`/save_contact_person_data/${contactPersonId}/`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Display success message in a toast
-                    const successToast = document.getElementById("successToast");
-                    const toastBody = successToast.querySelector('.toast-body');
-                    toastBody.textContent = data.message;
-                    successToast.classList.add('show');
-                    setTimeout(() => {
-                        successToast.classList.remove('show');
-                    }, 3000);
-                    // Reload the page after a short delay
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // Display error message in a toast
-                    const errorToast = document.getElementById("errorToast");
-                    const toastBody = errorToast.querySelector('.toast-body');
-                    toastBody.textContent = 'An error occurred while saving the data.';
-                    errorToast.classList.add('show');
-                    setTimeout(() => {
-                        errorToast.classList.remove('show');
-                    }, 3000);
-                });
-            });
-        });
 
         // Add event listener for the window load event
         window.addEventListener('load', setActiveTab);
