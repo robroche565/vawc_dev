@@ -11,6 +11,10 @@ urlpatterns = [
     path('resend-otp/', views.resend_otp, name='resend_otp'),
     path('logout/', views.logout_view, name='logout'),
     path('track_case/', views.track_case_view, name='track_case'),
+    path('check_email_case/', views.check_email_case, name='check_email_case'),
+    path('verify-otp-email-case/', views.verify_otp_email_track_case, name='verify_otp_email_track_case'),
+    path('track_case_info/<str:user_email>/<str:token>/', views.track_case_info_view, name='track_case_info'),
+    path('error_404/', views.error_view, name='error_view'),
 
     #anonymouse side
     path('report_violence/', views.report_violence_view, name='report violence'),
@@ -48,6 +52,7 @@ urlpatterns = [
     path('process_incident_form/', views.process_incident_form, name='process_incident_form'),
     path('save_contact_person_data/<int:contact_person_id>/', views.save_contact_person_data, name='save_contact_person_data'),
     path('delete_case/', views.delete_case, name='delete_case'),
+    path('update_case_status/<int:case_id>/', views.update_case_status, name='update_case_status'),
 
 
     path('admin-barangay-vawc/parent_victim/<int:case_id>/<int:victim_id>/', views.add_parent_view, name='add_parent'),

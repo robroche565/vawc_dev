@@ -2143,6 +2143,36 @@
                 }
             });
         });
+
+        $('.btn-check-update').on('change', function() {
+            var status = $(this).data('status');
+            var caseId = {{ case.pk }};
+            var csrfToken = '{{ csrf_token }}';  // Fetch CSRF token from the cookie
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "update_case_status" case_id=0 %}'.replace('0', caseId),
+                data: {'status_case': status, 'csrfmiddlewaretoken': csrfToken},  // Include CSRF token in the data
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Case status updated successfully');
+                        $('.toast-body').text('Case status updated successfully');
+                        $('#successToast').toast('show');
+                    } else {
+                        console.error('Failed to update case status:', response.error);
+                        $('.toast-body').text('Failed to update case status:', response.error);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    console.error('Failed to update case status:', errmsg);
+                    $('.toast-body').text('Failed to update case status:', errmsg);
+                    $('#errorToast').toast('show');
+                }
+            });
+        });
+
     });
 
     document.addEventListener("DOMContentLoaded", function() {

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseNotFound, QueryDict, HttpResponse
+from django.http import JsonResponse, HttpResponseNotFound, QueryDict, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.http import require_POST
@@ -21,6 +21,10 @@ from django.template.loader import render_to_string
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
+from datetime import timedelta
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.crypto import get_random_string
+from django.contrib.auth.models import User
 # Create your views here.
 
 from .utils import encrypt_data, decrypt_data
@@ -33,11 +37,85 @@ from account.models import *
 def home_view (request):
     return render(request, 'landing/home.html')
 
+def error_view (request):
+    return render(request, 'landing/error_404.html')
+
 def login_view (request):
     return render(request, 'login/login.html')
 
 def track_case_view (request):
     return render(request, 'landing/track_case.html')
+
+def check_email_case(request):
+    if request.method == 'POST':
+        email = request.POST.get('email', None)  # Get the email from the POST data
+        if email:
+            # Check if there is any case associated with the given email
+            if Case.objects.filter(email=email).exists():
+                return JsonResponse({'success': True, 'message': 'There is an Email associated with at least one case.'})
+            else:
+                return JsonResponse({'success': False, 'message': 'There is no Email associated with any case.'})
+        else:
+            return JsonResponse({'success': False, 'message': 'No email provided.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+# Set expiration time for tokens (30 minutes)
+TOKEN_EXPIRATION_TIMEDELTA = timedelta(minutes=30)
+
+def verify_otp_email_track_case(request):
+    if request.method == 'POST':
+        otp_entered = ''
+        for i in range(1, 7):  # Iterate through OTP fields from 1 to 6
+            otp_entered += request.POST.get(f'otp_{i}', '')
+
+        otp_saved = request.session.get('otp')
+        otp_expiry_str = request.session.get('otp_expiry')
+        user_email = request.session.get('user_email')  # Retrieving user email from session
+        print(user_email)
+
+        if otp_saved and otp_expiry_str and user_email:  # Check if user_email exists
+            otp_expiry = timezone.datetime.fromisoformat(otp_expiry_str)
+            if timezone.now() < otp_expiry and otp_entered == otp_saved:
+                # Clear session data after successful OTP verification
+                request.session.pop('otp')
+                request.session.pop('otp_expiry')
+                request.session.pop('user_email')
+                print('OTP Verified Succesfully, Used Email:', user_email)
+
+                # Generate a unique token for password reset using Django's default_token_generator
+                token = generate_token(user_email)
+
+                return JsonResponse({'success': True, 'message': 'OTP verified successfully.', 'user_email': user_email, 'token': token})
+            elif timezone.now() >= otp_expiry:
+                return JsonResponse({'success': False, 'message': 'OTP has expired.'})
+        return JsonResponse({'success': False, 'message': 'Incorrect OTP.', 'user_email': user_email})
+
+def generate_token(user_email):
+    # Create a temporary user object with the email address
+    temp_user = User(email=user_email)
+    # Generate a unique token for password reset using Django's default_token_generator
+    token = default_token_generator.make_token(temp_user)
+    # Get current timestamp
+    timestamp = timezone.now()
+    return token
+
+def track_case_info_view(request, user_email, token):
+    try:
+        # Create a temporary user object with the email address
+        temp_user = User(email=user_email)
+    except User.DoesNotExist:
+        return redirect('error_view')
+
+    # Check if the token is valid for the temporary user
+    if not default_token_generator.check_token(temp_user, token):
+        return redirect('error_view')
+
+    # Fetch cases related to the user_email and prefetch related status history
+    cases = Case.objects.filter(email=user_email).prefetch_related('status_history')
+
+    # Token is valid, render the template
+    return render(request, 'landing/track_case_info.html', {'user_email': user_email, 'token': token, 'cases': cases})
 
 @login_required
 def logout_view(request):
@@ -220,6 +298,7 @@ def verify_otp_email(request):
         return JsonResponse({'success': False, 'message': 'Incorrect OTP.', 'user_email': user_email})
 
 
+
 def resend_otp_email(request):
     if request.method == 'GET':
         user_email = request.session.get('user_email')  # Corrected key
@@ -231,6 +310,7 @@ def resend_otp_email(request):
         return JsonResponse({'success': True, 'message': 'OTP resent successfully.'})
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
 
 def report_violence_view (request):
     return render(request, 'landing/report_violence.html')
@@ -1374,6 +1454,15 @@ def delete_status(request, status_id):
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
+def update_case_status(request, case_id):
+    if request.method == 'POST':
+        new_status = request.POST.get('status_case')  # Get the new status from the form data
+        case = get_object_or_404(Case, pk=case_id)  # Get the case object
+        case.status = new_status  # Update the status
+        case.save()  # Save the changes
+        return JsonResponse({'success': True})  # Return a JSON response indicating success
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})  # Return an error response if the request method is not POST
 
 def tite(request):
     # check if what the button want to do. 
