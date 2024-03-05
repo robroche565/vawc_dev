@@ -627,6 +627,7 @@ def view_case_impact(request, case_id):
         victims = Victim.objects.filter(case_victim=case)
         perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
         status_history = Status_History.objects.filter(case_status_history=case)
+        witnesses = Witness.objects.filter(case_witness=case)
 
         # Retrieve only the latest status history entry
         latest_status_history = status_history.order_by('-status_date_added').first()
@@ -690,6 +691,7 @@ def view_case_impact(request, case_id):
             'victims': victims,
             'perpetrators': perpetrators,
             'status_histories': status_history,
+            'witnesses': witnesses,
             'latest_status_history': latest_status_history,
             'global': request.session,
         })
@@ -1335,11 +1337,63 @@ def process_incident_form(request):
             case_instance = Case.objects.get(id=case_id)
             handle_evidence_files(request.FILES.getlist('evidence_file'), case_instance)
 
+        # Process addition of new witnesses
+        if 'witness_name' in request.POST:
+            case_id = request.POST.get('case_id')
+            case_instance = Case.objects.get(id=case_id)
+
+            # Get data for all new witnesses
+            witness_data = zip(
+                request.POST.getlist('witness_name'),
+                request.POST.getlist('witness_address'),
+                request.POST.getlist('witness_number'),
+                request.POST.getlist('witness_email')
+            )
+
+            # Create a new Witness object for each set of witness data
+            for name, address, number, email in witness_data:
+                Witness.objects.create(
+                    case_witness=case_instance,
+                    name=name,
+                    address=address,
+                    contact_number=number,
+                    email=email
+                )
+        # Process removal of witnesses
+        witnesses_to_delete = request.POST.getlist('witnesstoDelete')
+        for witness_id in witnesses_to_delete:
+            Witness.objects.filter(id=witness_id).delete()
+        
+        
 
         # Process other fields in the form and save them to Case model
         case_id = request.POST.get('case_id')
         case = Case.objects.get(id=case_id)
         print(case_id)
+        
+        # Retrieve existing witnesses associated with the case
+        existing_witnesses = Witness.objects.filter(case_witness=case)
+
+        # Iterate over existing witnesses and check for changes
+        for witness_instance in existing_witnesses:
+            witness_id = witness_instance.id
+            name = request.POST.get(f'witness_name_{witness_id}')
+            address = request.POST.get(f'witness_address_{witness_id}')
+            number = request.POST.get(f'witness_number_{witness_id}')
+            email = request.POST.get(f'witness_email_{witness_id}')
+            
+            # Check if witness data has been modified
+            if (name != witness_instance.name or
+                address != witness_instance.address or
+                number != witness_instance.contact_number or
+                email != witness_instance.email):
+                
+                # Update the witness instance with new data and save
+                witness_instance.name = name
+                witness_instance.address = address
+                witness_instance.contact_number = number
+                witness_instance.email = email
+                witness_instance.save()
 
         date_latest_incident = request.POST.get('date_latest_incident')
         print(date_latest_incident)
@@ -1424,7 +1478,7 @@ def edit_status(request, status_id):
     if request.method == 'GET':
         try:
             status = Status_History.objects.get(id=status_id)
-            return JsonResponse({'success': True, 'status_description': status.status_description})
+            return JsonResponse({'success': True, 'status_description': status.status_description, 'status_date': status.status_date_added})
         except Status_History.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Status not found'})
         except Exception as e:
@@ -1433,7 +1487,9 @@ def edit_status(request, status_id):
         try:
             status = Status_History.objects.get(id=status_id)
             new_description = request.POST.get('new_description')
+            new_date = request.POST.get('new_date')
             status.status_description = new_description
+            status.status_date_added = new_date
             status.save()
             return JsonResponse({'success': True, 'message': 'Status updated successfully'})
         except Status_History.DoesNotExist:

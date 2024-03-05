@@ -4,6 +4,9 @@
 {% block styles %}
 <link href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
 <link href='https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css' rel='stylesheet'>
+<style>
+
+</style>
 {% endblock %}
 {% block content %}
 <div class="container-fluid pb-4">
@@ -1142,13 +1145,16 @@
                     {% if case.evidence.all %}
                         <div class="row">
                             {% for evidence in case.evidence.all %}
-                                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
-                                        <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="form-check">
+                                    <!-- Add a link to the image with target="_blank" to open it in a new tab -->
+                                    <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
+                                    <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
+                                    <a href="{{ evidence.file.url }}" target="_blank" class="image-link">
                                         <img src="{{ evidence.file.url }}" alt="Evidence Image" class="img-fluid">
-                                    </div>
+                                    </a>
                                 </div>
+                            </div>
                             {% endfor %}
                         </div>
                     {% else %}
@@ -1386,6 +1392,10 @@
                     <div class="form-floating mb-3">
                         <textarea class="form-control" id="status_text_edit" name="status_text_edit"></textarea>
                         <label for="status_text_edit">Status</label>
+                    </div><!--end of status-->
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="status_date_edit" name="status_date_edit"></input>
+                        <label for="status_date_edit">Date</label>
                     </div><!--end of status-->
                 </div><!--end of body-->
                 <div class="modal-footer">
@@ -2001,6 +2011,7 @@
                     if (response.success) {
                         // Populate the modal with status information
                         $('#status_text_edit').val(response.status_description);
+                        $('#status_date_edit').val(response.status_date);
                         $('#statusId').val(statusId);
                         $('#statusEdit').modal('show'); // Open the modal
                     } else {
@@ -2025,6 +2036,7 @@
             // Get the status ID and updated description from the form
             var statusId = $('#statusId').val();
             var updatedDescription = $('#status_text_edit').val();
+            var updatedDate = $('#status_date_edit').val();
 
             // AJAX request to update the status
             $.ajax({
@@ -2032,6 +2044,7 @@
                 url: '/edit_status/' + statusId + '/',  // URL to update status information
                 data: {
                     'new_description': updatedDescription,
+                    'new_date': updatedDate,
                     'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()  // Add CSRF token
                 },
                 dataType: 'json',
