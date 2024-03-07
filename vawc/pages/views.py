@@ -871,29 +871,29 @@ def save_perpetrator_data(request, perpetrator_id):
         perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
 
         # Update perpetrator data
-        perpetrator.first_name = request.POST.get('perpetrator_first_name_' + str(perpetrator_id))
-        perpetrator.middle_name = request.POST.get('perpetrator_middle_name_' + str(perpetrator_id))
-        perpetrator.last_name = request.POST.get('perpetrator_last_name_' + str(perpetrator_id))
-        perpetrator.suffix = request.POST.get('perpetrator_suffix_name_' + str(perpetrator_id))
-        perpetrator.identifying_marks = request.POST.get('perpetrator_identifying_marks_' + str(perpetrator_id))
-        perpetrator.alias = request.POST.get('perpetrator_alias_' + str(perpetrator_id))
-        perpetrator.relationship_to_victim = request.POST.get('perp-relationship-victim_' + str(perpetrator_id))
-        perpetrator.sex = request.POST.get('perpetrator_sex_' + str(perpetrator_id))
-        perpetrator.type_of_disability = request.POST.get('perpetrator_type_of_disability_' + str(perpetrator_id))
-        perpetrator.date_of_birth = request.POST.get('perpetrator_date_of_birth_' + str(perpetrator_id))
-        perpetrator.civil_status = request.POST.get('perpetrator_civil_status_' + str(perpetrator_id))
-        perpetrator.contact_number = request.POST.get('perpetrator_contact_number_' + str(perpetrator_id))
-        perpetrator.telephone_number = request.POST.get('perpetrator_telephone_number_' + str(perpetrator_id))
-        perpetrator.educational_attainment = request.POST.get('perpetrator_educational_attainment_' + str(perpetrator_id))
-        perpetrator.occupation = request.POST.get('perpetrator_occupation_' + str(perpetrator_id))
-        perpetrator.nationality = request.POST.get('perpetrator_nationality_' + str(perpetrator_id))
-        perpetrator.religion = request.POST.get('perpetrator_religion_' + str(perpetrator_id))
-        perpetrator.house_information = request.POST.get('perpetrator_house_information_' + str(perpetrator_id))
-        perpetrator.street = request.POST.get('perpetrator_street_' + str(perpetrator_id))
-        perpetrator.barangay = request.POST.get('perpetrator_barangay_' + str(perpetrator_id))
-        perpetrator.province = request.POST.get('perpetrator_province_' + str(perpetrator_id))
-        perpetrator.city = request.POST.get('perpetrator_city_' + str(perpetrator_id))
-        perpetrator.region = request.POST.get('perpetrator_region_' + str(perpetrator_id))
+        perpetrator.first_name = encrypt_data(request.POST.get('perpetrator_first_name_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.middle_name = encrypt_data(request.POST.get('perpetrator_middle_name_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.last_name = encrypt_data(request.POST.get('perpetrator_last_name_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.suffix = encrypt_data(request.POST.get('perpetrator_suffix_name_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.identifying_marks = encrypt_data(request.POST.get('perpetrator_identifying_marks_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.alias = encrypt_data(request.POST.get('perpetrator_alias_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.relationship_to_victim = encrypt_data(request.POST.get('perp-relationship-victim_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.sex = encrypt_data(request.POST.get('perpetrator_sex_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.type_of_disability = encrypt_data(request.POST.get('perpetrator_type_of_disability_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.date_of_birth = encrypt_data(request.POST.get('perpetrator_date_of_birth_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.civil_status = encrypt_data(request.POST.get('perpetrator_civil_status_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.contact_number = encrypt_data(request.POST.get('perpetrator_contact_number_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.telephone_number = encrypt_data(request.POST.get('perpetrator_telephone_number_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.educational_attainment = encrypt_data(request.POST.get('perpetrator_educational_attainment_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.occupation = encrypt_data(request.POST.get('perpetrator_occupation_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.nationality = encrypt_data(request.POST.get('perpetrator_nationality_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.religion = encrypt_data(request.POST.get('perpetrator_religion_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.house_information = encrypt_data(request.POST.get('perpetrator_house_information_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.street = encrypt_data(request.POST.get('perpetrator_street_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.barangay = encrypt_data(request.POST.get('perpetrator_barangay_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.province = encrypt_data(request.POST.get('perpetrator_province_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.city = encrypt_data(request.POST.get('perpetrator_city_' + str(perpetrator_id))).decode('utf-8')
+        perpetrator.region = encrypt_data(request.POST.get('perpetrator_region_' + str(perpetrator_id))).decode('utf-8')
 
         # Save perpetrator data
         perpetrator.save()
@@ -1363,8 +1363,6 @@ def process_incident_form(request):
         witnesses_to_delete = request.POST.getlist('witnesstoDelete')
         for witness_id in witnesses_to_delete:
             Witness.objects.filter(id=witness_id).delete()
-        
-        
 
         # Process other fields in the form and save them to Case model
         case_id = request.POST.get('case_id')
@@ -1398,15 +1396,15 @@ def process_incident_form(request):
         date_latest_incident = request.POST.get('date_latest_incident')
         print(date_latest_incident)
 
-        case.date_latest_incident = request.POST.get('date_latest_incident')
+        case.date_latest_incident = encrypt_data(request.POST.get('date_latest_incident')).decode('utf-8')
         case.incomplete_date = True if request.POST.get('incomplete_date') == 'true' else False
-        case.place_of_incident = request.POST.get('place_of_incident')
-        case.street = request.POST.get('street')
-        case.barangay = request.POST.get('barangay')
-        case.province = request.POST.get('province')
-        case.city = request.POST.get('city')
-        case.region = request.POST.get('region')
-        case.description_of_incident = request.POST.get('description_of_incident')
+        case.place_of_incident =  encrypt_data(request.POST.get('place_of_incident')).decode('utf-8')
+        case.street = encrypt_data(request.POST.get('street')).decode('utf-8') 
+        case.barangay = encrypt_data(request.POST.get('barangay')).decode('utf-8') 
+        case.province = encrypt_data(request.POST.get('province')).decode('utf-8') 
+        case.city = encrypt_data(request.POST.get('city')).decode('utf-8')
+        case.region = encrypt_data(request.POST.get('region')).decode('utf-8')
+        case.description_of_incident = encrypt_data(request.POST.get('description_of_incident')).decode('utf-8')
 
 
         # Additional fields

@@ -31,10 +31,11 @@
                     <div class="multisteps-form__content">
                         <h1 class="text-center pt-3"><strong>Victim-Survivor Information</strong></h1>
                         <div class="container-fluid scroll overflow-auto" style="max-height: 500px;">
-                            <div id="victim-form_0">
+                            <div class="individual-form" id="victim-form_0">
                                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-1 border-bottom border-3"></div>
                                 <div class="row"><!--First Row-->
-                                    <h5 id="victim_counter">Victim 1 <span></span></h5>
+                                    <h5 class="user_counter" id="victim_counter">Victim 1 <span></span></h5>
+                                    <a href="#" class="delete-individual-form">delete</a>
                                     <h5 class="pt-3"><strong>Name:</strong></h5>
 
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--Firstname-->
@@ -178,10 +179,11 @@
                     <div class="multisteps-form__content">
                         <h1 class="text-center pt-3"><strong>Perpetrator Information</strong></h1>
                         <div class="container-fluid scroll overflow-auto" style="max-height: 500px;">
-                            <div id="perpetrator-form_0">
+                            <div class="individual-form" id="perpetrator-form_0">
                                 <div class="row"><!--First Row-->
                                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-1 border-bottom border-3"></div>
-                                    <h5 id="perpetrator_counter">Perpetrator 1<span></span></h5>
+                                    <h5 class="user_counter" id="perpetrator_counter">Perpetrator 1<span></span></h5>
+                                    <a href="#" class="delete-individual-form">delete</a>
                                     <h5 class="pt-3"><strong>Name:</strong></h5>
                                     <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--Firstname-->
                                         <label for="perp-firstname_0" class="form-label">First name: </label>
@@ -663,6 +665,33 @@
     }
     
     $(document).ready(function() {
+
+        const form = document.querySelector("#impact-victim-form")
+
+        form.addEventListener("click", function(e) {
+            e.preventDefault()
+
+            if(e.target.classList.contains("delete-individual-form")) {
+
+                const parentPage = e.target.closest(".multisteps-form__panel")
+                e.target.closest(".individual-form").remove();
+
+                let counter = 1;
+                parentPage.querySelectorAll(".individual-form").forEach(function(element) {
+                    console.log(element)
+
+
+                    let word = element.querySelector(".user_counter").textContent.split(" ")
+                    element.querySelector(".user_counter").innerHTML = word[0] + " " + counter
+
+                    counter++
+                });
+
+            }
+        })
+
+
+
         let goForSubmission = false
         // Intercept the form submission
         $('#impact-victim-form').submit(function(e) {
