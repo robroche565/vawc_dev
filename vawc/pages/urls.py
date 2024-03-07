@@ -60,8 +60,7 @@ urlpatterns = [
     path('add_new_parent_data/', views.add_new_parent_form, name='add_new_parent_form'),
     path('check_parent_count/', views.check_parent_count, name='check_parent_count'),
     path('delete_parent_data/', views.delete_parent, name='delete_parent'),
-    
-    
+
     path('admin-barangay-vawc/parent_perpetrator/<int:case_id>/<int:perp_id>/', views.add_parent_perp_view, name='add_parent_perp'),
     path('add_new_parent_perp_data/', views.add_new_parent_perp_form, name='add_new_parent_perp_form'),
     path('save_parent_perp_data/<int:parent_id>/', views.save_parent_perp_data, name='save_parent_perp_data'),

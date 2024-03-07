@@ -200,7 +200,7 @@
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-victim-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-victim-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
                             <div class="d-flex justify-content-between mb-3">
-                                <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id %}" class="btn btn-primary me-2">
+                                <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id type=case.type_of_case %}" class="btn btn-primary me-2">
                                     <i class='bx bx-body'></i>
                                     <span>Add, View, or Delete Parent/s</span>
                                 </a>
@@ -1142,31 +1142,108 @@
                     </div>
 
                     <h3>Evidences:</h3>
-                    {% if case.evidence.all %}
-                        <div class="row">
-                            {% for evidence in case.evidence.all %}
-                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                                <div class="form-check">
-                                    <!-- Add a link to the image with target="_blank" to open it in a new tab -->
-                                    <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
-                                    <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
-                                    <a href="{{ evidence.file.url }}" target="_blank" class="image-link">
-                                        <img src="{{ evidence.file.url }}" alt="Evidence Image" class="img-fluid">
-                                    </a>
-                                </div>
+                    {% if global.security_status == "decrypted" %}
+                        {% if case.evidence.all %}
+                            <div class="row">
+                                {% for evidence in case.evidence.all %}
+                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                        <div class="form-check">
+                                            <!-- Add a link to the image with target="_blank" to open it in a new tab -->
+                                            <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
+                                            <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
+                                            <a href="{% static 'uploads/' %}{{ evidence.file.name }}" target="_blank" class="image-link">
+                                                <img src="{% static 'uploads/' %}{{ evidence.file.name }}" alt="Evidence Image" class="img-fluid">
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
+                        {% else %}
+                            <p>No evidence available.</p>
+                        {% endif %}
                     {% else %}
-                        <p>No evidence available.</p>
+                        <p class="text-center">Data is Encrypted</p>
                     {% endif %}
 
-                    <div class="row pt-3">
-                        <div class="mb-3">
-                            <label for="evidence_file" class="form-label"><strong>Upload Evidences:</strong></label>
-                            <input class="form-control" type="file" id="evidence_file" name="evidence_file" multiple>
-                        </div><!--form to upload-->
-                    </div><!--End or row-->
+                    <hr class="pt-3">
+                    <div class="row">
+                        <h3>Witness/es:</h3>
+                        <p class="opacity-50 pb-3">(This will not be showed to others)</p>
+                        </div><!--End of row-->
+                        {% if witnesses %}
+                        <div id="witnessContainer">
+                            {% for witness in witnesses  %}
+                                <div class="row border border-opacity-25 rounded border-dark shadow" id="witness_{{ witness.id }}">
+                                    <div class="my-1">
+                                        <label class="custom-checkbox">
+                                            <input class="form-check-input" type="checkbox" name="witnesstoDelete" value="{{ witness.id }}">
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="witness_name_{{ witness.id }}" name="witness_name_{{ witness.id }}" placeholder="" value="{{ witness.name }}">
+                                            <label for="witness_name_{{ witness.id }}">Name</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" id="witness_address_{{ witness.id }}" name="witness_address_{{ witness.id }}" placeholder="">{{ witness.address }}</textarea>
+                                            <label for="witness_address_{{ witness.id }}">Address</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="witness_number_{{ witness.id }}" name="witness_number_{{ witness.id }}" placeholder="" value="{{ witness.contact_number }}">
+                                            <label for="witness_number_{{ witness.id }}">Contact Number</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="witness_email_{{ witness.id }}" name="witness_email_{{ witness.id }}" placeholder="" value="{{ witness.email }}">
+                                            <label for="witness_email_{{ witness.id }}">Eye-Witness Account</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                </div><!--End of row-->
+                                <br>
+                            {% endfor %}
+                        </div>
+                        <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
+                        {% else %}
+                        <div id="witnessContainer">
+                            <div class="row border border-opacity-25 rounded border-dark shadow" id="witness">
+                                <div class="pt-2"></div>
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="witness_name" name="witness_name" placeholder="">
+                                        <label for="witness_name">Name</label>
+                                    </div>
+                                </div><!--End of col-->
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" id="witness_address" name="witness_address" placeholder=""></textarea>
+                                        <label for="witness_address">Address</label>
+                                    </div>
+                                </div><!--End of col-->
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="witness_number" name="witness_number" placeholder="">
+                                        <label for="witness_number">Contact Number</label>
+                                    </div>
+                                </div><!--End of col-->
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="email" class="form-control" id="witness_email" name="witness_email" placeholder="">
+                                        <label for="witness_email">Eye-Witness Account</label>
+                                    </div>
+                                </div><!--End of col-->
+                                <button type="button" class="btn btn-sm rounded-top-0 bg-primary border-primary"><i class='bx bx-trash text-white'></i></button>
+                            </div><!--End of row-->
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
+                        {% endif %}
+                    <br>
+                        
                     <hr class="pt-3">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
                         <button class="btn btn-primary" id="btnsubmitincident" type="button">Save</button>
@@ -1944,6 +2021,45 @@
 {% block scripts %}
 <script>
     $(document).ready(function() {
+        $("#addWitnessBtn").click(function() {
+            var witnessDiv = `
+                <div class="row border border-opacity-25 rounded border-dark shadow mt-1 mb-2" id="witness">
+                    <div class="pt-2"></div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="witness_name" placeholder="">
+                            <label for="witness_name">Name</label>
+                        </div>
+                    </div><!--End of col-->
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" name="witness_address" placeholder=""></textarea>
+                            <label for="witness_address">Address</label>
+                        </div>
+                    </div><!--End of col-->
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="witness_number" placeholder="">
+                            <label for="witness_number">Contact Number</label>
+                        </div>
+                    </div><!--End of col-->
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" name="witness_email" placeholder="">
+                            <label for="witness_email">Eye-Witness Account</label>
+                        </div>
+                    </div><!--End of col-->
+                    <button type="button" class="btn btn-sm rounded-top-0 bg-primary border-primary deleteWitnessBtn"><i class='bx bx-trash text-white'></i></button>
+                </div><!--End of row-->
+                <br>
+            `;
+            $("#witnessContainer").append(witnessDiv);
+        });
+
+        // Delete witness
+        $(document).on("click", ".deleteWitnessBtn", function() {
+            $(this).closest(".row").remove();
+        });
         $('#table-status').DataTable({
             dom: 'Brt <"bottom"lp>',
             responsive: true,

@@ -136,6 +136,9 @@
                 type: 'POST',
                 url: '{% url "verify_otp" %}',
                 data: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                },
                 success: function(response) {
                     if (response.success) {
                         $('#successMessage').text(response.message);

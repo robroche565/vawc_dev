@@ -1134,31 +1134,29 @@
                     </div>
 
                     <h3>Evidences:</h3>
-                    {% if case.evidence.all %}
-                        <div class="row">
-                            {% for evidence in case.evidence.all %}
-                                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                                    <div class="form-check">
-                                        <!-- Add a link to the image with target="_blank" to open it in a new tab -->
-                                        <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
-                                        <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
-                                        <a href="{{ evidence.file.url }}" target="_blank" class="image-link">
-                                            <img src="{{ evidence.file.url }}" alt="Evidence Image" class="img-fluid">
-                                        </a>
+                    {% if global.security_status == "decrypted" %}
+                        {% if case.evidence.all %}
+                            <div class="row">
+                                {% for evidence in case.evidence.all %}
+                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                        <div class="form-check">
+                                            <!-- Add a link to the image with target="_blank" to open it in a new tab -->
+                                            <input class="form-check-input" type="checkbox" name="evidenceToDelete" value="{{ evidence.id }}">
+                                            <label class="form-check-label" for="evidence{{ evidence.id }}"></label>
+                                            <a href="{% static 'uploads/' %}{{ evidence.file.name }}" target="_blank" class="image-link">
+                                                <img src="{% static 'uploads/' %}{{ evidence.file.name }}" alt="Evidence Image" class="img-fluid">
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
-                        </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>No evidence available.</p>
+                        {% endif %}
                     {% else %}
-                        <p>No evidence available.</p>
+                        <p class="text-center">Data is Encrypted</p>
                     {% endif %}
 
-                    <div class="row pt-3">
-                        <div class="mb-3">
-                            <label for="evidence_file" class="form-label"><strong>Upload Evidences:</strong></label>
-                            <input class="form-control" type="file" id="evidence_file" name="evidence_file" multiple>
-                        </div><!--form to upload-->
-                    </div><!--End or row-->
                     <hr class="pt-3">
                     <div class="row">
                         <h3>Witness/es:</h3>
