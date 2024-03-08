@@ -121,6 +121,8 @@ class Evidence(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='evidence')
     file = models.FileField()
 
+
+
 class Victim(models.Model):
     case_victim = models.ForeignKey(Case, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(max_length=150, null=True, blank=True)
