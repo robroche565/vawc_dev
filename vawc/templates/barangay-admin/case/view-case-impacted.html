@@ -38,11 +38,16 @@
                     <div class="card shadow-lg rounded border border-dark border-1 border-opacity-10">
                         <div class="card-body card-status">
                             {% if latest_status_history %}
+                                <p class="h3 fw-bold">Status Title: {{ latest_status_history.status_title }}</p>
+                                <p>Event Date: {{ latest_status_history.status_event_date |date:"F j, Y" }} at {{ latest_status_history.status_event_date |time:"g:i A" }}</p>
                                 <span id="case-status-desc" class="fs-5">
                                     {{ latest_status_history.status_description }}
                                 </span>
                                 <br>
-                                <span id="case-status-date">{{ latest_status_history.status_date_added|date:"F j, Y" }} at {{ latest_status_history.status_date_added|time:"g:i A" }}</span>
+                                <br>
+                                <div class="d-flex justify-content-end">
+                                    <span id="case-status-date">Date Added: {{ latest_status_history.status_date_added|date:"F j, Y" }} at {{ latest_status_history.status_date_added|time:"g:i A" }}</span>
+                                </div>
                             {% else %}
                                 <span id="case-status-desc" class="fs-5">
                                     No Status Yet.
@@ -58,16 +63,20 @@
                     <table class="table table-striped nowrap" id="table-status" style="width:100%">
                         <thead class="border-bottom border-dark border-2 border-opacity-50">
                             <tr>
+                                <th scope="col" class="col-2">Date of Status Event</th>
+                                <th scope="col" class="col-4">Status Title</th>
+                                <th scope="col" class="col-4">Status Description</th>
                                 <th scope="col" class="col-2">Date of Status Added</th>
-                                <th scope="col" class="col-8">Status Description</th>
-                                <th class="text-center col-2" scope="col" >View</th>
+                                <th class="text-center col-1" scope="col" >View</th>
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
                             {% for status_history in status_histories %}
                             <tr class="border-bottom border-2">
-                                <td>{{ status_history.status_date_added }}</td>
+                                <td>{{ status_history.status_event_date }}</td>
+                                <td>{{ status_history.status_title }}</td>
                                 <td>{{ status_history.status_description }}</td>
+                                <td>{{ status_history.status_date_added }}</td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-outline-success btn-sm me-2" id="btn-edit-status-hist" data-status-id="{{ status_history.id }}">Edit</button>
                                     <button type="button" class="btn btn-outline-danger btn-sm" id="btn-delete-status-hist" data-status-id="{{ status_history.id }}">Delete</button>
@@ -76,7 +85,9 @@
                             {% empty %}
                             <tr class="border-bottom border-2">
                                 <td class="text-center"></td>
-                                <td class="text-start">No Status Yet.</td>
+                                <td class="text-center"></td>
+                                <td class="text-start"></td>
+                                <td class="text-center"></td>
                                 <td class="text-center"></td>
                             </tr>
                             {% endfor %}
@@ -1310,9 +1321,17 @@
             <div class="modal-body">
                 <input type="hidden" id="caseId" value="{{ case.id }}">
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="status_text" name="status_text"></textarea>
-                    <label for="status_text">Status</label>
+                    <input type="text" class="form-control" id="status_title" name="status_title" placeholder="name@example.com">
+                    <label for="status_title">Status Title</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="status_text" name="status_text" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                    <label for="status_text">Status Description</label>
                 </div><!--end of status-->
+                <div class="form-floating mb-3">
+                    <input type="datetime-local" class="form-control" id="status_event_date" name="status_event_date" placeholder="name@example.com">
+                    <label for="status_event_date">Status Date and Time Event</label>
+                </div>
               </div><!--end of body-->
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1336,12 +1355,16 @@
                 <div class="modal-body">
                     <input type="hidden" id="statusId" value="">
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" id="status_text_edit" name="status_text_edit"></textarea>
+                        <input type="text" class="form-control" id="status_title_edit" name="status_title_edit" placeholder="name@example.com">
+                        <label for="status_title">Status Title</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="status_text_edit" name="status_text_edit" placeholder="name@example.com"></textarea>
                         <label for="status_text_edit">Status</label>
                     </div><!--end of status-->
                     <div class="form-floating mb-3">
-                        <input type="datetime-local" class="form-control" id="status_date_edit" name="status_date_edit"></input>
-                        <label for="status_date_edit">Date</label>
+                        <input type="datetime-local" class="form-control" id="status_event_date_edit" name="status_event_date_edit"></input>
+                        <label for="status_event_date_edit">Status Date and Time Event</label>
                     </div><!--end of status-->
                 </div><!--end of body-->
                 <div class="modal-footer">
@@ -1947,7 +1970,9 @@
             // Collect form data
             var formData = {
                 'case_id': $('#caseId').val(),
+                'status_title': $('#status_title').val(),
                 'status_text': $('#status_text').val(),
+                'status_event_date': $('#status_event_date').val(),
                 'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val() // Include the CSRF token
             };
 
@@ -1995,8 +2020,9 @@
                 success: function(response) {
                     if (response.success) {
                         // Populate the modal with status information
+                        $('#status_title_edit').val(response.status_title);
                         $('#status_text_edit').val(response.status_description);
-                        $('#status_date_edit').val(response.status_date);
+                        $('#status_event_date_edit').val(response.status_event_date);
                         $('#statusId').val(statusId);
                         $('#statusEdit').modal('show'); // Open the modal
                     } else {
@@ -2020,16 +2046,18 @@
 
             // Get the status ID and updated description from the form
             var statusId = $('#statusId').val();
+            var updatedTitle = $('#status_title_edit').val();
             var updatedDescription = $('#status_text_edit').val();
-            var updatedDate = $('#status_date_edit').val();
+            var updatedDate = $('#status_event_date_edit').val();
 
             // AJAX request to update the status
             $.ajax({
                 type: 'POST',
                 url: '/edit_status/' + statusId + '/',  // URL to update status information
                 data: {
+                    'new_title': updatedTitle,
                     'new_description': updatedDescription,
-                    'new_date': updatedDate,
+                    'new_event_date': updatedDate,
                     'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()  // Add CSRF token
                 },
                 dataType: 'json',

@@ -98,8 +98,10 @@ class Case(models.Model):
 
 class Status_History(models.Model):
     case_status_history = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='status_history',null=True, blank=True)
-    status_description = models.TextField()
-    status_date_added = models.DateTimeField()
+    status_title = models.CharField(max_length=150, null=True, blank=True)
+    status_description = models.TextField(null=True, blank=True)
+    status_event_date = models.DateTimeField(null=True, blank=True)
+    status_date_added = models.DateTimeField(null=True, blank=True)
 
 class Contact_Person(models.Model):
     case_contact = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='contact_person',null=True, blank=True)
@@ -297,3 +299,4 @@ class Witness(models.Model):
     address = models.TextField(null=True, blank=True)
     contact_number = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=50, null=True, blank=True)
+    

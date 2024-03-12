@@ -505,6 +505,7 @@ def view_case_behalf(request, case_id):
         victims = Victim.objects.filter(case_victim=case)
         perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
         status_history = Status_History.objects.filter(case_status_history=case)
+        witnesses = Witness.objects.filter(case_witness=case)
 
         # Retrieve only the latest status history entry
         latest_status_history = status_history.order_by('-status_date_added').first()
@@ -610,6 +611,7 @@ def view_case_behalf(request, case_id):
             'victims': victims,
             'perpetrators': perpetrators,
             'status_histories': status_history,
+            'witnesses': witnesses,
             'latest_status_history': latest_status_history,
             'global': request.session,
         })
@@ -1453,12 +1455,16 @@ def add_status(request, case_id):
             case = Case.objects.get(id=case_id)
             
             # Extract status description from the POST data
+            status_title = request.POST.get('status_title')
             status_description = request.POST.get('status_text')
+            status_event_date = request.POST.get('status_event_date')
 
             # Create a new Status_History object
             status_history = Status_History.objects.create(
                 case_status_history=case,
+                status_title=status_title,
                 status_description=status_description,
+                status_event_date=status_event_date,
                 status_date_added=timezone.now()
             )
 
@@ -1476,7 +1482,7 @@ def edit_status(request, status_id):
     if request.method == 'GET':
         try:
             status = Status_History.objects.get(id=status_id)
-            return JsonResponse({'success': True, 'status_description': status.status_description, 'status_date': status.status_date_added})
+            return JsonResponse({'success': True, 'status_title': status.status_title, 'status_description': status.status_description, 'status_event_date': status.status_event_date})
         except Status_History.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Status not found'})
         except Exception as e:
@@ -1484,10 +1490,12 @@ def edit_status(request, status_id):
     elif request.method == 'POST':
         try:
             status = Status_History.objects.get(id=status_id)
+            new_title = request.POST.get('new_title')
             new_description = request.POST.get('new_description')
-            new_date = request.POST.get('new_date')
+            new_event_date = request.POST.get('new_event_date')
+            status.status_title = new_title
             status.status_description = new_description
-            status.status_date_added = new_date
+            status.status_event_date = new_event_date
             status.save()
             return JsonResponse({'success': True, 'message': 'Status updated successfully'})
         except Status_History.DoesNotExist:
@@ -1536,3 +1544,8 @@ def tite(request):
         return JsonResponse({'success': True, 'message': 'Valid passkey.'})
     else:
         return JsonResponse({'success': False, 'message': 'Invalid passkey.'})
+    
+    
+    
+#def securititi(request):
+    
