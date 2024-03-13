@@ -196,16 +196,19 @@
                         {% endif %}
                     {% endfor %}
                     <hr>
-                    <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addVictimModal">
-                        <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
-                        <span>Add Victim</span>
-                    </button>
+                    {% if global.security_status == "decrypted" %}
+                        <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addVictimModal">
+                            <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
+                            <span>Add Victim</span>
+                        </button>
+                    {% endif %}
                 </div>
                 <div class="tab-content flex-grow-1" id="v-pills-tabContent">
                 {% if victims %}
                     {% for victim in victims %}
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-victim-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-victim-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
+                            {% if global.security_status == "decrypted" %}
                             <div class="d-flex justify-content-between mb-3">
                                 <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id %}" class="btn btn-primary me-2">
                                     <i class='bx bx-body'></i>
@@ -216,6 +219,7 @@
                                     <span>Delete Victim</span>
                                 </button>
                             </div>
+                            {% endif %}
                             <form id="victim_form_{{ victim.id }}">
                                 {% csrf_token %}
                                 <div class="h-100">
@@ -447,7 +451,7 @@
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-end mt-lg-2 mt-2">
-                                    <button class="btn btn-primary save-btn-victim_{{ victim.id }}" id="save-btn-victim" type="submit">Save</button>
+                                    <button class="btn btn-primary save-btn-victim_{{ victim.id }}" id="save-btn-victim" type="submit" {% if global.security_status == "encrypted" %}disabled{% endif %}>Save</button>
                                 </div>
                             </form>
                         </div>
@@ -465,139 +469,6 @@
                 </div>
             </div>
         </div> <!--end of div of victim tab-->
-        <div class="tab-pane fade" id="nav-contact_pers" role="tabpanel" aria-labelledby="nav-contact_pers">
-            <h2 class="pt-3 text-center">CONTACT PERSON INFORMATION</h2>
-            {% if contact_persons  %}
-                {% for contact_person in contact_persons  %}
-                <form id="contact_person_form_{{ contact_person.id }}">
-                    <div class="row pt-5">
-                        <div class="col-lg-3 mb-3">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_first_name_{{ contact_person.id }}" name="contact_person_first_name_{{ contact_person.id }}" value="{{ contact_person.first_name }}">
-                                <label for="contact_person_first_name_{{ contact_person.id }}">First Name</label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 mb-3">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_middle_name_{{ contact_person.id }}" name="contact_person_middle_name_{{ contact_person.id }}" value="{{ contact_person.middle_name }}">
-                                <label for="contact_person_middle_name_{{ contact_person.id }}">Middle Name</label>
-                            </div>
-                        </div><!--End of col-->
-                        <div class="col-lg-3 mb-3">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_last_name_{{ contact_person.id }}" name="contact_person_last_name_{{ contact_person.id }}" value="{{ contact_person.last_name }}">
-                                <label for="contact_person_last_name_{{ contact_person.id }}">Last Name</label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 mb-3">
-                            <div class="form-floating">
-                                <select class="form-select" id="contact_person_suffix_name_{{ contact_person.id }}" name="contact_person_suffix_name_{{ contact_person.id }}">
-                                    {% if global.security_status == "decrypted" %}
-                                        <option value="none" {% if contact_person.suffix == 'none' %}selected{% endif %}>N/A</option>
-                                        <option value="sr" {% if contact_person.suffix == 'sr' %}selected{% endif %}>Sr</option>
-                                        <option value="jr" {% if contact_person.suffix == 'jr' %}selected{% endif %}>Jr</option>
-                                        <option value="ii" {% if contact_person.suffix == 'ii' %}selected{% endif %}>II</option>
-                                        <option value="iii" {% if contact_person.suffix == 'iii' %}selected{% endif %}>III</option>
-                                        <option value="iv" {% if contact_person.suffix == 'iv' %}selected{% endif %}>IV</option>
-                                    {% else %}
-                                        <option value="ii" selected >{{ contact_person.suffix }}</option>
-                                    {% endif %}
-                                </select>
-                                <label for="contact_person_suffix_name_{{ contact_person.id }}">Suffix</label>
-                            </div>
-                        </div><!--End of col-->
-                    </div><!--End of row-->
-
-                    <div class="row pt-2">
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_relationship_{{ contact_person.id }}" name="contact_person_relationship_{{ contact_person.id }}" value="{{ contact_person.relationship }}">
-                                <label for="contact_person_relationship_{{ contact_person.id }}">Relationship to the Victim</label>
-                            </div>
-                        </div><!--end of col-->
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_contact-number_{{ contact_person.id }}" name="contact_person_contact-number_{{ contact_person.id }}" value="{{ contact_person.contact_number }}">
-                                <label for="contact_person_contact-number_{{ contact_person.id }}">Contact No.</label>
-                            </div>
-                        </div><!--end of col-->
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_contact-tel_{{ contact_person.id }}" name="contact_person_contact-tel_{{ contact_person.id }}" value="{{ contact_person.telephone_number }}">
-                                <label for="contact_person_contact-tel_{{ contact_person.id }}">Telephone No.</label>
-                            </div>
-                        </div><!--end of col-->
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_street_{{ contact_person.id }}" name="contact_person_contact-street_{{ contact_person.id }}" value="{{ contact_person.street }}">
-                                <label for="contact_person_street_{{ contact_person.id }}">Street</label>
-                            </div>
-                        </div><!--end of col-->
-                    </div><!--end of row-->
-
-                    <div class="row pt-2 pb-3">
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_barangay_{{ contact_person.id }}" name="contact_person_barangay_{{ contact_person.id }}" value="{{ contact_person.barangay }}">
-                                <label for="contact_person_barangay_{{ contact_person.id }}">Barangay</label>
-                            </div>
-                        </div><!--end of col-->
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_city_{{ contact_person.id }}" name="contact_person_city_{{ contact_person.id }}" value="{{ contact_person.city }}">
-                                <label for="contact_person_city_{{ contact_person.id }}">City</label>
-                            </div>
-                        </div><!--end of col-->
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="contact_person_province_{{ contact_person.id }}" name="contact_person_province_{{ contact_person.id }}" value="{{ contact_person.province }}">
-                                <label for="contact_person_province_{{ contact_person.id }}">Province</label>
-                            </div>
-                        </div><!--end of col-->
-                        <div class="col-lg-3 col-md-4 col-sm-12 pb-2">
-                            <div class="form-floating">
-                                <select class="form-select" id="contact_person_region_{{ contact_person.id }}" name="contact_person_region_{{ contact_person.id }}">
-                                    {% if global.security_status == "decrypted" %}
-                                        <option value="region-I" {% if contact_person.region == 'region-I' %}selected{% endif %}>Region I – Ilocos Region</option>
-                                        <option value="region-II" {% if contact_person.region == 'region-II' %}selected{% endif %}>Region II – Cagayan Valley</option>
-                                        <option value="region-III" {% if contact_person.region == 'region-III' %}selected{% endif %}>Region III – Central Luzon</option>
-                                        <option value="region-IV" {% if contact_person.region == 'region-IV' %}selected{% endif %}>Region IV‑A – CALABARZON</option>
-                                        <option value="mimaropa" {% if contact_person.region == 'mimaropa' %}selected{% endif %}>MIMAROPA Region</option>
-                                        <option value="region-V" {% if contact_person.region == 'region-V' %}selected{% endif %}>Region V – Bicol Region</option>
-                                        <option value="region-VI" {% if contact_person.region == 'region-VI' %}selected{% endif %}>Region VI – Western Visayas</option>
-                                        <option value="region-VII" {% if contact_person.region == 'region-VII' %}selected{% endif %}>Region VII – Central Visayas</option>
-                                        <option value="region-VIII" {% if contact_person.region == 'region-VIII' %}selected{% endif %}>Region VIII – Eastern Visayas</option>
-                                        <option value="region-IX" {% if contact_person.region == 'region-IX' %}selected{% endif %}>Region IX – Zamboanga Peninsula</option>
-                                        <option value="region-X" {% if contact_person.region == 'region-X' %}selected{% endif %}>Region X – Northern Mindanao</option>
-                                        <option value="region-XI" {% if contact_person.region == 'region-XI' %}selected{% endif %}>Region XI – Davao Region</option>
-                                        <option value="region-XII" {% if contact_person.region == 'region-XII' %}selected{% endif %}>Region XII – SOCCSKSARGEN</option>
-                                        <option value="region-XIII" {% if contact_person.region == 'region-XIII' %}selected{% endif %}>Region XIII – Caraga</option>
-                                        <option value="ncr" {% if contact_person.region == 'ncr' %}selected{% endif %}>NCR – National Capital Region</option>
-                                        <option value="car" {% if contact_person.region == 'car' %}selected{% endif %}>CAR – Cordillera Administrative Region</option>
-                                        <option value="barmm" {% if contact_person.region == 'barmm' %}selected{% endif %}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
-                                    {% else %}
-                                        <option value="barmm" selected>{{contact_person.region}}</option>
-                                    {% endif %}
-                                
-                                </select>
-                                <label for="perpetrator_region_{{ perpetrator.id }}">Region</label>
-                            </div>
-                        </div><!--End of col-->
-
-                    </div><!--end of row-->
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-primary save-btn-contact_person_{{ contact_person.id }}" type="submit">Save</button>
-                    </div>
-                </form>
-                {% endfor %}
-            {% else %}
-            <div class="card border border-dark border-1 border-opacity-10 shadow-lg">
-                <div class="card-body text-center">
-                  No Contact Person Information Yet. 
-                </div>
-            </div>
-            {% endif %}
-        </div>
 
         <div class="tab-pane fade" id="nav-perpetrator" role="tabpanel" aria-labelledby="nav-perpetrator">
             <h2 class="pt-3 text-center">PERPETRATOR INFORMATION</h2>
@@ -611,26 +482,31 @@
                     {% endif %}
                     {% endfor %}
                     <hr>
-                    <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addPerpModal">
-                        <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
-                        <span>Add Perpetrator</span>
-                    </button>
+                    {% if global.security_status == "decrypted" %}
+                        <button class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#addPerpModal">
+                            <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
+                            <span>Add Perpetrator</span>
+                        </button>
+                    {% endif %}
+                    
                 </div>
                 <div class="tab-content flex-grow-1" id="v-pills-tabContent">
                 {% if perpetrators %}
                     {% for perpetrator in perpetrators %}
                     <div class="tab-pane fade {% if forloop.first %}show active{% endif %} h-100" id="v-pills-perpetrator-{{ forloop.counter }}" role="tabpanel" aria-labelledby="v-pills-perpetrator-{{ forloop.counter }}-tab" tabindex="0">
                         <div class="container-fluid h-100">
-                            <div class="d-flex justify-content-between mb-3">
-                                <a href="{% url 'add_parent_perp' case_id=case.id perp_id=perpetrator.id %}" class="btn btn-primary me-2">
-                                    <i class='bx bx-body'></i>
-                                    <span>Add, View, or Delete Parent/s</span>
-                                </a>
-                                <button class="btn btn-danger btn-delete-perpetrator me-2" data-perpetrator-id="{{ perpetrator.id }}" data-bs-toggle="modal" data-bs-target="#confirmPerpetratorDelete">
-                                    <i class='bx bx-trash'></i>
-                                    <span>Delete Perpetrator</span>
-                                </button>
-                            </div>
+                            {% if global.security_status == "decrypted" %}
+                                <div class="d-flex justify-content-between mb-3">
+                                    <a href="{% url 'add_parent_perp' case_id=case.id perp_id=perpetrator.id %}" class="btn btn-primary me-2">
+                                        <i class='bx bx-body'></i>
+                                        <span>Add, View, or Delete Parent/s</span>
+                                    </a>
+                                    <button class="btn btn-danger btn-delete-perpetrator me-2" data-perpetrator-id="{{ perpetrator.id }}" data-bs-toggle="modal" data-bs-target="#confirmPerpetratorDelete">
+                                        <i class='bx bx-trash'></i>
+                                        <span>Delete Perpetrator</span>
+                                    </button>
+                                </div>
+                            {% endif %}
                             <form id="perpetrator_form_{{ perpetrator.id }}">
                                 {% csrf_token %}
                                 <div class="h-100"> 
@@ -898,7 +774,7 @@
                                     </div><!--End of row-->
                                 </div>
                                 <div class="d-flex justify-content-end">
-                                    <button class="btn btn-primary save-btn-perpetrator_{{ perpetrator.id }}" type="submit">Save</button>
+                                    <button class="btn btn-primary save-btn-perpetrator_{{ perpetrator.id }}" type="submit" {% if global.security_status == "encrypted" %}disabled{% endif %}>Save</button>
                                 </div>
                             </form>
                         </div>
@@ -1048,7 +924,7 @@
                                 
                                 <label for="date_latest_incident">Date of Latest Incident</label>
                             </div>
-                            <input class="form-check-input" type="checkbox" value="true" id="incomplete_date" name="incomplete_date" {% if case.incomplete_date %} checked {% endif %}>
+                            <input class="form-check-input" type="checkbox" value="true" id="incomplete_date" name="incomplete_date" {% if case.incomplete_date %} checked {% endif %} {% if global.security_status == "encrypted" %}disabled{% endif %}>
                             <label class="form-check-label" for="incomplete_date"> Incomplete Date</label>
                         </div><!--end of col-->
                     </div><!--End of row-->
@@ -1057,7 +933,6 @@
 
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
-                            
                             <div class="form-floating">
                                 <select class="form-select" id="place_of_incident" name="place_of_incident" aria-label="Floating label select example" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                     {% if global.security_status == "decrypted" %}
@@ -1109,7 +984,6 @@
                         <div class="col-lg-4 col-md-4 col-sm-8 pb-3">
                             <div class="form-floating">
                                 <select class="form-select" id="region" name="region" aria-label="Floating label select example" {% if global.security_status == "encrypted" %}disabled{% endif %}>
-                                    
                                     {% if global.security_status == "decrypted" %}
                                         <option value="region-I" {% if case.region == 'region-I' %} selected {% endif %}>Region I – Ilocos Region</option>
                                         <option value="region-II" {% if case.region == 'region-II' %} selected {% endif %}>Region II – Cagayan Valley</option>
@@ -1217,7 +1091,9 @@
                                 <br>
                             {% endfor %}
                         </div>
-                        <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
+                            {% if global.security_status == "decrypted" %}
+                                <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
+                            {% endif %}
                         {% else %}
                         <div id="witnessContainer">
                             <div class="row border border-opacity-25 rounded border-dark shadow" id="witness">
@@ -1255,8 +1131,9 @@
                     <br>
                     <hr class="pt-3">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
-                        <button class="btn btn-primary" id="btnsubmitincident" type="button">Save</button>
+                        <button class="btn btn-primary" id="btnsubmitincident" type="button" {% if global.security_status == "encrypted" %}disabled{% endif %}>Save</button>
                     </div>
+
                 </form>
 
             </div><!--end of container-->

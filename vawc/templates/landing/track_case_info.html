@@ -1,6 +1,10 @@
 {% extends "../base/base.html" %}
 {% block title %}Track Case Info{% endblock %}
 {% load static %}
+{% block styles %}
+    <link href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
+    <link href='https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css' rel='stylesheet'>
+{% endblock %}
 {% load custom_filter %}
 {% block content %}
 <div class="container pt-5 pb-5">
@@ -38,36 +42,45 @@
                             <p>Date Reported: {{ case.date_added }}</p>
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Latest Status</h5>
+                                    <h4 class="card-title">Latest Status</h4>
                                     {% with latest_status=case.status_history|get_latest_status %}
                                     {% if latest_status %}
-                                    <h6 class="card-subtitle mb-2 text-muted">Date Added: {{ latest_status.status_date_added }}</h6>
+                                    <h5 class="card-title">Status Title: {{ latest_status.status_title }}</h5>
+                                    <h6>Status Date and Event: <span clas="lead">{{ latest_status.status_event_date }}</span> </h6>
                                     <p class="card-text">{{ latest_status.status_description }}</p>
+                                    <div class="d-flex justify-content-end">
+                                        <h6 class="card-subtitle mb-2 text-muted">Date Added: {{ latest_status.status_date_added }}</h6>
+                                    </div>
                                     {% else %}
-                                    <p class="card-text">No status history available.</p>
+                                        <p class="card-text">No status history available.</p>
                                     {% endif %}
                                     {% endwith %}
                                 </div>
                             </div>
                             <p class="fw-bold h4">Status History</p>
                             <div>
-                                <table class="table table-striped nowrap" id="table-status" style="width:100%">
+                                <table class="table table-striped nowrap" id="table-status_{{ case.id }}" style="width:100%">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th scope="col" class="col-4 align-middle">Date of Status Added</th>
-                                            <th scope="col" class="col-8 align-middle">Status Description</th>
+                                            <th scope="col" class="col-1">Date of Status Event</th>
+                                            <th scope="col" class="col-3 text-center">Status Title</th>
+                                            <th scope="col" class="col-5">Status Description</th>
+                                            <th scope="col" class="col-2">Date of Status Added</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for status_history in case.status_history.all %}
                                         <tr class="border-2">
-                                            <td class="align-middle">{{ status_history.status_date_added }}</td>
-                                            <td class="align-middle">{{ status_history.status_description }}</td>
+                                            <td>{{ status_history.status_event_date }}</td>
+                                            <td class="text-center">{{ status_history.status_title }}</td>
+                                            <td>{{ status_history.status_description }}</td>
+                                            <td>{{ status_history.status_date_added }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr class="border-2">
                                             <td class="text-center"></td>
                                             <td class="text-start align-middle">No Status Yet.</td>
+                                            <td class="text-center"></td>
                                             <td class="text-center"></td>
                                         </tr>
                                         {% endfor %}
@@ -86,4 +99,17 @@
 
 {% endblock content %}
 {% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('table[id^="table-status_"]').DataTable({
+            dom: 'Brt <"bottom"lp>',
+            responsive: true,
+            fixedHeader: true,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            //order: [[4, 'desc']],
+            order: [[0, 'desc']],
+        });
+    });
+</script>
+
 {% endblock scripts %}
