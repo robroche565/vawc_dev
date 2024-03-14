@@ -1351,16 +1351,22 @@ def process_incident_form(request):
                 request.POST.getlist('witness_number'),
                 request.POST.getlist('witness_email')
             )
+            witness_data_list = list(witness_data)
+            print(witness_data_list)
 
-            # Create a new Witness object for each set of witness data
-            for name, address, number, email in witness_data:
-                Witness.objects.create(
-                    case_witness=case_instance,
-                    name=name,
-                    address=address,
-                    contact_number=number,
-                    email=email
-                )
+            #Create a new Witness object for each set of witness data
+            for name, address, number, email in witness_data_list:
+                try:
+                    Witness.objects.create(
+                        case_witness=case_instance,
+                        name=name,
+                        address=address,
+                        contact_number=number,
+                        email=email,
+                    )
+                    print('saved data:',name, address, number, email)
+                except Exception as e:
+                    print("Error creating Witness:", e)
         # Process removal of witnesses
         witnesses_to_delete = request.POST.getlist('witnesstoDelete')
         for witness_id in witnesses_to_delete:
