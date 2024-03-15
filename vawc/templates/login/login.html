@@ -89,11 +89,38 @@
     </div>
 </div>
 
+{% for message in messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3 text-light">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="toast-header text-dark" style="background-color:#899499;">
+                <img src="{% static 'img/ecs-no-bg-2.png' %}" class="rounded me-2" alt="..." style="width:20px;">
+                <strong class="me-auto text-dark">Session Expired</strong>
+                <small>Just Now</small>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-dark">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
 {% endblock content %}
 {% block scripts %}
 <script>
     // JavaScript for login_with_otp.html
     $(document).ready(function() {
+        // Initialize Bootstrap toast
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl, {autohide: true});
+        });
+
+        // Show each toast
+        toastList.forEach(function (toast) {
+            toast.show();
+        });
+
         $('#loginForm').submit(function(event) {
             event.preventDefault();
             var formData = $(this).serialize();
