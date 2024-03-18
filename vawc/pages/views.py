@@ -464,6 +464,7 @@ def get_contact_person_data(post_data):
         'contact_number': post_data.get('contact-number'),
         'telephone_number': post_data.get('contact-tel'),
         'region': post_data.get('contact-region'),
+        'bldg_number': post_data.get('contact-bldg-no'),
     }
     return contact_person_data
 
@@ -937,6 +938,7 @@ def add_new_contact_person(request):
         province = request.POST.get('contact_person_province')
         city = request.POST.get('contact_person_city')
         region = request.POST.get('contact_person_region')
+        bldg_no = request.POST.get('contact_person_bldg_no')
 
         # Create and save the new victim instance
         contact_person = Contact_Person.objects.create(
@@ -952,7 +954,8 @@ def add_new_contact_person(request):
             barangay=barangay,
             province=province,
             city=city,
-            region=region
+            region=region,
+            bldg_number=bldg_no,
         )
 
 
@@ -979,7 +982,7 @@ def save_contact_person_data(request, contact_person_id):
         contact_person.province = encrypt_data(request.POST.get('contact_person_province_' + str(contact_person_id))).decode('utf-8')
         contact_person.city = encrypt_data(request.POST.get('contact_person_city_' + str(contact_person_id))).decode('utf-8')
         # contact_person.region = request.POST.get('contact_person_region_' + str(contact_person_id))
-
+        contact_person.bldg_number = encrypt_data(request.POST.get('contact_person_bldg_no_' + str(contact_person_id))).decode('utf-8')
         # Save contact_person data
         contact_person.save()
 

@@ -158,7 +158,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTO_LOGOUT = {
-    'IDLE_TIME': timedelta(minutes=3),
+    'IDLE_TIME': timedelta(minutes=10),
     'SESSION_TIME': timedelta(minutes=30),
     'MESSAGE': 'The session has expired. Please login again to continue.',
     'REDIRECT_TO_LOGIN_IMMEDIATELY': True,

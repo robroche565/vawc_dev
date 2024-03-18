@@ -117,6 +117,7 @@ class Contact_Person(models.Model):
     contact_number = models.CharField(max_length=100,null=True, blank=True)
     telephone_number = models.CharField(max_length=100,null=True, blank=True)
     region = models.CharField(max_length=250, null=True, blank=True)
+    bldg_number = models.CharField(max_length=10, null=True, blank=True)
 
 
 class Evidence(models.Model):
