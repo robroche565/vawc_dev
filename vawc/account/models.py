@@ -27,7 +27,7 @@ class Account(models.Model):
         blank=True,
         default=NO
     )
-
+    barangay = models.CharField(max_length=100, null=True, blank=True)
     ADMIN, STAFF = 'admin', 'staff'
     TYPE_CHOICES = [(ADMIN, 'Admin'), (STAFF, 'Staff')]
     type = models.CharField(

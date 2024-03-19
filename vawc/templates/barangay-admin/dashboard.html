@@ -3,143 +3,104 @@
 {% load static %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="pt-5">DASHBOARD BARANGAY</h1>
-    <div class="row pt-3">
-        <div class="col-lg-4 col-md-4 col-sm-8">
-            <div class="card">
-                <div class="card-body">
-                  Total Victims
-                </div>
-              </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-8">
-            <div class="card">
-                <div class="card-body">
-                  Total BPO
-                </div>
-              </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-8">
-            <div class="card">
-                <div class="card-body">
-                  BPO Violations
-                </div>
-              </div>
-        </div>
+    <h1 class="pt-5">DASHBOARD BARANGAY: {{ barangay }}</h1>
+    <div class="row d-flex align-items-center pt-3">
+      <div class="col-lg-6 col-12">
+        <canvas id="myBarChart"></canvas>
+      </div>
+      <div class="col-lg-6 col-12">
+          <canvas id="myPieChart"></canvas>
+      </div>
     </div><!--End of row-->
-    <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-8">
+    <div class="col-lg-6 col-12">
+      <div class="row">
+        <div class="col-lg-6 col-6">
             <div class="card">
                 <div class="card-body">
-                  Services Provided
+                  Total Impacted: <span>{{ impacted_count }}</span>
                 </div>
               </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-8">
+        <div class="col-lg-6 col-6">
             <div class="card">
                 <div class="card-body">
-                  Active Cases
+                  Total Behalf: <span>{{ behalf_count }}</span>
                 </div>
               </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-8">
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-6">
             <div class="card">
                 <div class="card-body">
-                  Close Cases
+                  Active Cases: <span>{{ active_count }}</span>
                 </div>
               </div>
         </div>
-    </div><!--End of row-->
-
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-8">
-        <div class="card">
-          <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-8">
-                  <div class="card-body">Cases Per Age</div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-8 pt-4">
-                  <select class="form-select" aria-label="Default select example">
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="2021">2021</option>
-                  </select>
+        <div class="col-lg-6 col-6">
+            <div class="card">
+                <div class="card-body">
+                  Close Cases: <span>{{ closed_count }}</span>
                 </div>
               </div>
-            </div> 
-          </div><!--Done of first col-->
-
-      <div class="col-lg-6 col-md-6 col-sm-8">
-        <div class="card">
-          <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-8">
-              <div class="card-body">Trend of Cases</div>
-            </div>
-          <div class="col-lg-4 col-md-4 col-sm-8 pt-4">
-            <select class="form-select" aria-label="Default select example">
-              <option value="2024">2024</option>
-              <option value="2023">2023</option>
-              <option value="2022">2022</option>
-              <option value="2021">2021</option>
-            </select>
-          </div>
         </div>
-        </div>
-      </div><!--Done of second col-->
-    </div><!--End of row-->
+      </div><!--End of row-->
+    </div>
 
-
-    <div class="row">
-      <div class="card pb-3">
-        <div class="card-body">
-          <h5>Active Cases</h5>
-          <div class="pt-2 table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">UserId</th>
-                <th scope="col">FirstName</th>
-                <th scope="col">MiddleName</th>
-                <th scope="col">LastName</th>
-                <th scope="col">DateFiled</th> 
-              </tr>
-            </thead>
-            <tbody class="table-group-divider">
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>@twitter</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-            </tbody>
-          </table>
-        </div><!--end of table-->
-        </div><!--end of card body-->
-      </div><!--card-->
-    </div><!--End of row-->
 
 </div>
 
 {% endblock content %}
 {% block scripts %}
+<script>
+  var ctx = document.getElementById('myPieChart').getContext('2d');
+
+  var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels: ['Impacted', 'Behalf'],
+          datasets: [{
+              label: 'Reported',
+              data: [{{ impacted_count }}, {{ behalf_count }}], // Impacted and Behalf data
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.5)', // Red for Impacted
+                  'rgba(54, 162, 235, 0.5)', // Blue for Behalf
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+      }
+  });
+
+  var ctx = document.getElementById('myBarChart').getContext('2d');
+
+  var myBarChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: ['Victim (Minor)', 'Perpetrator (Minor)'],
+          datasets: [{
+            label: 'Number of Minor',
+              data: [{{ minor_victim_count }}, {{ minor_perp_count }}], // Data retrieved from the server
+              backgroundColor: [
+                  'rgba(63, 72, 222, 0.8)', // Red for Victim (Minor)
+                  'rgba(54, 162, 235, 0.5)', // Blue for Perpetrator (Minor)
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+
+</script>
 {% endblock scripts %}

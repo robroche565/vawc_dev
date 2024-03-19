@@ -157,7 +157,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-time_to_logout = 300
+time_to_logout = 30
 
 AUTO_LOGOUT = {
     'IDLE_TIME': timedelta(minutes=time_to_logout),

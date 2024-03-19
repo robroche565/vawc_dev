@@ -37,6 +37,9 @@ from account.models import *
 def home_view (request):
     return render(request, 'landing/home.html')
 
+def address_view (request):
+    return render(request, 'address.html')
+
 def error_view (request):
     return render(request, 'landing/error_404.html')
 
@@ -132,7 +135,80 @@ def admin_graph_view (request):
 
 @login_required
 def barangay_dashboard_view (request):
-    return render(request, 'barangay-admin/dashboard.html')
+    logged_in_user = request.user  # Retrieve the logged-in user
+    # Retrieve the Account object associated with the logged-in user
+    try:
+        account = logged_in_user.account
+        barangay = account.barangay
+    except Account.DoesNotExist:
+        barangay = None
+    cases = Case.objects.all()  # Retrieve all cases from the database\
+    
+
+    filtered_cases = []
+
+    for case in cases:
+        decrypted_barangay = decrypt_data(case.barangay)
+        if decrypted_barangay == barangay:
+            filtered_cases.append(case)
+    
+    # Initialize minor victim count
+    minor_victim_count = 0
+    minor_perp_count = 0
+    # Iterate through filtered cases
+    for case in filtered_cases:
+        # Filter victims for the current case
+        victims = Victim.objects.filter(case_victim=case)
+
+        # Filter perpetrators for the current case
+        perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
+
+        # Iterate through victims
+        for victim in victims:
+            decrypted_date_of_birth = decrypt_data(victim.date_of_birth)
+            age = calculate_age(decrypted_date_of_birth)
+            if age is not None and age < 18:
+                minor_victim_count += 1
+
+        # Iterate through perpetrators
+        for perpetrator in perpetrators:
+            decrypted_date_of_birth = decrypt_data(perpetrator.date_of_birth)
+            age = calculate_age(decrypted_date_of_birth)
+            if age is not None and age < 18:
+                minor_perp_count += 1
+
+
+
+    # Count the number of impacted and behalf cases
+    impacted_count = len(list(filter(lambda case: case.type_of_case == Case.TYPE_IMPACTED_VICTIM, filtered_cases)))
+    behalf_count = len(list(filter(lambda case: case.type_of_case == Case.TYPE_REPORTING_BEHALF, filtered_cases)))
+
+    # Count the number of active and closed cases
+    active_count = len(list(filter(lambda case: case.status == Case.STATUS_ACTIVE, filtered_cases)))
+    closed_count = len(list(filter(lambda case: case.status == Case.STATUS_CLOSE, filtered_cases)))
+
+
+    return render(request, 'barangay-admin/dashboard.html', {
+        'cases': filtered_cases,
+        'impacted_count': impacted_count,
+        'behalf_count': behalf_count,
+        'active_count': active_count,
+        'closed_count': closed_count,
+        'global': request.session,
+        'logged_in_user': logged_in_user,
+        'barangay': barangay,
+        'minor_victim_count': minor_victim_count,
+        'minor_perp_count':minor_perp_count
+    })
+
+def calculate_age(date_of_birth_str):
+    try:
+        date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d')
+        today = datetime.now()
+        age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
+        return age
+    except ValueError:
+        return None
 
 @login_required
 def barangay_settings_view (request):
@@ -140,13 +216,27 @@ def barangay_settings_view (request):
 
 @login_required
 def barangay_case_view(request):
+    logged_in_user = request.user  # Retrieve the logged-in user
+    # Retrieve the Account object associated with the logged-in user
+    try:
+        account = logged_in_user.account
+        barangay = account.barangay
+    except Account.DoesNotExist:
+        barangay = None
     cases = Case.objects.all()  # Retrieve all cases from the database
     
-    print(request.session['security_status'])
+    filtered_cases = []
+    
+    for case in cases:
+        decrypted_barangay = decrypt_data(case.barangay)
+        if decrypted_barangay == barangay:
+            filtered_cases.append(case)
     
     return render(request, 'barangay-admin/case/case.html', {
-        'cases': cases,
-        'global': request.session
+        'cases': filtered_cases,
+        'global': request.session,
+        'logged_in_user': logged_in_user,
+        'barangay': barangay,
     })
 
 
