@@ -24,10 +24,12 @@
             {% endfor %}
             <hr>
             <!-- Button to trigger modal -->
-            <button class="btn btn-primary mt-4" id="addParentBtn">
-                <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
-                <span>Add Parent (Victim)</span>
-            </button>
+            {% if parents|length == 0 %}
+                <button class="btn btn-primary mt-4" id="addParentBtn">
+                    <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
+                    <span>Add Parent (Victim)</span>
+                </button>
+            {% endif %}
         </div>
         <div class="tab-content flex-grow-1" id="v-pills-tabContent">
             {% if parents %}
@@ -101,7 +103,7 @@
                                     </div><!--End of col-->
                                     <div class="col-lg-3 mb-3">
                                         <div class="form-floating">
-                                            <input type="date" class="form-control" id="parent_date_of_birth_{{ parent.id }}" name="parent_date_of_birth_{{ parent.id }}" value="{{ parent.date_of_birth|date:'Y-m-d' }}">
+                                            <input type="date" class="form-control" id="parent_date_of_birth_{{ parent.id }}" name="parent_date_of_birth_{{ parent.id }}" value="{{ parent.date_of_birth }}">
                                             <label for="parent_date_of_birth_{{ parent.id }}">Date of Birth: </label>
                                         </div>
                                     </div>

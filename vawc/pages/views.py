@@ -425,6 +425,10 @@ def get_victim_data(post_data, prefix, index):
         'barangay': post_data.get(f'{prefix}barangay_{index}'),
         'province': post_data.get(f'{prefix}province_{index}'),
         'city': post_data.get(f'{prefix}city_{index}'),
+        'educational_attainment': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'occupation': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'religion': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'type_of_disability': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
         'region': post_data.get(f'{prefix}region_{index}'),
     }
     return victim_data
@@ -446,6 +450,13 @@ def get_perpetrator_data(post_data, index):
         'province': post_data.get(f'perp-province_{index}'),
         'city': post_data.get(f'perp-city_{index}'),
         'region': post_data.get(f'perp-region_{index}'),
+        'educational_attainment': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'occupation': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'type_of_disability': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'civil_status': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'contact_number': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'telephone_number': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'religion': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
         'relationship_to_victim': post_data.get(f'perp-relationsip-victim_{index}'),
     }
     return perpetrator_data
@@ -542,6 +553,10 @@ def view_case_behalf(request, case_id):
                 victim.province = decrypt_data(victim.province)
                 victim.city = decrypt_data(victim.city)
                 victim.region = decrypt_data(victim.region)
+                victim.occupation = decrypt_data(victim.occupation)
+                
+                print("Here")
+                print(victim.occupation)
 
             for perpetrator in perpetrators:
                 perpetrator.relationship_to_victim = decrypt_data(perpetrator.relationship_to_victim)
@@ -563,8 +578,8 @@ def view_case_behalf(request, case_id):
                 perpetrator.province = decrypt_data(perpetrator.province)
                 perpetrator.region = decrypt_data(perpetrator.region)
             
-            print("contact")
             for contact_person in contact_persons:
+                
                 contact_person.first_name = decrypt_data(contact_person.first_name)
                 contact_person.middle_name = decrypt_data(contact_person.middle_name)
                 contact_person.last_name = decrypt_data(contact_person.last_name)
@@ -572,6 +587,10 @@ def view_case_behalf(request, case_id):
                 contact_person.city = decrypt_data(contact_person.city)
                 contact_person.province = decrypt_data(contact_person.province)
                 contact_person.telephone_number = decrypt_data(contact_person.telephone_number)
+                contact_person.contact_number = decrypt_data(contact_person.contact_number)
+                contact_person.street = decrypt_data(contact_person.street)
+                contact_person.bldg_number = decrypt_data(contact_person.bldg_number)
+                contact_person.relationship = decrypt_data(contact_person.relationship)
 
                 # contact num
                 # region
@@ -666,7 +685,13 @@ def view_case_impact(request, case_id):
                 victim.province = decrypt_data(victim.province)
                 victim.city = decrypt_data(victim.city)
                 victim.region = decrypt_data(victim.region)
-
+                victim.occupation = decrypt_data(victim.occupation)
+                
+                # new
+                victim.type_of_disability = decrypt_data(victim.type_of_disability)
+                victim.educational_attainment = decrypt_data(victim.educational_attainment)
+                victim.religion = decrypt_data(victim.religion)
+                
             for perpetrator in perpetrators:
                 perpetrator.relationship_to_victim = decrypt_data(perpetrator.relationship_to_victim)
                 perpetrator.first_name = decrypt_data(perpetrator.first_name)
@@ -676,9 +701,8 @@ def view_case_impact(request, case_id):
                 perpetrator.identifying_marks = decrypt_data(perpetrator.identifying_marks)
                 perpetrator.alias = decrypt_data(perpetrator.alias)
                 perpetrator.sex = decrypt_data(perpetrator.sex)
-                #perpetrator.contact_number = decrypt_data(perpetrator.contact_number)
-                #perpetrator.telephone_number = decrypt_data(perpetrator.telephone_number)
-                print(perpetrator.contact_number)
+                perpetrator.contact_number = decrypt_data(perpetrator.contact_number)
+                perpetrator.telephone_number = decrypt_data(perpetrator.telephone_number)
                 perpetrator.date_of_birth = decrypt_data(perpetrator.date_of_birth)
                 perpetrator.nationality = decrypt_data(perpetrator.nationality)
                 perpetrator.house_information = decrypt_data(perpetrator.house_information)
@@ -686,6 +710,15 @@ def view_case_impact(request, case_id):
                 perpetrator.barangay = decrypt_data(perpetrator.barangay)
                 perpetrator.province = decrypt_data(perpetrator.province)
                 perpetrator.region = decrypt_data(perpetrator.region)
+                
+                # new
+                perpetrator.type_of_disability = decrypt_data(perpetrator.type_of_disability)
+                perpetrator.civil_status = decrypt_data(perpetrator.civil_status)
+                perpetrator.religion = decrypt_data(perpetrator.religion)
+                perpetrator.educational_attainment = decrypt_data(perpetrator.educational_attainment)
+                perpetrator.occupation = decrypt_data(perpetrator.occupation)
+                perpetrator.city = decrypt_data(perpetrator.city)
+                
 
         # Render the view-case.html template with the case and related objects as context
         return render(request, 'barangay-admin/case/view-case-impacted.html', {
@@ -871,6 +904,8 @@ def add_new_perpetrator(request):
 @require_POST
 def save_perpetrator_data(request, perpetrator_id):
     try:
+        print("HERE")
+        print(request.POST.get('perpetrator_contact_number_' + str(perpetrator_id)))
         perpetrator = get_object_or_404(Perpetrator, id=perpetrator_id)
 
         # Update perpetrator data
@@ -1037,26 +1072,26 @@ def save_parent_data(request, parent_id):
         parent = get_object_or_404(Parent, id=parent_id)
 
         # Update parent data
-        parent.first_name = request.POST.get('parent_first_name_' + str(parent_id))
-        parent.middle_name = request.POST.get('parent_middle_name_' + str(parent_id))
-        parent.last_name = request.POST.get('parent_last_name_' + str(parent_id))
-        parent.suffix = request.POST.get('parent_suffix_name_' + str(parent_id))
-        parent.sex = request.POST.get('parent_sex_' + str(parent_id))
-        parent.type_of_disability = request.POST.get('parent_type_of_disability_' + str(parent_id))
-        parent.date_of_birth = request.POST.get('parent_date_of_birth_' + str(parent_id))
-        parent.civil_status = request.POST.get('parent_civil_status_' + str(parent_id))
-        parent.contact_number = request.POST.get('parent_contact_number_' + str(parent_id))
-        parent.telephone_number = request.POST.get('parent_telephone_number_' + str(parent_id))
-        parent.educational_attainment = request.POST.get('parent_educational_attainment_' + str(parent_id))
-        parent.occupation = request.POST.get('parent_occupation_' + str(parent_id))
-        parent.nationality = request.POST.get('parent_nationality_' + str(parent_id))
-        parent.religion = request.POST.get('parent_religion_' + str(parent_id))
-        parent.house_information = request.POST.get('parent_house_information_' + str(parent_id))
-        parent.street = request.POST.get('parent_street_' + str(parent_id))
-        parent.barangay = request.POST.get('parent_barangay_' + str(parent_id))
-        parent.province = request.POST.get('parent_province_' + str(parent_id))
-        parent.city = request.POST.get('parent_city_' + str(parent_id))
-        parent.region = request.POST.get('parent_region_' + str(parent_id))
+        parent.first_name = encrypt_data(request.POST.get('parent_first_name_' + str(parent_id))).decode('utf-8')
+        parent.middle_name = encrypt_data(request.POST.get('parent_middle_name_' + str(parent_id))).decode('utf-8')
+        parent.last_name = encrypt_data(request.POST.get('parent_last_name_' + str(parent_id))).decode('utf-8')
+        parent.suffix = encrypt_data(request.POST.get('parent_suffix_name_' + str(parent_id))).decode('utf-8')
+        parent.sex = encrypt_data(request.POST.get('parent_sex_' + str(parent_id))).decode('utf-8')
+        parent.type_of_disability = encrypt_data(request.POST.get('parent_type_of_disability_' + str(parent_id))).decode('utf-8')
+        parent.date_of_birth = encrypt_data(request.POST.get('parent_date_of_birth_' + str(parent_id))).decode('utf-8')
+        parent.civil_status = encrypt_data(request.POST.get('parent_civil_status_' + str(parent_id))).decode('utf-8')
+        parent.contact_number = encrypt_data(request.POST.get('parent_contact_number_' + str(parent_id))).decode('utf-8')
+        parent.telephone_number = encrypt_data(request.POST.get('parent_telephone_number_' + str(parent_id))).decode('utf-8')
+        parent.educational_attainment = encrypt_data(request.POST.get('parent_educational_attainment_' + str(parent_id))).decode('utf-8')
+        parent.occupation = encrypt_data(request.POST.get('parent_occupation_' + str(parent_id))).decode('utf-8')
+        parent.nationality = encrypt_data(request.POST.get('parent_nationality_' + str(parent_id))).decode('utf-8')
+        parent.religion = encrypt_data(request.POST.get('parent_religion_' + str(parent_id))).decode('utf-8')
+        parent.house_information = encrypt_data(request.POST.get('parent_house_information_' + str(parent_id))).decode('utf-8')
+        parent.street = encrypt_data(request.POST.get('parent_street_' + str(parent_id))).decode('utf-8')
+        parent.barangay = encrypt_data(request.POST.get('parent_barangay_' + str(parent_id))).decode('utf-8')
+        parent.province = encrypt_data(request.POST.get('parent_province_' + str(parent_id))).decode('utf-8')
+        parent.city = encrypt_data(request.POST.get('parent_city_' + str(parent_id))).decode('utf-8')
+        parent.region = encrypt_data(request.POST.get('parent_region_' + str(parent_id))).decode('utf-8')
 
         # Save parent data
         parent.save()
@@ -1241,28 +1276,28 @@ def add_new_parent_perp_form(request):
 def save_parent_perp_data(request, parent_id):
     try:
         parent = get_object_or_404(Parent_Perpetrator, id=parent_id)
-
+        
         # Update parent data
-        parent.first_name = request.POST.get('parent_first_name_' + str(parent_id))
-        parent.middle_name = request.POST.get('parent_middle_name_' + str(parent_id))
-        parent.last_name = request.POST.get('parent_last_name_' + str(parent_id))
-        parent.suffix = request.POST.get('parent_suffix_name_' + str(parent_id))
-        parent.sex = request.POST.get('parent_sex_' + str(parent_id))
-        parent.type_of_disability = request.POST.get('parent_type_of_disability_' + str(parent_id))
-        parent.date_of_birth = request.POST.get('parent_date_of_birth_' + str(parent_id))
-        parent.civil_status = request.POST.get('parent_civil_status_' + str(parent_id))
-        parent.contact_number = request.POST.get('parent_contact_number_' + str(parent_id))
-        parent.telephone_number = request.POST.get('parent_telephone_number_' + str(parent_id))
-        parent.educational_attainment = request.POST.get('parent_educational_attainment_' + str(parent_id))
-        parent.occupation = request.POST.get('parent_occupation_' + str(parent_id))
-        parent.nationality = request.POST.get('parent_nationality_' + str(parent_id))
-        parent.religion = request.POST.get('parent_religion_' + str(parent_id))
-        parent.house_information = request.POST.get('parent_house_information_' + str(parent_id))
-        parent.street = request.POST.get('parent_street_' + str(parent_id))
-        parent.barangay = request.POST.get('parent_barangay_' + str(parent_id))
-        parent.province = request.POST.get('parent_province_' + str(parent_id))
-        parent.city = request.POST.get('parent_city_' + str(parent_id))
-        parent.region = request.POST.get('parent_region_' + str(parent_id))
+        parent.first_name = encrypt_data(request.POST.get('parent_first_name_' + str(parent_id))).decode('utf-8')
+        parent.middle_name = encrypt_data(request.POST.get('parent_middle_name_' + str(parent_id))).decode('utf-8')
+        parent.last_name = encrypt_data(request.POST.get('parent_last_name_' + str(parent_id))).decode('utf-8')
+        parent.suffix = encrypt_data(request.POST.get('parent_suffix_name_' + str(parent_id))).decode('utf-8')
+        parent.sex = encrypt_data(request.POST.get('parent_sex_' + str(parent_id))).decode('utf-8')
+        parent.type_of_disability = encrypt_data(request.POST.get('parent_type_of_disability_' + str(parent_id))).decode('utf-8')
+        parent.date_of_birth = encrypt_data(request.POST.get('parent_date_of_birth_' + str(parent_id))).decode('utf-8')
+        parent.civil_status = encrypt_data(request.POST.get('parent_civil_status_' + str(parent_id))).decode('utf-8')
+        parent.contact_number = encrypt_data(request.POST.get('parent_contact_number_' + str(parent_id))).decode('utf-8')
+        parent.telephone_number = encrypt_data(request.POST.get('parent_telephone_number_' + str(parent_id))).decode('utf-8')
+        parent.educational_attainment = encrypt_data(request.POST.get('parent_educational_attainment_' + str(parent_id))).decode('utf-8')
+        parent.occupation = encrypt_data(request.POST.get('parent_occupation_' + str(parent_id))).decode('utf-8')
+        parent.nationality = encrypt_data(request.POST.get('parent_nationality_' + str(parent_id))).decode('utf-8')
+        parent.religion = encrypt_data(request.POST.get('parent_religion_' + str(parent_id))).decode('utf-8')
+        parent.house_information = encrypt_data(request.POST.get('parent_house_information_' + str(parent_id))).decode('utf-8')
+        parent.street = encrypt_data(request.POST.get('parent_street_' + str(parent_id))).decode('utf-8')
+        parent.barangay = encrypt_data(request.POST.get('parent_barangay_' + str(parent_id))).decode('utf-8')
+        parent.province = encrypt_data(request.POST.get('parent_province_' + str(parent_id))).decode('utf-8')
+        parent.city = encrypt_data(request.POST.get('parent_city_' + str(parent_id))).decode('utf-8')
+        parent.region = encrypt_data(request.POST.get('parent_region_' + str(parent_id))).decode('utf-8')
 
         # Save parent data
         parent.save()

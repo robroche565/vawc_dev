@@ -4,10 +4,8 @@
 {% block styles %}
 <link href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
 <link href='https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css' rel='stylesheet'>
-<style>
-
-</style>
 {% endblock %}
+{% load custom_filter %}
 {% block content %}
 <div class="container-fluid pb-4">
     <div class="pt-1 row">
@@ -218,10 +216,14 @@
                         <div class="container-fluid h-100">
                             {% if global.security_status == "decrypted" %}
                             <div class="row d-flex justify-content-between mb-3 mt-lg-0 mt-2">
-                                <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id %}" class="btn btn-outline-primary ms-lg-3 me-2 mb-lg-0 mb-2 col-lg-4 col-12">
-                                    <i class='bx bx-body'></i>
-                                    <span>Add, View, or Delete Parent/s</span>
-                                </a>
+                                {% if victim.date_of_birth|calculate_age >= 18 %}
+                                    <h4 class="fw-bold ms-lg-3 me-2 mb-lg-0 mb-2 col-lg-4 col-12  text-lg-start text-center">Victim is above 18.</h4>
+                                {% else %}
+                                    <a href="{% url 'add_parent' case_id=case.id victim_id=victim.id %}" class="btn btn-outline-primary ms-lg-3 me-2 mb-lg-0 mb-2 col-lg-4 col-12">
+                                        <i class='bx bx-body'></i>
+                                        <span>Add, View, or Delete Parent</span>
+                                    </a>
+                                {% endif %}
                                 <button class="btn btn-danger me-2 btn-confirm-delete-victim col-lg-4 col-12" data-victim-id="{{ victim.id }}" data-bs-toggle="modal" data-bs-target="#confirmVictimDelete">
                                     <i class='bx bx-trash'></i>
                                     <span>Delete Victim</span>
@@ -301,7 +303,7 @@
                                             <div class="form-floating">
 
                                                 {% if global.security_status == "decrypted" %}
-                                                    <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="{{ victim.date_of_birth|date:'Y-m-d' }}">
+                                                    <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="{{ victim.date_of_birth }}">
                                                 {% else %}
                                                     <input type="date" class="form-control" id="victim_date_of_birth_{{ victim.id }}" name="victim_date_of_birth_{{ victim.id }}" value="2000-01-01" disabled>
                                                 {% endif %}
@@ -330,7 +332,7 @@
                                         <!--contact num-->
                                         <div class="col-lg-6 col-12">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="victim_contact_number_{{ victim.id }}" name="victim_contact_number_{{ victim.id }}" value="{{ victim.contact_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
+                                                <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="victim_contact_number_{{ victim.id }}" name="victim_contact_number_{{ victim.id }}" value="{{ victim.contact_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                                 <label for="victim_contact_number_{{ victim.id }}">Contact Number</label>
                                             </div>
                                         </div>
@@ -338,7 +340,7 @@
                                         <!--telephone num-->
                                         <div class="col-lg-6 col-12">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="victim_telephone_number_{{ victim.id }}" name="victim_telephone_number_{{ victim.id }}" value="{{ victim.telephone_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
+                                                <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="victim_telephone_number_{{ victim.id }}" name="victim_telephone_number_{{ victim.id }}" value="{{ victim.telephone_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                                 <label for="victim_telephone_number_{{ victim.id }}">Telephone Number</label>
                                             </div>
                                         </div>
@@ -599,7 +601,7 @@
                         <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="contact_person_bldg_no_{{ contact_person.id }}" name="contact_person_bldg_no_{{ contact_person.id }}" value="{{ contact_person.bldg_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
-                                <label for="contact_person_bldg_no_{{ contact_person.id }}">Street</label>
+                                <label for="contact_person_bldg_no_{{ contact_person.id }}">Bldg Number</label>
                             </div>
                         </div><!--end of col-->
                     </div><!--end of row-->
@@ -648,10 +650,14 @@
                         <div class="container-fluid h-100">
                             {% if global.security_status == "decrypted" %}
                                 <div class="row d-flex justify-content-between mb-3 mt-lg-0 mt-2">
-                                    <a href="{% url 'add_parent_perp' case_id=case.id perp_id=perpetrator.id %}" class="btn btn-outline-primary ms-lg-3 me-2 mb-lg-0 mb-2 col-lg-4 col-12">
-                                        <i class='bx bx-body'></i>
-                                        <span>Add, View, or Delete Parent/s</span>
-                                    </a>
+                                    {% if perpetrator.date_of_birth|calculate_age >= 18 %}
+                                        <h4 class="fw-bold ms-lg-3 me-2 mb-lg-0 mb-2 col-lg-4 col-12 text-lg-start text-center">Perpetrator is above 18.</h4>
+                                    {% else %}
+                                        <a href="{% url 'add_parent_perp' case_id=case.id perp_id=perpetrator.id %}" class="btn btn-outline-primary ms-lg-3 me-2 mb-lg-0 mb-2 col-lg-4 col-12">
+                                            <i class='bx bx-body'></i>
+                                            <span>Add, View, or Delete Parent</span>
+                                        </a>
+                                    {% endif %}
                                     <button class="btn btn-danger btn-delete-perpetrator col-lg-4 col-12" data-perpetrator-id="{{ perpetrator.id }}" data-bs-toggle="modal" data-bs-target="#confirmPerpetratorDelete">
                                         <i class='bx bx-trash'></i>
                                         <span>Delete Perpetrator</span>
@@ -766,7 +772,7 @@
                                             <div class="form-floating">
                                                 
                                                 {% if global.security_status == "decrypted" %}
-                                                    <input type="date" class="form-control" id="perpetrator_date_of_birth_{{ perpetrator.id }}" name="perpetrator_date_of_birth_{{ perpetrator.id }}" value="{{ perpetrator.date_of_birth|date:'Y-m-d' }}">
+                                                    <input type="date" class="form-control" id="perpetrator_date_of_birth_{{ perpetrator.id }}" name="perpetrator_date_of_birth_{{ perpetrator.id }}" value="{{ perpetrator.date_of_birth }}">
                                                 {% else %}
                                                     <input type="date" class="form-control" id="perpetrator_date_of_birth_{{ perpetrator.id }}" name="perpetrator_date_of_birth_{{ perpetrator.id }}" value="2000-01-01" disabled>
                                                 {% endif %}
@@ -795,14 +801,14 @@
                                     <div class="row mb-1">
                                         <div class="col-lg-6 col-12">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="perpetrator_contact_number_{{ perpetrator.id }}" name="perpetrator_contact_number_{{ perpetrator.id }}" value="{{ perpetrator.contact_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
+                                                <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="perpetrator_contact_number_{{ perpetrator.id }}" name="perpetrator_contact_number_{{ perpetrator.id }}" value="{{ perpetrator.contact_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                                 <label for="perpetrator_contact_number_{{ perpetrator.id }}">Contact Number</label>
                                             </div>
                                         </div><!--End of col-->
 
                                         <div class="col-lg-6 col-12">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="perpetrator_telephone_number_{{ perpetrator.id }}" name="perpetrator_telephone_number_{{ perpetrator.id }}" value="{{ perpetrator.telephone_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
+                                                <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="perpetrator_telephone_number_{{ perpetrator.id }}" name="perpetrator_telephone_number_{{ perpetrator.id }}" value="{{ perpetrator.telephone_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                                 <label for="perpetrator_telephone_number_{{ perpetrator.id }}">Telephone Number</label>
                                             </div>
                                         </div><!--End of col-->
@@ -1247,38 +1253,40 @@
                             <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
                         {% endif %}
                         {% else %}
-                        <div id="witnessContainer">
-                            <div class="row border border-opacity-25 rounded border-dark shadow" id="witness">
-                                <div class="pt-2"></div>
-                                <div class="col-lg-3 col-md-3 col-sm-12">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="witness_name" name="witness_name" placeholder="">
-                                        <label for="witness_name">Name</label>
-                                    </div>
-                                </div><!--End of col-->
-                                <div class="col-lg-3 col-md-3 col-sm-12">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" id="witness_address" name="witness_address" placeholder=""></textarea>
-                                        <label for="witness_address">Address</label>
-                                    </div>
-                                </div><!--End of col-->
-                                <div class="col-lg-3 col-md-3 col-sm-12">
-                                    <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="witness_number" name="witness_number" placeholder="">
-                                        <label for="witness_number">Contact Number</label>
-                                    </div>
-                                </div><!--End of col-->
-                                <div class="col-lg-3 col-md-3 col-sm-12">
-                                    <div class="form-floating mb-3">
-                                        <input type="email" class="form-control" id="witness_email" name="witness_email" placeholder="">
-                                        <label for="witness_email">Eye-Witness Account</label>
-                                    </div>
-                                </div><!--End of col-->
-                                <button type="button" class="btn btn-sm rounded-top-0 bg-primary border-primary"><i class='bx bx-trash text-white'></i></button>
-                            </div><!--End of row-->
-                        </div>
-                        <br>
-                        <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
+                        {% if global.security_status == "decrypted" %}
+                            <div id="witnessContainer">
+                                <div class="row border border-opacity-25 rounded border-dark shadow" id="witness">
+                                    <div class="pt-2"></div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="witness_name" name="witness_name" placeholder="">
+                                            <label for="witness_name">Name</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" id="witness_address" name="witness_address" placeholder=""></textarea>
+                                            <label for="witness_address">Address</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="witness_number" name="witness_number" placeholder="">
+                                            <label for="witness_number">Contact Number</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="witness_email" name="witness_email" placeholder="">
+                                            <label for="witness_email">Eye-Witness Account</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <button type="button" class="btn btn-sm rounded-top-0 bg-primary border-primary"><i class='bx bx-trash text-white'></i></button>
+                                </div><!--End of row-->
+                            </div>
+                            <br>
+                            <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" id="addWitnessBtn">Add Witness</button></div>
+                        {% endif %}
                         {% endif %}
                     <br>
                     <hr class="pt-3">
