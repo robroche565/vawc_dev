@@ -303,7 +303,6 @@ class Witness(models.Model):
     email = models.CharField(max_length=50, null=True, blank=True)
     
 class Notification(models.Model):
-    # receiver_account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='account_notif',null=True, blank=True)
     receiver_account = models.CharField(max_length=250, null=True, blank=True)
     message = models.CharField(max_length=250, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)

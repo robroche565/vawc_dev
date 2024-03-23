@@ -665,30 +665,109 @@ def get_contact_person_data(post_data):
 
 
 def add_new_case(request):
+    dummy_encrypted = "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g=="
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         type_of_case = request.POST.get('case_type')
         service_information = request.POST.get('service_type')
-        status_case = request.POST.get('status_case')
 
-        try:
-            # Create and save the new case instance
-            case = Case.objects.create(
-                case_number=get_next_case_number(),
-                email=email,
-                type_of_case=type_of_case,
-                service_information=service_information,
-                status=status_case,  # Fixed field name
-                date_added=timezone.now()  # Assign the current timestamp
-            )
+        case_data = {
+            'case_number': get_next_case_number(),
+            'email': email,
+            'date_latest_incident': dummy_encrypted,
+            'place_of_incident': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'province': dummy_encrypted,
+            'city': dummy_encrypted,
+            'region': dummy_encrypted,
+            'description_of_incident': dummy_encrypted,
+            'service_information': service_information,
+            'type_of_case': type_of_case,  # Collecting type of case from the form
+            'date_added': timezone.now()
+        }
+        case_instance = Case.objects.create(**case_data)
+        
+        victim_data = {
+            'first_name': dummy_encrypted,
+            'middle_name': dummy_encrypted,
+            'last_name': dummy_encrypted,
+            'suffix': dummy_encrypted,
+            'sex': dummy_encrypted,
+            'date_of_birth': dummy_encrypted,
+            'civil_status': dummy_encrypted,
+            'nationality': dummy_encrypted,
+            'contact_number': dummy_encrypted,
+            'telephone_number': dummy_encrypted,
+            'house_information': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'province': dummy_encrypted,
+            'city': dummy_encrypted,
+            'educational_attainment': dummy_encrypted,
+            'occupation': dummy_encrypted,
+            'religion': dummy_encrypted,
+            'type_of_disability': dummy_encrypted,
+            'region': dummy_encrypted,
+        }
+        
+        victim_instance = Victim.objects.create(case_victim=case_instance, **victim_data)
+
+        perpetrator_data = {
+            'first_name': dummy_encrypted,
+            'middle_name': dummy_encrypted,
+            'last_name': dummy_encrypted,
+            'suffix': dummy_encrypted,
+            'alias': dummy_encrypted,
+            'sex': dummy_encrypted,
+            'date_of_birth': dummy_encrypted,
+            'nationality': dummy_encrypted,
+            'identifying_marks': dummy_encrypted,
+            'house_information': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'province': dummy_encrypted,
+            'city': dummy_encrypted,
+            'region': dummy_encrypted,
+            'educational_attainment': dummy_encrypted,
+            'occupation': dummy_encrypted,
+            'type_of_disability': dummy_encrypted,
+            'civil_status': dummy_encrypted,
+            'contact_number': dummy_encrypted,
+            'telephone_number': dummy_encrypted,
+            'religion': dummy_encrypted,
+            'relationship_to_victim': dummy_encrypted,
+        }
+     
+        perpetrator_instance = Perpetrator.objects.create(case_perpetrator=case_instance, **perpetrator_data)
+        
+        contact_person_data = {
+            'first_name': dummy_encrypted,
+            'middle_name': dummy_encrypted,
+            'last_name': dummy_encrypted,
+            'suffix': dummy_encrypted,
+            'relationship': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'city': dummy_encrypted,
+            'province': dummy_encrypted,
+            'contact_number': dummy_encrypted,
+            'telephone_number': dummy_encrypted,
+            'region': dummy_encrypted,
+            'bldg_number': dummy_encrypted,
+        }
+        
+        contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
+        
             # Return the case_id upon successful creation
-            return JsonResponse({'success': True, 'case_id': case.id, 'type_of_case': type_of_case})
-            #return redirect('barangay case') 
-        except Exception as e:
-            # Return error response if creation fails
-            return JsonResponse({'success': False, 'error': str(e)})
-    else:
-        return HttpResponse("Method not allowed", status=405)
+        return JsonResponse({'success': True, 'case_id': case_instance.id, 'type_of_case': type_of_case})
+    #         #return redirect('barangay case') 
+    #     except Exception as e:
+    #         # Return error response if creation fails
+    #         return JsonResponse({'success': False, 'error': str(e)})
+    # else:
+    #     return HttpResponse("Method not allowed", status=405)
 
 @login_required
 def view_case_behalf(request, case_id):
