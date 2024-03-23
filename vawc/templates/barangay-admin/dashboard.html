@@ -3,6 +3,7 @@
 {% load static %}
 {% block content %}
 <div class="container-fluid">
+    <h4>Account: {{ email }}</h4>
     <h1 class="pt-5">DASHBOARD BARANGAY: {{ barangay }}</h1>
     <div class="row d-flex align-items-center pt-3">
       <div class="col-lg-6 col-12">
@@ -101,6 +102,8 @@
           }
       }
   });
+
+  
 
 </script>
 {% endblock scripts %}

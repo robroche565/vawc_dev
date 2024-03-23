@@ -8,9 +8,11 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+          {% comment %} <a class="nav-link nav-icon-hover" href="javascript:void(0)"> {% endcomment %}
+            <a class="nav-link nav-icon-hover" href="{% url 'Notification' %}">
             <i class='bx bx-bell'></i>
-            <div class="notification bg-primary rounded-circle"></div>
+            <div class="notification list-notification bg-primary rounded-circle">
+            </div>
           </a>
         </li>
       </ul>
