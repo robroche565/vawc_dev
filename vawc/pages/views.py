@@ -152,6 +152,9 @@ def barangay_dashboard_view (request):
         if decrypted_barangay == barangay:
             filtered_cases.append(case)
     
+    # Count the filtered cases
+    filtered_cases_count = len(filtered_cases)
+    
     # Initialize minor victim count
     minor_victim_count = 0
     minor_perp_count = 0
@@ -190,6 +193,7 @@ def barangay_dashboard_view (request):
 
     return render(request, 'barangay-admin/dashboard.html', {
         'cases': filtered_cases,
+        'filtered_cases_count': filtered_cases_count,
         'impacted_count': impacted_count,
         'behalf_count': behalf_count,
         'active_count': active_count,

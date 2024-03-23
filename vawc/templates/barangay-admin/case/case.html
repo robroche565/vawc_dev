@@ -68,7 +68,7 @@
                         {% if case.type_of_case == 'Impacted' %}
                             Impacted Victim
                         {% elif case.type_of_case == 'Behalf' %}
-                            Behalf of Impacted Victim
+                            Behalf
                         {% endif %}
                     </td>
                     <td>
@@ -205,7 +205,14 @@
         });
         $('select#case_type').on('change', function(e){
             var status = $(this).val();
-            $('#table-case').DataTable().columns([1]).search(status).draw();
+            var dataTable = $('#table-case').DataTable();
+            if (status === "Impacted") {
+                dataTable.column(1).search("Impacted").draw();
+            } else if (status === "Behalf") {
+                dataTable.column(1).search("Behalf").draw();
+            } else {
+                dataTable.column(1).search("").draw(); // Clear the search if "All Case Type" is selected
+            }
         });
         $('select#service').on('change', function(e){
             var status = $(this).val();
