@@ -15,14 +15,16 @@
         <div class="col-lg-8 col-12">
             <h2>Case Number: {{ case.case_number }} <span class="h5">(Date Added:{{ case.date_added }})</span>  </h2>
         </div>
-        <div class="d-grid gap-2 col-lg-2 col-12 mx-auto mb-lg-0 mb-2">
-            <a href="{% url 'pdf case' case_id=case.id %}" class="btn btn-info d-flex align-items-center justify-content-center" target="_blank">
-                <i class='bx bxs-file-pdf me-3'></i>
-                Print Case
-            </a>
-        </div>
-        <div class="d-grid gap-2 col-lg-2 col-12 mx-auto">
-            <button class="btn btn-danger btn-confirm-delete-case" data-case-id="{{ case.id }}" data-bs-toggle="modal" data-bs-target="#confirmDeletCase">
+        {% if global.security_status == "decrypted" %}
+            <div class="d-grid gap-2 col-lg-2 col-12 mx-auto mb-lg-0 mb-2">
+                <a href="{% url 'pdf case' case_id=case.id %}" class="btn btn-info d-flex align-items-center justify-content-center" target="_blank">
+                    <i class='bx bxs-file-pdf me-3'></i>
+                    Print Case
+                </a>
+            </div>
+        {% endif %}
+        <div class="d-grid gap-2 mx-auto d-grid gap-2  mx-auto {% if global.security_status == 'encrypted' %} col-lg-4 {% elif global.security_status == 'decrypted'  %} col-lg-2 {% endif %} col-12">
+            <button class="btn btn-danger btn-confirm-delete-case" data-case-id="{{ case.id }}" data-bs-toggle="modal" data-bs-target="#confirmDeletCase" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                 <i class='bx bx-trash me-2'></i>
                 Delete Case
             </button>
@@ -1063,7 +1065,7 @@
                     <div class="pt-5">
                         <input class="form-check-input" type="checkbox" value="true" id="checkbox_a_7610" name="checkbox_a_7610" {% if case.checkbox_a_7610 %} checked {% endif %}>
                         <label class="form-check-label" for="checkbox_a_7610">
-                            <strong> A 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</strong>
+                            <strong> RA 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</strong>
                         </label>
                     </div><!--End of title-->
                     <div class="row pb-3">

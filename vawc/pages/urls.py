@@ -55,6 +55,9 @@ urlpatterns = [
     path('get_all_notification_barangay/', views.get_all_notification_barangay, name='get_all_notification_barangay'),
     
 
+    # GRAPH
+    path('request_graph_report/', views.request_graph_report, name='request_graph_report'),
+
     path('add_new_contact_person/', views.add_new_contact_person, name='add_new_contact_person'),
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),
     path('add_new_victim_data/', views.add_new_victim, name='add_new_victim'),

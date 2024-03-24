@@ -232,7 +232,32 @@ def check_username_email(request):
 
 @login_required
 def admin_graph_view (request):
-    return render(request, 'super-admin/graph-report.html')
+    case = Case.objects.all()
+    
+    start_date = datetime(2024, 3, 23)
+    end_date = datetime(2024, 3, 23)
+
+    cases = Case.objects.filter(date_added__range=[start_date, end_date])
+    
+    print(cases)
+    
+    return render(request, 'super-admin/graph-report.html', {'cases': cases})
+
+def request_graph_report(request):
+    # Retrieve start_date and end_date from the request
+    start_date = datetime(2024, 3, 18)
+    end_date = datetime(2024, 3, 25)
+
+    # Convert date strings to datetime objects
+    # start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+    # end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
+    # Filter Case objects within the specified date range
+    cases = Case.objects.filter(date_added__range=[start_date, end_date])
+    
+    print(cases)
+
+    return JsonResponse({'success': True, 'case': cases})
 
 # NOTIF
 @login_required
@@ -280,10 +305,6 @@ def get_all_notification_barangay(request):
 
     # Return JSON response with list of dictionaries
     return JsonResponse(notifications_list, safe=False)
-
-
-
-
 
 @login_required
 def barangay_dashboard_view (request):

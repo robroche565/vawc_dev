@@ -854,6 +854,122 @@
         <h3 class="fs-1 title">Incident Information</h3>
       </div>
     <hr>
+    <section>
+      <div class="row row-start mt-3">
+        <div {% if case.checkbox_ra_9262 %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="font-weight: bold; margin-left: 6px;">RA 9262: Anti Violence Against Women and Their Children Act</h3>
+      </div>
+      <div class="row row-start" style="margin-left: 15px;">
+          <div {% if case.checkbox_sexual_abuse  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Sexual Abuse</h3>
+          <div {% if case.checkbox_psychological_abuse  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left:25px;"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Psychological</h3>
+          <div {% if case.checkbox_physical_abuse  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 25px;"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Physical</h3>
+          <div {% if case.checkbox_economic_abuse  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 25px;"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Economic</h3>
+          <div {% if case.checkbox_others  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 25px;"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Others</h3>
+          <span class="underline fs-3" style="margin-left: 5px">&nbsp;{{ case.others_input|default:"Missing Input" }}&nbsp;</span>
+      </div>
+
+      <div class="row row-start mt-3">
+        <div {% if case.checkbox_ra_8353 %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="font-weight: bold; margin-left: 6px;">RA 8353: Anti-Rape Law of 1995</h3>
+      </div>
+      <div class="row row-start" style="margin-left: 15px;">
+          <div {% if case.checkbox_rape_by_sexual_intercourse %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Rape by Sexual Intercourse</h3>
+          <div {% if case.checkbox_rape_by_sexual_assault %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left:25px;"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Rape by Sexual Assault</h3>
+      </div>
+
+      <div class="row row-start mt-3">
+        <div {% if case.checkbox_art_336 %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="font-weight: bold; margin-left: 6px;">Art 336 of the Revised Penal Code</h3>
+      </div>
+      <div class="row row-start" style="margin-left: 15px;">
+          <div {% if case.checkbox_acts_of_lasciviousness %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Acts of lasciviousness</h3>
+      </div>
+
+      <div class="row row-start mt-3">
+        <div {% if case.checkbox_ra_7877 %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="font-weight: bold; margin-left: 6px;">RA 7877: Anti-Sexual Harassment Act</h3>
+      </div>
+      <div class="row row-start" style="margin-left: 15px;">
+          <div {% if case.checkbox_verbal %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Verbal</h3>
+          <div {% if case.checkbox_physical %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 25px"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Physical</h3>
+          <div {% if case.checkbox_use_of_objects %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 25px"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Use of objects, pictures, letters or notes with sexual under-pinnings</h3>
+      </div>
+
+      <div class="row row-start mt-3">
+        <div {% if case.checkbox_a_7610 %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="font-weight: bold; margin-left: 6px;">RA 7610: Special Protection of Children Against Child Abuse, Exploitation and Discrimination Act</h3>
+      </div>
+      <div class="row row-start" style="margin-left: 15px;">
+          <div {% if case.checkbox_engage_prostitution %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Engage, facilitate, promote or attempt to commit prostitution</h3>
+          <div {% if case.checkbox_sexual_lascivious_conduct %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 25px"></div>
+          <h3 class="thin-font fs-3" style="margin-left: 5px">Sexual intercourse or lascivious conduct</h3>
+      </div>
+      <div class="row row-start mt-3">
+        <div {% if case.checkbox_ra_9775 %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="font-weight: bold; margin-left: 6px;">RA 9775 Anti-Child Pornography Act</h3>
+      </div>
+      <div class="row row-start" style="margin-top:10px;">
+        <h3 class="thin-font fs-3" style="font-weight: bold;">Description of Incident:</h3>
+      </div>
+      <div class="row row-start" style="width: 100%; text-align: justify; text-justify: inter-word;">
+        <span class="thin-font fs-3 underline">&nbsp;{{ case_decrypted.description_of_incident }}&nbsp;</span>
+      </div>
+      <div class="row row-start" style="margin-top: 10px;">
+        <h3 class="thin-font fs-3"><span style="font-weight: bold;">Date of Latest Incident: </span> 
+          <span class="underline">
+          {% if case_decrypted.date_latest_incident %}
+            {{ case_decrypted.date_latest_incident|slice:"5:7" }}/{{ case_decrypted.date_latest_incident|slice:"-2:" }}/{{ case_decrypted.date_latest_incident|slice:"0:4" }}
+          {% else %}
+          Missing Input
+          {% endif %}
+          </span> (MM/DD/Year)
+        </h3>
+        <div {% if case_decrypted.incomplete_date %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 35px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 6px;">Incomplete Date</h3>
+      </div>
+      <div class="row row-start" style="margin-top:10px;">
+        <h3 class="thin-font fs-3" style="font-weight: bold;">Place of Incident:</h3>
+      </div>
+      <div class="row row-start">
+        <div {% if case_decrypted.place_of_incident == 'house' %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Home</h3>
+        <div {% if case_decrypted.place_of_incident == 'work'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left:55px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Work</h3>
+        <div {% if case_decrypted.place_of_incident == 'school'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 55px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">School</h3>
+        <div {% if case_decrypted.place_of_incident == 'commercialPlaces'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 55px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Commercial Places</h3>
+        <div {% if case_decrypted.place_of_incident == 'religion'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 55px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Religious Institutions</h3>
+      </div>
+      <div class="row row-start">
+        <div {% if case_decrypted.place_of_incident == 'placeOfMedicalTreatment' %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Place of Medical Treatment</h3>
+        <div {% if case_decrypted.place_of_incident == 'transport'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left:35px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Transport & Connecting Sites</h3>
+        <div {% if case_decrypted.place_of_incident == 'brothles'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left: 35px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Brothels and Similar Establishments</h3>
+      </div>
+      <div class="row row-start">
+        <div {% if case_decrypted.place_of_incident == 'others' %} class="circle_selected" {% else %} class="circle_unselected" {% endif %}></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">Others</h3>
+        <div {% if case_decrypted.place_of_incident == 'noResponse'  %} class="circle_selected" {% else %} class="circle_unselected" {% endif %} style="margin-left:51.5px;"></div>
+        <h3 class="thin-font fs-3" style="margin-left: 5px">No Response</h3>
+      </div>
+      <hr style="margin-top: 5px;">
+    </section>
   </div>
 </body>
 </html>

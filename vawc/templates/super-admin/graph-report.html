@@ -1,10 +1,227 @@
 {% extends "../base/base_admin.html" %}
 {% block title %}Report | Graph Report{% endblock %}
 {% load static %}
+{% block styles %}
+<link href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
+<link href='https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css' rel='stylesheet'>
+<link href='https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css' rel='stylesheet'>
+
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="pt-5">Report</h1>
+    <h1 class="mt-2">Report</h1>
+    
+      
+    <div class="pt-3">
+        <h2>SUMMARY</h2>
+    </div>
+      
+    <!--table-->
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="pt-4 table-responsive-lg table-responsive-md table-responsive-sm">
+                <table class="table table-hover">
+                    <tbody>
+                        <tr class="border-bottom border-2">
+                            <th>Total number of clients served</th>
+                            <td></td>
+                        </tr>
+                        <tr class="border-bottom border-2">
+                            <th>Total of cases filed</th>
+                            <td></td>
+                        </tr>
+                        <tr class="border-bottom border-2">
+                            <th>Total population of City</th>
+                            <th></th>
+                        </tr>
+                        <tr class="border-bottom border-2">
+                            <th>Female</th>
+                            <th></th>
+                        </tr>
+                        <tr class="border-bottom border-2">
+                            <th>Male</th>
+                            <th></th>
+                        </tr>
+                    </tbody>
+                </table><!--end of table-->
+            </div><!--end of div of table-->
+        </div><!--end of col-->
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="pt-4 table-responsive-lg table-responsive-md table-responsive-sm">
+                <table class="table table-hover">
+                <tbody>
+                <tr class="border-bottom border-2">
+                    <th>Total number of Active Cases</th>
+                    <td></td>
+                </tr>
+                <tr class="border-bottom border-2">
+                    <th>Total number of Close Cases</th>
+                    <td></td>
+                </tr>
+                <tr class="border-bottom border-2">
+                    <th>Total number of Victims</th>
+                    <th></th>
+                </tr>
+                <tr class="border-bottom border-2">
+                    <th>Total number of Perpetrators</th>
+                    <th></th>
+                    </tr>
+                    <tr class="border-bottom border-2">
+                    <th>Total number of Barangay</th>
+                    <th></th>
+                    </tr>
+                </tbody>
+                </table><!--end of table-->
+            </div><!--end of div of table-->
+        </div><!--end of col-->
+    </div><!--end of row-->
+    <div class="row pt-3">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="start_date" name="start_date" placeholder="name@example.com">
+                <label for="start_date">Start Date</label>
+            </div>
+        </div><!--end of col-->
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="end_date" name="end_date" placeholder="name@example.com">
+                <label for="end_date">End Date</label>
+            </div>
+        </div><!--end of col-->
+    </div><!--starting of row-->
+    <!--table-->
+    <div class="pt-4">
+        <table class="table table-striped nowrap" id="table-case" style="width:100%">
+            <thead class="border-bottom border-dark border-2 border-opacity-50">
+                <tr>
+                    <th scope="col" class="text-center">Case Number</th>
+                    <th scope="col">Type of Case</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date Added</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for case in cases %}
+                <tr class="border-bottom border-2">
+                    <td class="text-center">{{ case.case_number }}</td>
+                    <td>
+                        {% if case.type_of_case == 'Impacted' %}
+                            Impacted
+                        {% elif case.type_of_case == 'Behalf' %}
+                            Behalf of Impacted Victim
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if case.service_information == 'crisis' %}
+                            Crisis Intervention Including Rescue
+                        {% elif case.service_information == 'issuance' %}
+                            Issuance / Enforcement of Barangay Protection Order
+                        {% endif %}
+                    </td>
+                    <td>{{ case.status }}</td>
+                    <td>{{ case.date_added|date:"m/d/Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>No cases found</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div><!--end of div of table-->
 </div>
 {% endblock content %}
 {% block scripts %}
+<script>
+    $( document ).ready(function() {
+        let dataTable = $('#table-case').DataTable({
+            dom: 'Brt <"bottom"lp>',
+            responsive: true,
+            fixedHeader: true,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        });
+        // Function to convert date format from YYYY-MM-DD to MM/DD/YYYY
+        function formatDate(dateString) {
+            // Create a new Date object from the input date string
+            let date = new Date(dateString);
+    
+            // Get the day, month, and year components
+            let day = date.getDate();
+            let month = date.getMonth() + 1; // Months are zero based
+            let year = date.getFullYear();
+    
+            // Ensure that day and month are displayed with leading zeros if necessary
+            day = day < 10 ? '0' + day : day;
+            month = month < 10 ? '0' + month : month;
+    
+            // Return the formatted date string in MM/DD/YYYY format
+            return month + '/' + day + '/' + year;
+        }
+
+        // Function to apply date range filter
+        function applyDateRangeFilter() {
+            // Get the values of start date and end date inputs
+            let startDate = $('#start_date').val();
+            let endDate = $('#end_date').val();
+
+            startDate = formatDate(startDate);
+            endDate = formatDate(endDate);
+
+            if (startDate != "NaN/NaN/NaN" && endDate != "NaN/NaN/NaN") {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "request_graph_report" %}',
+                    data: {
+                        'start_date': startDate,
+                        'end_date': endDate
+                    },
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                      },
+                    success: function(response) {
+                        console.log(response)
+        
+                        if (response.success) {
+                            console.log("good")
+                            location.reload();
+                        } else {
+                            passkeyResult.innerHTML = response.message
+                            console.log("bad")
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        $('#errorMessage').text('Error occurred. Please try again.');
+                    }
+                });
+
+
+
+
+
+                console.log("tite")
+            }
+
+
+        }
+    
+        // Event listener for start date input
+        $('#start_date').on('change', function() {
+            applyDateRangeFilter();
+        });
+    
+        // Event listener for end date input
+        $('#end_date').on('change', function() {
+            applyDateRangeFilter();
+        });
+
+    });
+    
+
+</script>
 {% endblock scripts %}
