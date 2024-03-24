@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseNotFound, QueryDict, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Max
@@ -37,6 +37,7 @@ import string
 #models
 from case.models import *
 from account.models import *
+from .forms import *
 
 def home_view (request):
     return render(request, 'landing/home.html')
@@ -376,6 +377,22 @@ def barangay_settings_view (request):
     logged_in_user = request.user
     
     return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})
+
+@login_required
+def custom_password_change_view(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return JsonResponse({'success': True})
+        else:
+            messages.error(request, 'Please correct the error below.')
+            errors = dict(form.errors)
+            return JsonResponse({'success': False, 'errors': errors})
+
+    return render(request, 'barangay-admin/settings.html')
 
 @login_required
 def barangay_case_view(request):

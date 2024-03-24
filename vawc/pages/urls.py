@@ -77,6 +77,9 @@ urlpatterns = [
     path('add_new_parent_perp_data/', views.add_new_parent_perp_form, name='add_new_parent_perp_form'),
     path('save_parent_perp_data/<int:parent_id>/', views.save_parent_perp_data, name='save_parent_perp_data'),
     path('delete_parent_perp_data/', views.delete_parent_perp, name='delete_parent_perp'),
+    
+    #user
+    path('custom_password_change/', views.custom_password_change_view, name='custom_password_change'),
 
     path('tite/', views.tite, name='tite')
 ]
