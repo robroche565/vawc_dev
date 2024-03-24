@@ -131,6 +131,14 @@ def logout_view(request):
 def admin_dashboard_view (request):
     return render(request, 'super-admin/dashboard.html')
 
+@login_required
+def admin_manage_account_view (request):
+    return render(request, 'super-admin/account.html')
+
+@login_required
+def admin_graph_view (request):
+    return render(request, 'super-admin/graph-report.html')
+
 # NOTIF
 @login_required
 def admin_notification_view (request):
@@ -179,9 +187,7 @@ def get_all_notification_barangay(request):
     return JsonResponse(notifications_list, safe=False)
 
 
-@login_required
-def admin_graph_view (request):
-    return render(request, 'super-admin/graph_report.html')
+
 
 
 @login_required
@@ -309,6 +315,10 @@ def send_otp_email(email, otp):
         f'This email was sent automatically. Please do not reply.'
     )
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+    
+
+def send_email(receiver, subject, message):
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [receiver])
 
 def generate_otp():
     return ''.join(random.choices(string.digits, k=6))
@@ -578,11 +588,25 @@ def add_case(request):
             message += "LOW"
             
         try:
-            link = "http://127.0.0.1:8000/admin-barangay-vawc/view-case/" + temp_type_case.lower() + "/" + case_id +"/"
+            path = f"/admin-barangay-vawc/view-case/{temp_type_case.lower()}/{case_id}/"
+            link = request.build_absolute_uri(path)
         except:
-            link = "http://127.0.0.1:8000/admin-barangay-vawc/view-case/"
+            link = request.build_absolute_uri("/admin-barangay-vawc/view-case/")
 
         send_notification (message, link, receiver)
+        
+        receiver = email
+        subject = "Submitted Succesfully"
+        message = (
+            f'--------------------------\n'
+            f'Your case #{case_id} has been submitted successfully\n'
+            f'--------------------------\n\n'
+            f'You can check your case status LINK.\n\n'
+            f'--------------------------\n'
+            f'This email was sent automatically. Please do not reply hehe.'
+        )
+        
+        send_email(receiver, subject, message)
         
         return JsonResponse({'success': True})
     else:
@@ -719,6 +743,8 @@ def add_new_case(request):
             'religion': dummy_encrypted,
             'type_of_disability': dummy_encrypted,
             'region': dummy_encrypted,
+            'number_of_children': dummy_encrypted,
+            'ages_of_children': dummy_encrypted,
         }
         
         victim_instance = Victim.objects.create(case_victim=case_instance, **victim_data)
@@ -1048,6 +1074,9 @@ def pdf_template_view (request, case_id):
                 victim_decrypted[attribute] = decrypt_data(value)
             else:
                 victim_decrypted[attribute] = value
+        
+        #insert print of date_of_birth of victims here
+        
         # Fetch parent object related to this victim
         parent = Parent.objects.filter(victim_parent=victim).first()
 
@@ -1064,12 +1093,6 @@ def pdf_template_view (request, case_id):
             # If no parent is found for the victim, append None
             list_victim_decrypted.append((victim_decrypted, None))
 
-        # Calculate age for each victim
-        for victim in list_victim_decrypted:
-            if 'date_of_birth' in victim:
-                victim['age'] = calculate_age(victim['date_of_birth'])
-
-    
 
     # PERPETRATORS ----------------------
     list_perpetrator_decrypted = []
@@ -1104,6 +1127,7 @@ def pdf_template_view (request, case_id):
         for perpetrator, parent in list_perpetrator_decrypted:
             if 'date_of_birth' in perpetrator:
                 perpetrator['age'] = calculate_age(perpetrator['date_of_birth'])
+                print(f"Perpetrator Age: {perpetrator['age']}")
 
         # Print the encrypted attributes
         # for attribute, value in perpetrator_decrypted.items():
@@ -1958,6 +1982,20 @@ def add_status(request, case_id):
                 status_event_date=status_event_date,
                 status_date_added=timezone.now()
             )
+            case_numbuh = str(case.case_number)
+            receiver = case.email
+            subject = "VAWC DESK PORTAL: The status of your case " + case_numbuh + " has been updated"
+            link = request.build_absolute_uri('/track_case/')
+            message = (
+                f'--------------------------\n'
+                f'You case has been updated on {timezone.now()}\n'
+                f'--------------------------\n\n'
+                f'Please check your status in {link}.\n\n'
+                f'--------------------------\n'
+                f'This email was sent automatically. Please do not reply hehe.'
+            )
+            
+            send_email(receiver, subject, message)
 
             # Return success response
             return JsonResponse({'success': True, 'message': 'Status added successfully'})

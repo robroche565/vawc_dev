@@ -16,7 +16,7 @@ urlpatterns = [
     path('verify-otp-email-case/', views.verify_otp_email_track_case, name='verify_otp_email_track_case'),
     path('track_case_info/<str:user_email>/<str:token>/', views.track_case_info_view, name='track_case_info'),
     path('error_404/', views.error_view, name='error_view'),
-
+    
     #anonymouse side
     path('report_violence/', views.report_violence_view, name='report violence'),
     path('impact-victim-survivor/', views.impact_victim_view, name='impact victim'),
@@ -29,7 +29,8 @@ urlpatterns = [
     #super admin side
     path('admin-vawc/dashboard/', views.admin_dashboard_view, name='admin dashboard'),
     path('admin-vawc/graph-report/', views.admin_graph_view, name='admin graph'),
-
+    path('admin-vawc/account/', views.admin_manage_account_view, name='admin account'),
+    
     #barangay admin side
     path('admin-barangay-vawc/dashboard/', views.barangay_dashboard_view, name='barangay dashboard'),
     path('admin-barangay-vawc/settings/', views.barangay_settings_view, name='barangay settings'),
