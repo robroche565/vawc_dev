@@ -182,11 +182,18 @@
                         event.preventDefault();
                 
                         var formData = $(this).serialize();
+                        var logged_in_user = '{{ logged_in_user }}'
 
                         $.ajax({
                             type: 'POST',
                             url: '{% url "tite" %}',
-                            data: formData,
+                            data: {
+                                'formData': formData,
+                                'logged_in_user': logged_in_user
+                            },
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                            },
                             success: function(response) {
                                 console.log(response.message)
                 

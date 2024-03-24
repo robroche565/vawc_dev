@@ -11,7 +11,6 @@ from django.conf import settings
 import uuid
 from django.core.mail import send_mail, EmailMultiAlternatives 
 from django.template.loader import render_to_string
-from django.conf import settings
 import random
 import string
 from django.utils import timezone
@@ -136,7 +135,8 @@ def admin_dashboard_view (request):
 
 @login_required
 def admin_manage_passkey_view (request):
-    return render(request, 'super-admin/passkey.html')
+    pending_passkeys = Passkey_Reset.objects.filter(status="pending")
+    return render(request, 'super-admin/passkey.html', {'request': pending_passkeys})
 
 @login_required
 def admin_manage_account_view (request):
@@ -2181,25 +2181,31 @@ def update_case_status(request, case_id):
         return JsonResponse({'success': False, 'error': 'Invalid request method'})  # Return an error response if the request method is not POST
 
 def tite(request):
+
+    form_data = request.POST.get('formData')
+    parsed_data = QueryDict(form_data)
+    
     # check if what the button want to do. 
-    action = request.POST.get('security_status')
+    action = parsed_data.get('security_status')
+    requested_user = request.POST.get('logged_in_user')
+    user = CustomUser.objects.filter(username=requested_user).first()
+    account = user.account
     
     if action == "decrypted":
         request.session['security_status'] = "encrypted"
         return JsonResponse({'success': True, 'message': 'encryted successfully.'})
     
-    real_passkey = 'gAAAAABlyy1ztYGcI6Qkx3bOjkMbGsEzhFFYlOU8ph3a-mGEG2yqmoKX07sIGc0bpOX2qNQcBRctnzF8GAqOI2pTNwiMo2m9SQ=='
-    user_passkey = request.POST.get('user_passkey')
+    # real_passkey = GET PASSKEY OF WHO LOGGED IN
+    real_passkey = account.passkey
+    user_passkey = parsed_data.get('user_passkey')
+    # decrypt_real_pk = decrypt_data(real_passkey)
     
-    decrypt_real_pk = decrypt_data(real_passkey)
-    
-    if decrypt_real_pk == user_passkey:
+    if real_passkey == user_passkey:
         request.session['security_status'] = "decrypted"
         return JsonResponse({'success': True, 'message': 'Valid passkey.'})
     else:
         return JsonResponse({'success': False, 'message': 'Invalid passkey.'})
-    
-    
+
     
 #def securititi(request):
     
