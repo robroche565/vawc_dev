@@ -39,19 +39,33 @@
       </div>
       <div class="row">
         
-        <div class="col-lg-6 col-6">
+        <div class="col-lg-3 col-6">
             <div class="card">
                 <div class="card-body">
                   Active Cases: <span>{{ active_count }}</span>
                 </div>
               </div>
         </div>
-        <div class="col-lg-6 col-6">
+        <div class="col-lg-3 col-6">
             <div class="card">
                 <div class="card-body">
                   Close Cases: <span>{{ closed_count }}</span>
                 </div>
               </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="card">
+              <div class="card-body">
+                Total Crisis: <span>{{ crisis_count }}</span>
+              </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="card">
+              <div class="card-body">
+                Total BPO: <span>{{ bpo_count }}</span>
+              </div>
+            </div>
         </div>
       </div><!--End of row-->
     </div>

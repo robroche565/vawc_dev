@@ -27,6 +27,10 @@ class Account(models.Model):
         blank=True,
         default=NO
     )
+    status = models.CharField(max_length=100, null=True, blank=True, default='Active')
+    region = models.CharField(max_length=100, null=True, blank=True)
+    province = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
     barangay = models.CharField(max_length=100, null=True, blank=True)
     ADMIN, STAFF = 'admin', 'staff'
     TYPE_CHOICES = [(ADMIN, 'Admin'), (STAFF, 'Staff')]

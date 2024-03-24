@@ -30,6 +30,8 @@ urlpatterns = [
     path('admin-vawc/dashboard/', views.admin_dashboard_view, name='admin dashboard'),
     path('admin-vawc/graph-report/', views.admin_graph_view, name='admin graph'),
     path('admin-vawc/account/', views.admin_manage_account_view, name='admin account'),
+    path('admin-vawc/create_account/', views.create_account, name='create account'),
+    path('check_username_email/', views.check_username_email, name='check_username_email'),
     
     #barangay admin side
     path('admin-barangay-vawc/dashboard/', views.barangay_dashboard_view, name='barangay dashboard'),

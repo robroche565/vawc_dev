@@ -31,6 +31,8 @@ from django.template import loader
 
 from .utils import encrypt_data, decrypt_data
 import base64
+import random
+import string
 
 #models
 from case.models import *
@@ -133,7 +135,95 @@ def admin_dashboard_view (request):
 
 @login_required
 def admin_manage_account_view (request):
-    return render(request, 'super-admin/account.html')
+    accounts = Account.objects.all()
+    return render(request, 'super-admin/account.html', {'accounts': accounts})
+
+def generate_random_password(length=8):
+    """Generate a random password with specified length."""
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(characters) for _ in range(length))
+
+@login_required
+def create_account(request):
+    if request.method == 'POST':
+        try:
+            username = request.POST.get('account_username')
+            email = request.POST.get('account_email')
+            first_name = request.POST.get('account_fname')
+            middle_name = request.POST.get('account_mname')
+            last_name = request.POST.get('account_lname')
+            region = request.POST.get('account_region')
+            province = request.POST.get('account_province')
+            city = request.POST.get('account_city')
+            barangay = request.POST.get('account_barangay')
+            
+            print(username, email, first_name, middle_name, last_name, region, province, city, barangay)
+            
+            try:
+                password = generate_random_password()
+                print(password)
+                subject = 'Account Creation from VAWC'
+                message = (
+                    f'--------------------------\n'
+                    f'Account Details\n'
+                    f'--------------------------\n\n'
+                    f'Here is your New Account From VAWC:\n\n'
+                    f'Email:  {email}\n'
+                    f'Username:  {username}\n'
+                    f'Password:  {password}\n\n'
+                    f'First Name:  {first_name}\n'
+                    f'Middle Name:  {middle_name}\n'
+                    f'Last Name:  {last_name}\n\n'
+                    f'Region:  {region}\n'
+                    f'Province:  {province}\n'
+                    f'City/Municipality:  {city}\n'
+                    f'Barangay:  {barangay}\n\n'
+                    f'--------------------------\n'
+                    f'This email was sent automatically. Please do not reply.'
+                )
+                send_email(email, subject, message)
+                # Create the user with provided data using the CustomUser manager
+                user = CustomUser.objects.create_user(username=username, email=email, password=password)
+                # Create the Account instance and link it to the user
+                account = Account.objects.create(
+                    user=user,
+                    first_name=first_name,
+                    middle_name=middle_name,
+                    last_name=last_name,
+                    region=region, 
+                    province=province, 
+                    city=city, 
+                    barangay=barangay
+                )
+            except:
+                pass
+            # Return success response
+            return JsonResponse({'success': True, 'message': 'Account created successfully'})
+
+        except Exception as e:
+            # Return error response if something goes wrong
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+    else:
+        # Return error response for unsupported methods
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+
+def check_username_email(request):
+    if request.method == 'GET':
+        username = request.GET.get('username')
+        email = request.GET.get('email')
+
+        # Check if username is taken
+        username_taken = CustomUser.objects.filter(username=username).exists()
+        # Check if email is taken
+        email_taken = CustomUser.objects.filter(email=email).exists()
+
+        response_data = {
+            'username_taken': username_taken,
+            'email_taken': email_taken
+        }
+
+        return JsonResponse(response_data)
 
 @login_required
 def admin_graph_view (request):
@@ -246,6 +336,9 @@ def barangay_dashboard_view (request):
     # Count the number of active and closed cases
     active_count = len(list(filter(lambda case: case.status == Case.STATUS_ACTIVE, filtered_cases)))
     closed_count = len(list(filter(lambda case: case.status == Case.STATUS_CLOSE, filtered_cases)))
+    
+    crisis_count = len(list(filter(lambda case: case.service_information == Case.CRISIS_INTERVENTION, filtered_cases)))
+    bpo_count = len(list(filter(lambda case: case.service_information == Case.ISSUANCE_ENFORCEMENT, filtered_cases)))
 
 
     return render(request, 'barangay-admin/dashboard.html', {
@@ -260,7 +353,9 @@ def barangay_dashboard_view (request):
         'email' : logged_in_user.email,
         'barangay': barangay,
         'minor_victim_count': minor_victim_count,
-        'minor_perp_count':minor_perp_count
+        'minor_perp_count':minor_perp_count,
+        'crisis_count': crisis_count,
+        'bpo_count': bpo_count,
     })
 
 def calculate_age(date_of_birth_str):
@@ -274,7 +369,11 @@ def calculate_age(date_of_birth_str):
 
 @login_required
 def barangay_settings_view (request):
-    return render(request, 'barangay-admin/settings.html', {'global': request.session})
+    logged_in_user = request.user
+    
+    print(logged_in_user.email)
+    
+    return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})
 
 @login_required
 def barangay_case_view(request):
@@ -483,6 +582,7 @@ def add_case(request):
     temp_type_case = request.POST.get('type_of_case')
     temp_service_info = request.POST.get('service')
     
+    print('service:',temp_service_info)
     if request.method == 'POST':
         email = request.POST.get('email-confirmed')
         print('Entered Email:', email)
