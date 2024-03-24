@@ -6,7 +6,11 @@
 {% block content %}
 <div class="container-fluid pb-4">
     <div class="pt-1 row">
-        <a class="col text-decoration-none text-dark" href="{% url 'barangay case view' case_id=case.id %}" role="button"><i class='bx bx-arrow-back'></i> Back</a>
+        {% if case.type_of_case == 'Impacted' %}
+            <a class="col text-decoration-none text-dark" href="{% url 'barangay case impacted view' case_id=case.id %}" role="button"><i class='bx bx-arrow-back'></i> Back</a>
+        {% elif case.type_of_case == 'Behalf' %}
+            <a class="col text-decoration-none text-dark" href="{% url 'barangay case behalf view' case_id=case.id %}" role="button"><i class='bx bx-arrow-back'></i> Back</a>
+        {% endif %}
     </div>
     <h2 class="pt-3 text-center">PARENT INFORMATION (Victim)</h2>
     <div class="d-flex align-items-start mt-3">
@@ -20,10 +24,12 @@
             {% endfor %}
             <hr>
             <!-- Button to trigger modal -->
-            <button class="btn btn-primary mt-4" id="addParentBtn">
-                <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
-                <span>Add Parent (Victim)</span>
-            </button>
+            {% if parents|length == 0 %}
+                <button class="btn btn-primary mt-4" id="addParentBtn">
+                    <i class="bx bx-plus-circle" style="vertical-align: middle;"></i>
+                    <span>Add Parent (Victim)</span>
+                </button>
+            {% endif %}
         </div>
         <div class="tab-content flex-grow-1" id="v-pills-tabContent">
             {% if parents %}
@@ -97,7 +103,7 @@
                                     </div><!--End of col-->
                                     <div class="col-lg-3 mb-3">
                                         <div class="form-floating">
-                                            <input type="date" class="form-control" id="parent_date_of_birth_{{ parent.id }}" name="parent_date_of_birth_{{ parent.id }}" value="{{ parent.date_of_birth|date:'Y-m-d' }}">
+                                            <input type="date" class="form-control" id="parent_date_of_birth_{{ parent.id }}" name="parent_date_of_birth_{{ parent.id }}" value="{{ parent.date_of_birth }}">
                                             <label for="parent_date_of_birth_{{ parent.id }}">Date of Birth: </label>
                                         </div>
                                     </div>
@@ -115,14 +121,20 @@
                                     </div><!--End of col-->
                                 </div><!--End of row-->
                                 <div class="row">
-                                    <div class="col-lg-6 col-6">
+                                    <div class="col-lg-4 col-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="parent_relationship_{{ parent.id }}" name="parent_relationship_{{ parent.id }}" value="{{ parent.relationship_to_victim }}" placeholder="none">
+                                            <label for="parent_relationship_{{ parent.id }}">Relationship of Guardian to Victim-Survivor</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-4 col-12">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="parent_contact_number_{{ parent.id }}" name="parent_contact_number_{{ parent.id }}" value="{{ parent.contact_number }}">
                                             <label for="parent_contact_number_{{ parent.id }}">Contact Number</label>
                                         </div>
                                     </div><!--End of col-->
                                     
-                                    <div class="col-lg-6 col-6">
+                                    <div class="col-lg-4 col-12">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="parent_telephone_number_{{ parent.id }}" name="parent_telephone_number_{{ parent.id }}" value="{{ parent.telephone_number }}">
                                             <label for="parent_telephone_number_{{ parent.id }}">Telephone Number</label>
@@ -379,14 +391,20 @@
                         </div><!--End of col-->
                     </div><!--End of row-->
                     <div class="row">
-                        <div class="col-lg-6 col-6">
+                        <div class="col-lg-4 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="parent_relationship" name="parent_relationship" placeholder="none">
+                                <label for="parent_relationship">Relationship of Guardian to Victim-Survivor</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-4 col-12">
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="parent_contact_number" name="parent_contact_number">
                                 <label for="parent_contact_number">Contact Number</label>
                             </div>
                         </div><!--End of col-->
                         
-                        <div class="col-lg-6 col-6">
+                        <div class="col-lg-4 col-12">
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="parent_telephone_number" name="parent_telephone_number">
                                 <label for="parent_telephone_number">Telephone Number</label>

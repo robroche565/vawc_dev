@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager
+from django.utils import timezone
 
 # Custom User model with email-based authentication
 class CustomUser(AbstractUser):
@@ -27,7 +28,11 @@ class Account(models.Model):
         blank=True,
         default=NO
     )
-
+    status = models.CharField(max_length=100, null=True, blank=True, default='Active')
+    region = models.CharField(max_length=100, null=True, blank=True)
+    province = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    barangay = models.CharField(max_length=100, null=True, blank=True)
     ADMIN, STAFF = 'admin', 'staff'
     TYPE_CHOICES = [(ADMIN, 'Admin'), (STAFF, 'Staff')]
     type = models.CharField(
@@ -38,3 +43,8 @@ class Account(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Passkey_Reset(models.Model):
+    email = models.CharField(max_length=250, null=True, blank=True)
+    status = models.CharField(max_length=250, null=True, blank=True)
+    date = models.DateTimeField(default=timezone.now)   

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from account.models import Account, CustomUser
+from account.models import Account, CustomUser, Passkey_Reset
 from account.forms import CustomUserCreationForm, CustomUserChangeForm
 
 # Define inline admin for Account model
@@ -17,5 +17,9 @@ class CustomUserAdmin(UserAdmin):
     list_display = ["username", "email", "is_staff", "is_superuser"]
     inlines = [AccountInLine]  # Include inline Account admin
 
+class Passkey_ResetAdmin(admin.ModelAdmin):
+    list_display = ('email', 'status', 'date')
+
 # Register the custom admin for CustomUser model
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Passkey_Reset, Passkey_ResetAdmin)

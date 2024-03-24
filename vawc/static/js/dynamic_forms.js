@@ -9,7 +9,6 @@ function showToast(type, message) {
 }
 document.addEventListener("DOMContentLoaded", function() {
     const addVictimButton = document.getElementById("add-victim-form");
-    const deleteVictimButton = document.getElementById("delete-victim-form");
     const victimFormContainer = document.getElementById("victim-form_0"); // Update the target element
     const victimCountInput = document.getElementById("victim_count");
 
@@ -59,15 +58,6 @@ document.addEventListener("DOMContentLoaded", function() {
         clone.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    deleteVictimButton.addEventListener("click", function() {
-        const forms = document.querySelectorAll("[id^='victim-form_']"); // Update the selector
-        if (forms.length > 1) {
-            forms[forms.length - 1].remove();
-            victimCountInput.value = parseInt(victimCountInput.value) - 1;
-        } else {
-            showToast('error', 'At least one victim form is required.');
-        }
-    });
 
     function clearInputFields(form) {
         const inputs = form.querySelectorAll('input[type="text"], input[type="number"]');
@@ -83,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function() {
     const addPerpetratorButton = document.getElementById("add-perpetrator-form");
-    const deletePerpetratorButton = document.getElementById("delete-perpetrator-form");
     const perpetratorFormContainer = document.getElementById("perpetrator-form_0");
     const perpetratorCountInput = document.getElementById("perpetrator_count");
 
@@ -128,15 +117,6 @@ document.addEventListener("DOMContentLoaded", function() {
         clone.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    deletePerpetratorButton.addEventListener("click", function() {
-        const forms = document.querySelectorAll("[id^='perpetrator-form_']");
-        if (forms.length > 1) {
-            forms[forms.length - 1].remove();
-            perpetratorCountInput.value = parseInt(perpetratorCountInput.value) - 1;
-        } else {
-            showToast('error', 'At least one perpetrator form is required.');
-        }
-    });
 
     function clearInputFields(form) {
         const inputs = form.querySelectorAll('input[type="text"], input[type="number"]');

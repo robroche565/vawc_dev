@@ -4,11 +4,23 @@
 {% block styles %}
 <link href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
 <link href='https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css' rel='stylesheet'>
-
 {% endblock %}
 {% block content %}
 <div class="container-fluid pb-4">
+<<<<<<< HEAD
     <h1 class="pt-3">Case</h1>
+=======
+    <div class="row d-flex justify-content-between">
+        <div class="col-auto">
+            <h1>Case</h1>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#add_case" {% if global.security_status == "encrypted" %}disabled{% endif %}><i class="bx bx-plus"></i> Add Case</button>
+        </div>
+    </div>
+    <p>Barangay: {{ barangay }}</p>
+
+>>>>>>> backup-rob-branch
     <div class="row mt-4">
         <div class="col-lg-3 mb-lg-0 mb-3 ">
             <div class="input-group search-keyword">
@@ -19,7 +31,7 @@
         <div class="form-group col-lg-3 mb-lg-0 mb-3 ">
             <select name="case_type" id="case_type" class="form-select me-md-2">
                 <option value="">All Case Type</option>
-                <option value="Impacted">Impacted Victim</option>
+                <option value="Impacted Victim">Impacted Victim</option>
                 <option value="Behalf">Behalf of Impacted Victim</option>
             </select>
         </div>
@@ -57,7 +69,7 @@
                     <td class="text-center">{{ case.case_number }}</td>
                     <td>
                         {% if case.type_of_case == 'Impacted' %}
-                            Impacted Victim
+                            Impacted
                         {% elif case.type_of_case == 'Behalf' %}
                             Behalf of Impacted Victim
                         {% endif %}

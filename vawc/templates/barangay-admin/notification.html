@@ -1,0 +1,90 @@
+{% extends "../base/base_barangay.html" %}
+{% load static %}
+{% block title %}Notification{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{% static '/css/notification.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <ul>
+    {% comment %} {% for notification in notifications %}
+        <li>{{ notification.message }} - {{ notification.date }}</li>
+    {% endfor %} {% endcomment %}
+  </ul>
+
+  <div class="row notification-container">
+      <h2 class="text-center">My Notifications</h2>
+
+      {% for notification in notifications %}
+      <div class="card notification-card notification-invitation">
+        <div class="card-body">
+          <table>
+            <tr>
+              <td style="width:70%"><p>{{ notification.message }}</p></td>
+              <td style="width:30%">                
+                {% if notification.link != "#" %}
+                    <a href="{{notification.link}}" class="btn btn-primary">View</a>
+                {% endif %}
+                <a href="#{{notification.id}}" class="btn btn-danger read-notif dismiss-notification">Read</a>
+              </td>
+            </tr>
+          </table>
+          <p>{{notification.date}}</p>
+          <p class="hidden">{{notification.read}}</p>
+          <p class="hidden">{{notification.id}}</p>
+        </div>
+      </div>
+      {% endfor %}
+      
+    </div>
+</div>  
+
+{% endblock content %}
+{% block scripts %}
+<script>
+  console.log("test")
+
+
+  let notification_parent = document.querySelector(".notification-container")
+
+  console.log(notification_parent)
+
+
+  notification_parent.addEventListener("click", function handleEvent(e) {
+    if(e.target.classList.contains("read-notif")) {
+      let hrefValue = e.target.getAttribute("href");
+      hrefValue = hrefValue.replace("#", "");
+      let newId = parseInt(hrefValue)
+
+      $.ajax({
+        url: '{% url 'read_notification'  %}', // Modify the URL to point to your Django view endpoint
+        method: 'POST',
+        data: {
+            'id': newId  // Pass the notification ID as data
+        },
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+        },
+        success: function(response) {
+            console.log('Notification marked as read');
+            // You can perform any additional actions here after the notification is marked as read
+        },
+        error: function(xhr, status, error) {
+            console.error('Error marking notification as read:', error);
+        }
+      });
+    }
+  })
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock scripts %}
