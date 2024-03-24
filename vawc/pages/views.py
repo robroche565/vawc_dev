@@ -134,6 +134,10 @@ def admin_dashboard_view (request):
     return render(request, 'super-admin/dashboard.html')
 
 @login_required
+def admin_manage_passkey_view (request):
+    return render(request, 'super-admin/passkey.html')
+
+@login_required
 def admin_manage_account_view (request):
     accounts = Account.objects.all()
     return render(request, 'super-admin/account.html', {'accounts': accounts})
@@ -370,11 +374,6 @@ def calculate_age(date_of_birth_str):
 @login_required
 def barangay_settings_view (request):
     logged_in_user = request.user
-    
-    return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})
-    logged_in_user = request.user
-    
-    print(logged_in_user.email)
     
     return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})
 
