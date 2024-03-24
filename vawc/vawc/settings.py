@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'pages',
     'vawc',
     'case',
-    'weasyprint'
 ]
 
 MIDDLEWARE = [
@@ -161,7 +160,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 time_to_logout = 30
 
 AUTO_LOGOUT = {
-    'IDLE_TIME': timedelta(minutes=30000),
+    'IDLE_TIME': timedelta(minutes=time_to_logout),
     'SESSION_TIME': timedelta(minutes=30000),
     'MESSAGE': 'The session has expired. Please login again to continue.',
     'REDIRECT_TO_LOGIN_IMMEDIATELY': True,

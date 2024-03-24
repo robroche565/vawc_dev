@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import datetime
+from account.models import Account
 
 # Create your models here.
 REGION_CHOICES = [
@@ -328,4 +329,11 @@ class Witness(models.Model):
     address = models.TextField(null=True, blank=True)
     contact_number = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=50, null=True, blank=True)
+    
+class Notification(models.Model):
+    receiver_account = models.CharField(max_length=250, null=True, blank=True)
+    message = models.CharField(max_length=250, null=True, blank=True)
+    date = models.DateTimeField(default=timezone.now)
+    link = models.CharField(max_length=250, null=True, blank=True)
+    read = models.BooleanField(default=False)
     

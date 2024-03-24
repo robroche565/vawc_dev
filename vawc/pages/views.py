@@ -131,6 +131,54 @@ def logout_view(request):
 def admin_dashboard_view (request):
     return render(request, 'super-admin/dashboard.html')
 
+# NOTIF
+@login_required
+def admin_notification_view (request):
+    user_account = request.user.account
+    notifications = Notification.objects.filter(receiver_account = request.user.email).order_by('-date')
+
+    return render(request, 'barangay-admin/notification.html', {'notifications': notifications})
+
+
+# message ="message"
+# receiver = get_id_based_barangay(barangay_post)
+# send_notification(message, receiver)
+# send_notification("Your profile image has been updated", 0)
+
+def send_notification (message, link, receiver):
+    # Create a Notification instance
+    notification = Notification(
+        receiver_account = receiver,
+        message = message,
+        link = link,
+        date = timezone.now()  # Assuming you're using timezone.now() for the date
+    )
+
+    # Save the instance to the database
+    notification.save()
+
+
+def read_notification(request):
+    if request.method == 'POST':
+        notification_id = request.POST.get('id')
+
+    notification = Notification.objects.get(id=notification_id)
+    notification.read = True
+    notification.save()
+    
+    # Return JSON response
+    return JsonResponse({'success': True, 'message': 'Updated Succesfully.'})
+
+def get_all_notification_barangay(request):
+    all_notifications = Notification.objects.all()
+    
+    # Serialize the queryset to JSON
+    notifications_list = list(all_notifications.values())
+
+    # Return JSON response with list of dictionaries
+    return JsonResponse(notifications_list, safe=False)
+
+
 @login_required
 def admin_graph_view (request):
     return render(request, 'super-admin/graph_report.html')
@@ -203,6 +251,7 @@ def barangay_dashboard_view (request):
         'closed_count': closed_count,
         'global': request.session,
         'logged_in_user': logged_in_user,
+        'email' : logged_in_user.email,
         'barangay': barangay,
         'minor_victim_count': minor_victim_count,
         'minor_perp_count':minor_perp_count
@@ -419,6 +468,11 @@ def behalf_victim_view (request):
     return render(request, 'landing/case_type/behalf-victim.html')
 
 def add_case(request):
+    
+    temp_barangay = request.POST.get('incident-barangay')
+    temp_type_case = request.POST.get('type_of_case')
+    temp_service_info = request.POST.get('service')
+    
     if request.method == 'POST':
         email = request.POST.get('email-confirmed')
         print('Entered Email:', email)
@@ -490,6 +544,46 @@ def add_case(request):
         contact_person_data = get_contact_person_data(request.POST)
         contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
 
+
+        ######################################
+        all_users = CustomUser.objects.all()
+        # Now you can iterate over all_users and access each user's attributes
+        for user in all_users:
+            try:
+                # Access the associated Account object
+                account = user.account
+                
+                if account.barangay == temp_barangay:
+                    receiver = user.email
+                    print("MATCHEDDDD")
+                    break
+                    
+            except ObjectDoesNotExist:
+                # Handle the case where no associated Account object exists for the user
+                # print("User ID:", string(user.id))
+                # print("User Email:", user.email)
+                print("No associated Account object found for this user.")
+            
+        print(temp_service_info) 
+        # crisis
+        # issuance
+
+        case_id = str(case_instance.id)
+        
+        message = "You have a new case (#"+ case_id + ") awaiting for your attention. The priority is "
+
+        if temp_service_info == "crisis":
+            message += "HIGH"
+        else:
+            message += "LOW"
+            
+        try:
+            link = "http://127.0.0.1:8000/admin-barangay-vawc/view-case/" + temp_type_case.lower() + "/" + case_id +"/"
+        except:
+            link = "http://127.0.0.1:8000/admin-barangay-vawc/view-case/"
+
+        send_notification (message, link, receiver)
+        
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
@@ -580,30 +674,109 @@ def get_contact_person_data(post_data):
 
 
 def add_new_case(request):
+    dummy_encrypted = "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g=="
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         type_of_case = request.POST.get('case_type')
         service_information = request.POST.get('service_type')
-        status_case = request.POST.get('status_case')
 
-        try:
-            # Create and save the new case instance
-            case = Case.objects.create(
-                case_number=get_next_case_number(),
-                email=email,
-                type_of_case=type_of_case,
-                service_information=service_information,
-                status=status_case,  # Fixed field name
-                date_added=timezone.now()  # Assign the current timestamp
-            )
+        case_data = {
+            'case_number': get_next_case_number(),
+            'email': email,
+            'date_latest_incident': dummy_encrypted,
+            'place_of_incident': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'province': dummy_encrypted,
+            'city': dummy_encrypted,
+            'region': dummy_encrypted,
+            'description_of_incident': dummy_encrypted,
+            'service_information': service_information,
+            'type_of_case': type_of_case,  # Collecting type of case from the form
+            'date_added': timezone.now()
+        }
+        case_instance = Case.objects.create(**case_data)
+        
+        victim_data = {
+            'first_name': dummy_encrypted,
+            'middle_name': dummy_encrypted,
+            'last_name': dummy_encrypted,
+            'suffix': dummy_encrypted,
+            'sex': dummy_encrypted,
+            'date_of_birth': dummy_encrypted,
+            'civil_status': dummy_encrypted,
+            'nationality': dummy_encrypted,
+            'contact_number': dummy_encrypted,
+            'telephone_number': dummy_encrypted,
+            'house_information': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'province': dummy_encrypted,
+            'city': dummy_encrypted,
+            'educational_attainment': dummy_encrypted,
+            'occupation': dummy_encrypted,
+            'religion': dummy_encrypted,
+            'type_of_disability': dummy_encrypted,
+            'region': dummy_encrypted,
+        }
+        
+        victim_instance = Victim.objects.create(case_victim=case_instance, **victim_data)
+
+        perpetrator_data = {
+            'first_name': dummy_encrypted,
+            'middle_name': dummy_encrypted,
+            'last_name': dummy_encrypted,
+            'suffix': dummy_encrypted,
+            'alias': dummy_encrypted,
+            'sex': dummy_encrypted,
+            'date_of_birth': dummy_encrypted,
+            'nationality': dummy_encrypted,
+            'identifying_marks': dummy_encrypted,
+            'house_information': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'province': dummy_encrypted,
+            'city': dummy_encrypted,
+            'region': dummy_encrypted,
+            'educational_attainment': dummy_encrypted,
+            'occupation': dummy_encrypted,
+            'type_of_disability': dummy_encrypted,
+            'civil_status': dummy_encrypted,
+            'contact_number': dummy_encrypted,
+            'telephone_number': dummy_encrypted,
+            'religion': dummy_encrypted,
+            'relationship_to_victim': dummy_encrypted,
+        }
+     
+        perpetrator_instance = Perpetrator.objects.create(case_perpetrator=case_instance, **perpetrator_data)
+        
+        contact_person_data = {
+            'first_name': dummy_encrypted,
+            'middle_name': dummy_encrypted,
+            'last_name': dummy_encrypted,
+            'suffix': dummy_encrypted,
+            'relationship': dummy_encrypted,
+            'street': dummy_encrypted,
+            'barangay': dummy_encrypted,
+            'city': dummy_encrypted,
+            'province': dummy_encrypted,
+            'contact_number': dummy_encrypted,
+            'telephone_number': dummy_encrypted,
+            'region': dummy_encrypted,
+            'bldg_number': dummy_encrypted,
+        }
+        
+        contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
+        
             # Return the case_id upon successful creation
-            return JsonResponse({'success': True, 'case_id': case.id, 'type_of_case': type_of_case})
-            #return redirect('barangay case') 
-        except Exception as e:
-            # Return error response if creation fails
-            return JsonResponse({'success': False, 'error': str(e)})
-    else:
-        return HttpResponse("Method not allowed", status=405)
+        return JsonResponse({'success': True, 'case_id': case_instance.id, 'type_of_case': type_of_case})
+    #         #return redirect('barangay case') 
+    #     except Exception as e:
+    #         # Return error response if creation fails
+    #         return JsonResponse({'success': False, 'error': str(e)})
+    # else:
+    #     return HttpResponse("Method not allowed", status=405)
 
 @login_required
 def view_case_behalf(request, case_id):
