@@ -1092,6 +1092,12 @@ def pdf_template_view (request, case_id):
         else:
             # If no parent is found for the victim, append None
             list_victim_decrypted.append((victim_decrypted, None))
+        
+        # Calculate age for each victim
+        for victim, parent in list_victim_decrypted:
+            if 'date_of_birth' in victim:
+                victim['age'] = calculate_age(victim['date_of_birth'])
+                print(f"victim Age: {victim['age']}")
 
 
     # PERPETRATORS ----------------------
@@ -1124,7 +1130,7 @@ def pdf_template_view (request, case_id):
             list_perpetrator_decrypted.append((perpetrator_decrypted, None))
 
         # Calculate age for each perpetrator
-        for perpetrator, parent in list_perpetrator_decrypted:
+        for perpetrator, parent_perpetrator in list_perpetrator_decrypted:
             if 'date_of_birth' in perpetrator:
                 perpetrator['age'] = calculate_age(perpetrator['date_of_birth'])
                 print(f"Perpetrator Age: {perpetrator['age']}")
