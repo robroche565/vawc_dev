@@ -371,6 +371,9 @@ def calculate_age(date_of_birth_str):
 def barangay_settings_view (request):
     logged_in_user = request.user
     
+    return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})
+    logged_in_user = request.user
+    
     print(logged_in_user.email)
     
     return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})

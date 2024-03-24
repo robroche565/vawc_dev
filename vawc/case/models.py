@@ -149,8 +149,6 @@ class Evidence(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='evidence')
     file = models.FileField()
 
-
-
 class Victim(models.Model):
     case_victim = models.ForeignKey(Case, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(max_length=150, null=True, blank=True)
@@ -336,4 +334,6 @@ class Notification(models.Model):
     date = models.DateTimeField(default=timezone.now)
     link = models.CharField(max_length=250, null=True, blank=True)
     read = models.BooleanField(default=False)
+    
+    
     

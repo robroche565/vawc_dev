@@ -58,8 +58,6 @@
       hrefValue = hrefValue.replace("#", "");
       let newId = parseInt(hrefValue)
 
-      console.log(newId)
-
       $.ajax({
         url: '{% url 'read_notification'  %}', // Modify the URL to point to your Django view endpoint
         method: 'POST',
