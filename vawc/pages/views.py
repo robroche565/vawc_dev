@@ -268,7 +268,9 @@ def calculate_age(date_of_birth_str):
 
 @login_required
 def barangay_settings_view (request):
-    return render(request, 'barangay-admin/settings.html', {'global': request.session})
+    logged_in_user = request.user
+    
+    return render(request, 'barangay-admin/settings.html', {'global': request.session, 'logged_in_user': logged_in_user})
 
 @login_required
 def barangay_case_view(request):

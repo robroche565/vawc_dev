@@ -24,41 +24,79 @@
 <div class="modal fade" id="confirmDecrpyt" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Confrim Decrpyt</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <form id="encrypt_form" method="post">
-            {% csrf_token %}
-
-            <div class="modal-body">
-                <input type="hidden" class="security_status" name="security_status" value="{{ global.security_status }}">
-                <input type="text" class="form-control user_passkey" name="user_passkey" value="currentSpouses">
-                <p class="passkey-result"></p>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button class="btn_security_status btn btn-primary" type="submit" class="">Decrypt</button>
-            </div>
-        </form>
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confrim Decrpyt</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+  
+          <form id="encrypt_form" method="post">
+              {% csrf_token %}
+  
+              <div class="modal-body">
+                  <input type="hidden" class="security_status" name="security_status" value="{{ global.security_status }}">
+                  <input type="text" class="form-control user_passkey" name="user_passkey" value="currentSpouses">
+                  <p class="passkey-result"></p>
+                  <a class="request-passkey" href="#">Request a new passkey</a>
+              </div>
+  
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button class="btn_security_status btn btn-primary" type="submit" class="">Decrypt</button>
+              </div>
+          </form>	
       </div>
     </div>
 </div>
 {% endblock content %}
 {% block scripts %}
 <script>
-    console.log("test")
-
     const userPasskey = document.querySelector(".user_passkey")
     const dataEncrypt = document.querySelector(".data_encrypt")
     const buttonDecrypt = document.querySelector(".btn_security_status")
     const parentModal = document.querySelector(".modal-content")
     const passkeyResult = document.querySelector(".passkey-result")
     const security_status = document.querySelector(".security_status")
+    const encrypt_form = document.querySelector("#encrypt_form")
 
     const correctPasskey = "tite"
+
+    const modalContainer =  document.querySelector(".modal")
+    const requestPasskeyBtn = document.querySelector(".request-passkey")
+
+    modalContainer.addEventListener("click", function(e) {
+
+        if(e.target === requestPasskeyBtn) {
+            let requester = '{{ logged_in_user.email }}'
+            $.ajax({
+                url: '{% url 'request_passkey'  %}', // Modify the URL to point to your Django view endpoint
+                method: 'POST',
+                data: {
+                    'requester': requester  // Pass the notification ID as data
+                }, 
+                headers: {
+                  'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                },
+                success: function(response) {
+                    console.log(response)
+
+                        let newElementHTML = `<div class="modal-body">
+                            <p class="text-center">${response.message}</p>
+                        </div>`;
+        
+                        // Insert the new element after the `encrypt_form` element
+                        encrypt_form.insertAdjacentHTML('afterend', newElementHTML);
+        
+                        // Remove the `encrypt_form` element
+                        encrypt_form.remove();        
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error marking notification as read:', error);
+                }
+              });
+        }
+    })
+
 
     document.addEventListener("DOMContentLoaded", function() {
         const switchEncrypt = document.getElementById("switchencrypt");
@@ -80,12 +118,8 @@
                     $('#encrypt_form').submit(function(event) {
                         event.preventDefault();
                 
-                        console.log(security_status.innerHTML)
-                
                         var formData = $(this).serialize();
-                
-                        console.log(formData)
-                
+
                         $.ajax({
                             type: 'POST',
                             url: '{% url "tite" %}',
@@ -141,7 +175,7 @@
     
         // Listen for the modal hide event
         confirmDecryptModal._element.addEventListener('hide.bs.modal', function () {
-
+            
             // If the switch was toggled off, update its state to off
             if(security_status.value === "encrypted") {
                 switchEncrypt.checked = true;
@@ -149,6 +183,10 @@
                 switchToggledOff = true;
             }
         });
+
+
+
+        
     });
 
 
