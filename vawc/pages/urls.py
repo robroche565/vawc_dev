@@ -57,6 +57,7 @@ urlpatterns = [
 
     # GRAPH
     path('request_graph_report/', views.request_graph_report, name='request_graph_report'),
+    path('send_email_report/', views.send_email_report, name='send_email_report'),
 
     path('add_new_contact_person/', views.add_new_contact_person, name='add_new_contact_person'),
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),

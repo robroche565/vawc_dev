@@ -131,7 +131,60 @@ def logout_view(request):
 
 @login_required
 def admin_dashboard_view (request):
-    return render(request, 'super-admin/dashboard.html')
+    cases = Case.objects.all()
+
+    total_cases = cases.count()
+
+    # Initialize minor victim count
+    minor_victim_count = 0
+    minor_perp_count = 0
+    # Iterate through filtered cases
+    for case in cases:
+        # Filter victims for the current case
+        victims = Victim.objects.filter(case_victim=case)
+
+        # Filter perpetrators for the current case
+        perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
+
+        # Iterate through victims
+        for victim in victims:
+            decrypted_date_of_birth = decrypt_data(victim.date_of_birth)
+            age = calculate_age(decrypted_date_of_birth)
+            if age is not None and age < 18:
+                minor_victim_count += 1
+
+        # Iterate through perpetrators
+        for perpetrator in perpetrators:
+            decrypted_date_of_birth = decrypt_data(perpetrator.date_of_birth)
+            age = calculate_age(decrypted_date_of_birth)
+            if age is not None and age < 18:
+                minor_perp_count += 1
+
+
+
+        # Count the number of impacted and behalf cases
+        impacted_count = len(list(filter(lambda case: case.type_of_case == Case.TYPE_IMPACTED_VICTIM, cases)))
+        behalf_count = len(list(filter(lambda case: case.type_of_case == Case.TYPE_REPORTING_BEHALF, cases)))
+
+        # Count the number of active and closed cases
+        active_count = len(list(filter(lambda case: case.status == Case.STATUS_ACTIVE, cases)))
+        closed_count = len(list(filter(lambda case: case.status == Case.STATUS_CLOSE, cases)))
+        
+        crisis_count = len(list(filter(lambda case: case.service_information == Case.CRISIS_INTERVENTION, cases)))
+        bpo_count = len(list(filter(lambda case: case.service_information == Case.ISSUANCE_ENFORCEMENT, cases)))
+    
+    return render (request, 'super-admin/dashboard.html',{
+        'cases': cases,
+        'total_cases': total_cases,
+        'impacted_count': impacted_count,
+        'behalf_count': behalf_count,
+        'active_count': active_count,
+        'closed_count': closed_count,
+        'minor_victim_count': minor_victim_count,
+        'minor_perp_count':minor_perp_count,
+        'crisis_count': crisis_count,
+        'bpo_count': bpo_count,
+    })
 
 @login_required
 def admin_manage_passkey_view (request):
@@ -231,17 +284,59 @@ def check_username_email(request):
         return JsonResponse(response_data)
 
 @login_required
-def admin_graph_view (request):
-    case = Case.objects.all()
+def admin_graph_view(request):
+    user = request.user
+    account = user.account
+    cases = Case.objects.all()
+    victims = Victim.objects.all()
+    perpetrators = Perpetrator.objects.all()
     
-    start_date = datetime(2024, 3, 23)
-    end_date = datetime(2024, 3, 23)
+    total_cases = cases.count()
+    total_active = cases.filter(status=Case.STATUS_ACTIVE).count()  # Count active cases
+    total_closed = cases.filter(status=Case.STATUS_CLOSE).count()  # Count closed cases
+    total_victim = victims.count()
+    total_perpetrator = perpetrators.count()
+    
+    return render(request, 'super-admin/graph-report.html', {
+        'cases': cases,
+        'account': account,
+        'total_cases': total_cases,
+        'total_active': total_active,
+        'total_closed': total_closed,
+        'total_victim': total_victim,
+        'total_perpetrator': total_perpetrator
+    })
 
-    cases = Case.objects.filter(date_added__range=[start_date, end_date])
+@login_required
+def send_email_report(request):
+    email = request.POST.get('email')
+
+    receiver = email
+
+    total_cases = request.POST.get('total_cases') # Replace with actual total cases count
+    total_active_cases = request.POST.get('total_active_cases')  # Replace with actual total active cases count
+    total_closed_cases = request.POST.get('total_closed_cases')  # Replace with actual total closed cases count
+    total_victims = request.POST.get('total_victims')  # Replace with actual total victims count
+    total_perpetrators = request.POST.get('total_perpetrators')  # Replace with actual total perpetrators count
     
-    print(cases)
-    
-    return render(request, 'super-admin/graph-report.html', {'cases': cases})
+    print(email, total_cases, total_active_cases, total_closed_cases, total_victims, total_perpetrators)
+
+    subject = 'VAWC Summary Report'
+    message = (
+        f'--------------------------\n'
+        f'VAWC Case Statistics\n'
+        f'--------------------------\n\n'
+        f'Total Cases Filed: {total_cases}\n'
+        f'Total Active Cases: {total_active_cases}\n'
+        f'Total Closed Cases: {total_closed_cases}\n'
+        f'Total Victims: {total_victims}\n'
+        f'Total Perpetrators: {total_perpetrators}\n\n'
+        f'--------------------------\n'
+        f'This report is generated automatically. Please do not reply.'
+    )
+    send_email(receiver, subject, message)
+
+    return JsonResponse({'success': True, 'message': 'Sent Succcessfully'})
 
 def request_graph_report(request):
     # Retrieve start_date and end_date from the request

@@ -9,13 +9,15 @@
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="mt-2">Report</h1>
+    <div class="row">
+        <div class="col-lg-10 col-12"><h1 class="mt-2">Report</h1></div>
+        <div class="col-lg-2 col-12"><button class="btn btn-primary" id="sendreportbtn"> Send Report </button></div>
+    </div>
     
-      
     <div class="pt-3">
         <h2>SUMMARY</h2>
     </div>
-      
+      <input type="hidden" class="email" name="email" value="{{ account.user.email }}">
     <!--table-->
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -23,24 +25,16 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr class="border-bottom border-2">
-                            <th>Total number of clients served</th>
-                            <td></td>
-                        </tr>
-                        <tr class="border-bottom border-2">
                             <th>Total of cases filed</th>
-                            <td></td>
+                            <th>{{ total_cases }}</th>
                         </tr>
                         <tr class="border-bottom border-2">
-                            <th>Total population of City</th>
-                            <th></th>
+                            <th>Total number of Active Cases</th>
+                            <th>{{ total_active }}</th>
                         </tr>
                         <tr class="border-bottom border-2">
-                            <th>Female</th>
-                            <th></th>
-                        </tr>
-                        <tr class="border-bottom border-2">
-                            <th>Male</th>
-                            <th></th>
+                            <th>Total number of Close Cases</th>
+                            <th>{{ total_closed }}</th>
                         </tr>
                     </tbody>
                 </table><!--end of table-->
@@ -50,32 +44,20 @@
             <div class="pt-4 table-responsive-lg table-responsive-md table-responsive-sm">
                 <table class="table table-hover">
                 <tbody>
-                <tr class="border-bottom border-2">
-                    <th>Total number of Active Cases</th>
-                    <td></td>
-                </tr>
-                <tr class="border-bottom border-2">
-                    <th>Total number of Close Cases</th>
-                    <td></td>
-                </tr>
-                <tr class="border-bottom border-2">
-                    <th>Total number of Victims</th>
-                    <th></th>
-                </tr>
-                <tr class="border-bottom border-2">
-                    <th>Total number of Perpetrators</th>
-                    <th></th>
+                    <tr class="border-bottom border-2">
+                        <th>Total number of Victims</th>
+                        <th>{{ total_victim }}</th>
                     </tr>
                     <tr class="border-bottom border-2">
-                    <th>Total number of Barangay</th>
-                    <th></th>
+                        <th>Total number of Perpetrators</th>
+                        <th>{{ total_perpetrator }}</th>
                     </tr>
                 </tbody>
                 </table><!--end of table-->
             </div><!--end of div of table-->
         </div><!--end of col-->
     </div><!--end of row-->
-    <div class="row pt-3">
+    <div class="d-none row pt-3">
         <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-floating mb-3">
                 <input type="date" class="form-control" id="start_date" name="start_date" placeholder="name@example.com">
@@ -135,6 +117,29 @@
         </table>
     </div><!--end of div of table-->
 </div>
+<!-- Add the toast container to your HTML, make sure it's placed in a suitable location -->
+<div class="toast-container position-fixed top-0 end-0 p-3 text-light">
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header text-dark" style="background-color:#899499;">
+            <img src="{% static 'img/ecs-no-bg-2.png' %}" class="rounded me-2" alt="..." style="width:20px;">
+            <strong class="me-auto text-dark">Success</strong>
+            <small>Just Now</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body text-dark">
+        </div>
+    </div>
+    <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header text-dark" style="background-color:#899499;">
+            <img src="{% static 'img/ecs-no-bg-2.png' %}" class="rounded me-2" alt="..." style="width:20px;">
+            <strong class="me-auto text-dark">Error</strong>
+            <small>Just Now</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body text-dark">
+        </div>
+    </div>
+</div>
 {% endblock content %}
 {% block scripts %}
 <script>
@@ -145,80 +150,35 @@
             fixedHeader: true,
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         });
-        // Function to convert date format from YYYY-MM-DD to MM/DD/YYYY
-        function formatDate(dateString) {
-            // Create a new Date object from the input date string
-            let date = new Date(dateString);
-    
-            // Get the day, month, and year components
-            let day = date.getDate();
-            let month = date.getMonth() + 1; // Months are zero based
-            let year = date.getFullYear();
-    
-            // Ensure that day and month are displayed with leading zeros if necessary
-            day = day < 10 ? '0' + day : day;
-            month = month < 10 ? '0' + month : month;
-    
-            // Return the formatted date string in MM/DD/YYYY format
-            return month + '/' + day + '/' + year;
-        }
 
-        // Function to apply date range filter
-        function applyDateRangeFilter() {
-            // Get the values of start date and end date inputs
-            let startDate = $('#start_date').val();
-            let endDate = $('#end_date').val();
-
-            startDate = formatDate(startDate);
-            endDate = formatDate(endDate);
-
-            if (startDate != "NaN/NaN/NaN" && endDate != "NaN/NaN/NaN") {
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "request_graph_report" %}',
-                    data: {
-                        'start_date': startDate,
-                        'end_date': endDate
-                    },
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
-                      },
-                    success: function(response) {
-                        console.log(response)
-        
-                        if (response.success) {
-                            console.log("good")
-                            location.reload();
-                        } else {
-                            passkeyResult.innerHTML = response.message
-                            console.log("bad")
-                        }
-                    },
-                    error: function(xhr, errmsg, err) {
-                        $('#errorMessage').text('Error occurred. Please try again.');
-                    }
-                });
-
-
-
-
-
-                console.log("tite")
-            }
-
-
-        }
-    
-        // Event listener for start date input
-        $('#start_date').on('change', function() {
-            applyDateRangeFilter();
+        $('#sendreportbtn').click(function() {
+            console.log('i got clicked')
+            let email = document.querySelector('.email').value;
+            $.ajax({
+                type: 'POST',  // Assuming you want to send data via POST method
+                url: '{% url 'send_email_report' %}',  // Replace with the URL to send the report
+                data: {
+                    'email' : email ,
+                    'total_cases' : {{ total_cases }} ,
+                    'total_active_cases' : {{ total_active }},
+                    'total_closed_cases' : {{ total_closed }},
+                    'total_victims' : {{ total_victim }},
+                    'total_perpetrators' : {{ total_perpetrator }},
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                },
+                success: function(response) {
+                    // Handle the success response here
+                    console.log('Report sent successfully!');
+                },
+                error: function(xhr, status, error) {
+                    // Handle any errors that occur during the AJAX request
+                    console.error('Error sending report:', error);
+                }
+            });
         });
-    
-        // Event listener for end date input
-        $('#end_date').on('change', function() {
-            applyDateRangeFilter();
-        });
+
 
     });
     
