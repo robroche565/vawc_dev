@@ -93,6 +93,30 @@ class Case(models.Model):
     checkbox_sexual_lascivious_conduct = models.BooleanField(default=False)
     checkbox_ra_9775 = models.BooleanField(default=False)
 
+    refers_to_social_welfare = models.BooleanField(default=False)
+    psychosocial_services = models.BooleanField(default=False)
+    emergency_shelter = models.BooleanField(default=False)
+    economic_assistance = models.BooleanField(default=False)
+
+    refers_to_healthcare_provider = models.BooleanField(default=False)
+    healthcare_provider_name = models.CharField(max_length=250, blank=True)
+    provision_of_appropriate_medical_treatment = models.BooleanField(default=False)
+    issuance_of_medical_certificate = models.BooleanField(default=False)
+    medico_legal_exam = models.BooleanField(default=False)
+
+    # Law enforcement related options
+    refers_to_law_enforcement = models.BooleanField(default=False)
+    law_enforcement_agency_name = models.CharField(max_length=250, blank=True)
+    receipt_and_recording_of_complaints = models.BooleanField(default=False)
+    rescue_operations_of_vaw_cases = models.BooleanField(default=False)
+    forensic_interview_and_investigation = models.BooleanField(default=False)
+    enforcement_of_protection_order = models.BooleanField(default=False)
+
+    # Other service provider related options
+    refers_to_other_service_provider = models.BooleanField(default=False)
+    other_service_provider_name = models.CharField(max_length=250, blank=True)
+    type_of_service = models.CharField(max_length=250, blank=True)
+
     def __str__(self):
         return f"Case ID: {self.id}, Case Number: {self.case_number}"
 
@@ -163,6 +187,8 @@ class Victim(models.Model):
     province = models.CharField(max_length=150, null=True, blank=True)
     city = models.CharField(max_length=150, null=True, blank=True)
     region = models.CharField(max_length=250, null=True, blank=True)
+    number_of_children = models.CharField(max_length=150,null=True, blank=True)
+    ages_of_children = models.CharField(max_length=150,null=True, blank=True)
     
     def __str__(self):
         return f"Victim ID: {self.id}"
@@ -255,6 +281,7 @@ class Parent(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     region = models.CharField(max_length=250, null=True, blank=True)
+    relationship_to_victim = models.CharField(max_length=100,null=True,blank=True)
 
 class Parent_Perpetrator(models.Model):
     perpetrator_parent = models.ForeignKey(Perpetrator, on_delete=models.CASCADE, related_name='parent_perp', null=True, blank=True)
@@ -293,6 +320,7 @@ class Parent_Perpetrator(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     region = models.CharField(max_length=250, null=True, blank=True)
+    relationship_of_guardian = models.CharField(max_length=100,null=True,blank=True)
 
 class Witness(models.Model):
     case_witness = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='contact_witness',null=True, blank=True)

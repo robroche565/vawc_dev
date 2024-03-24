@@ -25,6 +25,8 @@ from datetime import timedelta
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
+from weasyprint import HTML
+from django.template import loader
 # Create your views here.
 
 from .utils import encrypt_data, decrypt_data
@@ -64,7 +66,7 @@ def check_email_case(request):
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 # Set expiration time for tokens (30 minutes)
-TOKEN_EXPIRATION_TIMEDELTA = timedelta(minutes=30)
+TOKEN_EXPIRATION_TIMEDELTA = timedelta(minutes=1)
 
 def verify_otp_email_track_case(request):
     if request.method == 'POST':
@@ -132,6 +134,7 @@ def admin_dashboard_view (request):
 @login_required
 def admin_graph_view (request):
     return render(request, 'super-admin/graph_report.html')
+
 
 @login_required
 def barangay_dashboard_view (request):
@@ -274,7 +277,7 @@ def login_with_otp(request):
                 otp = generate_otp()
                 request.session['otp'] = otp
                 request.session['user_email'] = email  # Store user email in session for later retrieval
-                otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+                otp_expiry = timezone.now() + timezone.timedelta(minutes=1)
                 request.session['otp_expiry'] = otp_expiry.isoformat()  # Convert datetime to string
                 send_otp_email(email, otp)
                 return JsonResponse({'success': True, 'message': 'OTP has been sent to your email.'})
@@ -343,7 +346,7 @@ def resend_otp(request):
                 user = CustomUser.objects.get(email=user_email)
                 otp = generate_otp()  # Assuming you have a function to generate OTP
                 request.session['otp'] = otp
-                otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+                otp_expiry = timezone.now() + timezone.timedelta(minutes=1)
                 request.session['otp_expiry'] = otp_expiry.isoformat()
                 send_otp_email(user_email, otp)  # Assuming you have a function to send OTP email
                 return JsonResponse({'success': True, 'message': 'OTP resent successfully.'})
@@ -362,7 +365,7 @@ def email_confirm(request):
         otp = generate_otp()
         request.session['otp'] = otp
         request.session['user_email'] = email  # Store user email in session for later retrieval
-        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=1)
         request.session['otp_expiry'] = otp_expiry.isoformat()  # Convert datetime to string
         send_otp_email(email, otp)
         return JsonResponse({'success': True, 'message': 'OTP has been sent to your email.'})
@@ -398,7 +401,7 @@ def resend_otp_email(request):
         user_email = request.session.get('user_email')  # Corrected key
         otp = generate_otp()  # Assuming you have a function to generate OTP
         request.session['otp'] = otp
-        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=1)
         request.session['otp_expiry'] = otp_expiry.isoformat()
         send_otp_email(user_email, otp)  # Assuming you have a function to send OTP email
         return JsonResponse({'success': True, 'message': 'OTP resent successfully.'})
@@ -524,6 +527,8 @@ def get_victim_data(post_data, prefix, index):
         'religion': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
         'type_of_disability': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
         'region': post_data.get(f'{prefix}region_{index}'),
+        'number_of_children': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
+        'ages_of_children': "gAAAAABl-UOp4RWQLPLraFI_q80Ogmfk-Epd8K-CA9zHzYoc1FMwc7tnLv8hTBWTvjlmwjr866FtvBwRZjPXWKBEo3SPvHOU6g==",
     }
     return victim_data
 
@@ -648,6 +653,8 @@ def view_case_behalf(request, case_id):
                 victim.city = decrypt_data(victim.city)
                 victim.region = decrypt_data(victim.region)
                 victim.occupation = decrypt_data(victim.occupation)
+                victim.number_of_children = decrypt_data(victim.number_of_children)
+                victim.ages_of_children = decrypt_data(victim.ages_of_children)
                 
                 print("Here")
                 print(victim.occupation)
@@ -661,15 +668,17 @@ def view_case_behalf(request, case_id):
                 perpetrator.identifying_marks = decrypt_data(perpetrator.identifying_marks)
                 perpetrator.alias = decrypt_data(perpetrator.alias)
                 perpetrator.sex = decrypt_data(perpetrator.sex)
-                #perpetrator.contact_number = decrypt_data(perpetrator.contact_number)
-                #perpetrator.telephone_number = decrypt_data(perpetrator.telephone_number)
+                perpetrator.contact_number = decrypt_data(perpetrator.contact_number)
+                perpetrator.telephone_number = decrypt_data(perpetrator.telephone_number)
                 print(perpetrator.contact_number)
+                perpetrator.occupation = decrypt_data(perpetrator.occupation)
                 perpetrator.date_of_birth = decrypt_data(perpetrator.date_of_birth)
                 perpetrator.nationality = decrypt_data(perpetrator.nationality)
                 perpetrator.house_information = decrypt_data(perpetrator.house_information)
                 perpetrator.street = decrypt_data(perpetrator.street)
                 perpetrator.barangay = decrypt_data(perpetrator.barangay)
                 perpetrator.province = decrypt_data(perpetrator.province)
+                perpetrator.city= decrypt_data(perpetrator.city)
                 perpetrator.region = decrypt_data(perpetrator.region)
             
             for contact_person in contact_persons:
@@ -785,6 +794,8 @@ def view_case_impact(request, case_id):
                 victim.type_of_disability = decrypt_data(victim.type_of_disability)
                 victim.educational_attainment = decrypt_data(victim.educational_attainment)
                 victim.religion = decrypt_data(victim.religion)
+                victim.number_of_children = decrypt_data(victim.number_of_children)
+                victim.ages_of_children = decrypt_data(victim.ages_of_children)
                 
             for perpetrator in perpetrators:
                 perpetrator.relationship_to_victim = decrypt_data(perpetrator.relationship_to_victim)
@@ -829,6 +840,122 @@ def view_case_impact(request, case_id):
         # Handle case not found appropriately, for example, return a 404 page
         return HttpResponseNotFound("Case not found")
 
+@login_required
+def pdf_template_view (request, case_id):
+    logged_in_user = request.user
+    account = logged_in_user.account
+    # Retrieve the case object from the database based on the case_id
+    case = Case.objects.get(id=case_id)
+    # Retrieve related objects such as evidence, victims, perpetrators, and parents
+    evidences = Evidence.objects.filter(case=case)
+    victims = Victim.objects.filter(case_victim=case)
+    perpetrators = Perpetrator.objects.filter(case_perpetrator=case)
+    witnesses = Witness.objects.filter(case_witness=case)
+    
+    # CASE ----------------------
+    case_attributes = vars(case)
+    case_decrypted = {}
+    
+    for attribute, value in case_attributes.items():
+        if isinstance(value, str) and value.startswith('gAAAAA'):
+            case_decrypted[attribute] = decrypt_data(value)
+        else:
+            case_decrypted[attribute] = value
+
+
+    # VICTIM ----------------------
+    list_victim_decrypted = []
+
+    for victim in victims:
+        case_attributes = vars(victim)
+        victim_decrypted = {}
+
+        for attribute, value in case_attributes.items():
+            if isinstance(value, str) and value.startswith('gAAAAA'):
+                victim_decrypted[attribute] = decrypt_data(value)
+            else:
+                victim_decrypted[attribute] = value
+        # Fetch parent object related to this victim
+        parent = Parent.objects.filter(victim_parent=victim).first()
+
+        if parent:
+            parent_attributes = vars(parent)
+            parent_decrypted = {}
+            for parent_attribute, parent_value in parent_attributes.items():
+                if isinstance(parent_value, str) and parent_value.startswith('gAAAAA'):
+                    parent_decrypted[parent_attribute] = decrypt_data(parent_value)
+                else:
+                    parent_decrypted[parent_attribute] = parent_value
+            list_victim_decrypted.append((victim_decrypted, parent_decrypted))
+        else:
+            # If no parent is found for the victim, append None
+            list_victim_decrypted.append((victim_decrypted, None))
+
+        # Calculate age for each victim
+        for victim in list_victim_decrypted:
+            if 'date_of_birth' in victim:
+                victim['age'] = calculate_age(victim['date_of_birth'])
+
+    
+
+    # PERPETRATORS ----------------------
+    list_perpetrator_decrypted = []
+
+    for perpetrator in perpetrators:
+        case_attributes = vars(perpetrator)
+        perpetrator_decrypted = {}
+
+        for attribute, value in case_attributes.items():
+            if isinstance(value, str) and value.startswith('gAAAAA'):
+                perpetrator_decrypted[attribute] = decrypt_data(value)
+            else:
+                perpetrator_decrypted[attribute] = value
+        
+        # Fetch parent perpetrator object related to this perpetrator
+        parent_perpetrator = Parent_Perpetrator.objects.filter(perpetrator_parent=perpetrator).first()
+
+        if parent_perpetrator:
+            parent_attributes = vars(parent_perpetrator)
+            parent_decrypted = {}
+            for parent_attribute, parent_value in parent_attributes.items():
+                if isinstance(parent_value, str) and parent_value.startswith('gAAAAA'):
+                    parent_decrypted[parent_attribute] = decrypt_data(parent_value)
+                else:
+                    parent_decrypted[parent_attribute] = parent_value
+            list_perpetrator_decrypted.append((perpetrator_decrypted, parent_decrypted))
+        else:
+            # If no parent perpetrator is found for the perpetrator, append None
+            list_perpetrator_decrypted.append((perpetrator_decrypted, None))
+
+        # Calculate age for each perpetrator
+        for perpetrator, parent in list_perpetrator_decrypted:
+            if 'date_of_birth' in perpetrator:
+                perpetrator['age'] = calculate_age(perpetrator['date_of_birth'])
+
+        # Print the encrypted attributes
+        # for attribute, value in perpetrator_decrypted.items():
+        #     print(f"{attribute}: {value}")
+
+    template = loader.get_template('barangay-admin/case/pdf-template.html') # Load HTML template
+    html_string = template.render({
+        'case': case,
+        'case_decrypted': case_decrypted,
+        'account': account,
+        'list_victim_decrypted': list_victim_decrypted,
+        'list_perpetrator_decrypted': list_perpetrator_decrypted,
+    }) # Render the template
+    # print(html_string)
+
+    # Generate the PDF using WeasyPrint
+    pdf = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
+    
+    # Create an HttpResponse with the PDF content
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="Print Case No. {}.pdf"'.format(case.case_number)
+    # Display in the browser
+
+    return response
+    
 
 @require_POST
 def save_victim_data(request, victim_id):
@@ -856,6 +983,8 @@ def save_victim_data(request, victim_id):
         victim.province = encrypt_data(request.POST.get('victim_province_' + str(victim_id))).decode('utf-8')
         victim.city = encrypt_data(request.POST.get('victim_city_' + str(victim_id))).decode('utf-8')
         victim.region = encrypt_data(request.POST.get('victim_region_' + str(victim_id))).decode('utf-8')
+        victim.number_of_children = encrypt_data(request.POST.get('victim_number_children_' + str(victim_id))).decode('utf-8')
+        victim.ages_of_children = encrypt_data(request.POST.get('victim_ages_children_' + str(victim_id))).decode('utf-8')
 
         # Save victim data
         victim.save()
@@ -891,7 +1020,9 @@ def add_new_victim(request):
         province = encrypt_data(request.POST.get('victim_province')).decode('utf-8')
         city = encrypt_data(request.POST.get('victim_city')).decode('utf-8')
         region = encrypt_data(request.POST.get('victim_region')).decode('utf-8')
-
+        number_of_children = encrypt_data(request.POST.get('victim_number_children')).decode('utf-8')
+        ages_of_children = encrypt_data(request.POST.get('victim_ages_children')).decode('utf-8')
+        
         print(case_id)
         print(first_name)
         print(last_name)
@@ -917,7 +1048,9 @@ def add_new_victim(request):
             barangay=barangay,
             province=province,
             city=city,
-            region=region
+            region=region,
+            number_of_children = number_of_children,
+            ages_of_children=ages_of_children
         )
 
         # Return success response
@@ -1153,6 +1286,7 @@ def add_parent_view(request, case_id, victim_id):
             parent.province = decrypt_data(parent.province)
             parent.city = decrypt_data(parent.city)
             parent.region = decrypt_data(parent.region)
+            parent.relationship_to_victim = decrypt_data(parent.relationship_to_victim)
 
     return render(request, 'barangay-admin/case/add-parent.html', {
         'victim': victim,
@@ -1186,7 +1320,8 @@ def save_parent_data(request, parent_id):
         parent.province = encrypt_data(request.POST.get('parent_province_' + str(parent_id))).decode('utf-8')
         parent.city = encrypt_data(request.POST.get('parent_city_' + str(parent_id))).decode('utf-8')
         parent.region = encrypt_data(request.POST.get('parent_region_' + str(parent_id))).decode('utf-8')
-
+        parent.relationship_to_victim = encrypt_data(request.POST.get('parent_relationship_' + str(parent_id))).decode('utf-8')
+        
         # Save parent data
         parent.save()
 
@@ -1220,6 +1355,7 @@ def add_new_parent_form(request):
         province = encrypt_data(request.POST.get('parent_province')).decode('utf-8')
         city = encrypt_data(request.POST.get('parent_city')).decode('utf-8')
         region = encrypt_data(request.POST.get('parent_region')).decode('utf-8')
+        relationship = encrypt_data(request.POST.get('parent_relationship')).decode('utf-8')
 
         # Create and save the new parent instance
         parent = Parent.objects.create(
@@ -1243,7 +1379,8 @@ def add_new_parent_form(request):
             barangay=barangay,
             province=province,
             city=city,
-            region=region
+            region=region,
+            relationship_to_victim = relationship
         )
 
         # Return success response
@@ -1301,6 +1438,7 @@ def add_parent_perp_view(request, case_id, perp_id):
             parent.province = decrypt_data(parent.province)
             parent.city = decrypt_data(parent.city)
             parent.region = decrypt_data(parent.region)
+            parent.relationship_of_guardian = decrypt_data(parent.relationship_of_guardian)
 
     return render(request, 'barangay-admin/case/add-parent-perp.html', {
         'perpetrator': perpetrator,
@@ -1335,6 +1473,7 @@ def add_new_parent_perp_form(request):
         province = encrypt_data(request.POST.get('parent_province')).decode('utf-8')
         city = encrypt_data(request.POST.get('parent_city')).decode('utf-8')
         region = encrypt_data(request.POST.get('parent_region')).decode('utf-8')
+        relationship = encrypt_data(request.POST.get('parent_relationship_of_guardian')).decode('utf-8')
         # Create and save the new parent instance
         parent = Parent_Perpetrator.objects.create(
             perpetrator_parent=perpetrator,
@@ -1357,7 +1496,8 @@ def add_new_parent_perp_form(request):
             barangay=barangay,
             province=province,
             city=city,
-            region=region
+            region=region,
+            relationship_of_guardian=relationship,
         )
 
         # Return success response
@@ -1392,6 +1532,7 @@ def save_parent_perp_data(request, parent_id):
         parent.province = encrypt_data(request.POST.get('parent_province_' + str(parent_id))).decode('utf-8')
         parent.city = encrypt_data(request.POST.get('parent_city_' + str(parent_id))).decode('utf-8')
         parent.region = encrypt_data(request.POST.get('parent_region_' + str(parent_id))).decode('utf-8')
+        parent.relationship_of_guardian = encrypt_data(request.POST.get('parent_relationship_of_guardian_' + str(parent_id))).decode('utf-8')
 
         # Save parent data
         parent.save()
@@ -1585,6 +1726,45 @@ def process_incident_form(request):
         }
         return JsonResponse(response_data)
 
+def process_service_info(request):
+    if request.method == 'POST':
+        case_id = request.POST.get('case_id')
+        try:
+            case = Case.objects.get(id=case_id)
+        except Case.DoesNotExist:
+            return JsonResponse({'error': 'Case not found.'}, status=404)
+
+        # Extracting and updating data for each field
+        case.refers_to_social_welfare = True if request.POST.get('refer_social_welware') == 'true' else False
+        case.psychosocial_services = True if request.POST.get('psych_service') == 'true' else False
+        case.emergency_shelter = True if request.POST.get('emergency_shelter') == 'true' else False
+        case.economic_assistance = True if request.POST.get('economic_assist') == 'true' else False
+
+        case.refers_to_healthcare_provider = True if request.POST.get('refer_health') == 'true' else False
+        case.healthcare_provider_name = request.POST.get('name_health', '')
+        case.provision_of_appropriate_medical_treatment = True if request.POST.get('provision') == 'true' else False
+        case.issuance_of_medical_certificate = True if request.POST.get('issuance_medical_cert') == 'true' else False
+        case.medico_legal_exam = True if request.POST.get('medico_legal') == 'true' else False
+
+        case.refers_to_law_enforcement = True if request.POST.get('refer_law_enforce') == 'true' else False
+        case.law_enforcement_agency_name = request.POST.get('name_of_agency', '')
+        case.receipt_and_recording_of_complaints = True if request.POST.get('receipt_comp') == 'true' else False
+        case.rescue_operations_of_vaw_cases = True if request.POST.get('resuce_operation') == 'true' else False
+        case.forensic_interview_and_investigation = True if request.POST.get('forensic_interview') == 'true' else False
+        case.enforcement_of_protection_order = True if request.POST.get('enforce_protect_order') == 'true' else False
+
+        case.refers_to_other_service_provider = True if request.POST.get('refer_other_service') == 'true' else False
+        case.other_service_provider_name = request.POST.get('name_of_service_provider', '')
+        case.type_of_service = request.POST.get('type_of_service_provider', '')
+
+        # Saving the updated Case object
+        case.save()
+
+        # Return a JSON response indicating success
+        return JsonResponse({'message': 'Service information saved successfully.'})
+    else:
+        # Return a JSON response indicating failure
+        return JsonResponse({'error': 'Invalid request method.'})
 
 def add_status(request, case_id):
     if request.method == 'POST':

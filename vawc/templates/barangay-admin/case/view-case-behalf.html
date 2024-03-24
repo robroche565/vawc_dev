@@ -12,8 +12,14 @@
         <a class="col text-decoration-none text-dark" href="{% url 'barangay case' %}" role="button"><i class='bx bx-arrow-back'></i> Back</a>
     </div>
     <div class="row">
-        <div class="col-lg-10 col-12">
+        <div class="col-lg-8 col-12">
             <h2>Case Number: {{ case.case_number }} <span class="h5">(Date Added:{{ case.date_added }})</span>  </h2>
+        </div>
+        <div class="d-grid gap-2 col-lg-2 col-12 mx-auto mb-lg-0 mb-2">
+            <a href="{% url 'pdf case' case_id=case.id %}" class="btn btn-info d-flex align-items-center justify-content-center" target="_blank">
+                <i class='bx bxs-file-pdf me-3'></i>
+                Print Case
+            </a>
         </div>
         <div class="d-grid gap-2 col-lg-2 col-12 mx-auto">
             <button class="btn btn-danger btn-confirm-delete-case" data-case-id="{{ case.id }}" data-bs-toggle="modal" data-bs-target="#confirmDeletCase">
@@ -330,7 +336,7 @@
                                     </div><!--End of row-->
                                     <div class="row">
                                         <!--contact num-->
-                                        <div class="col-lg-6 col-12">
+                                        <div class="col-lg-3 col-12">
                                             <div class="form-floating mb-3">
                                                 <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="victim_contact_number_{{ victim.id }}" name="victim_contact_number_{{ victim.id }}" value="{{ victim.contact_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                                 <label for="victim_contact_number_{{ victim.id }}">Contact Number</label>
@@ -338,10 +344,23 @@
                                         </div>
 
                                         <!--telephone num-->
-                                        <div class="col-lg-6 col-12">
+                                        <div class="col-lg-3 col-12">
                                             <div class="form-floating mb-3">
                                                 <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="victim_telephone_number_{{ victim.id }}" name="victim_telephone_number_{{ victim.id }}" value="{{ victim.telephone_number }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
                                                 <label for="victim_telephone_number_{{ victim.id }}">Telephone Number</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-12">
+                                            <div class="form-floating mb-3">
+                                                <input type="{% if global.security_status == 'encrypted' %}text{% else %}number{% endif %}" class="form-control" id="victim_number_children_{{ victim.id }}" name="victim_number_children_{{ victim.id }}" value="{{ victim.number_of_children  }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
+                                                <label for="victim_number_children_{{ victim.id }}">Number of Children</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-12">
+                                            <div class="form-floating mb-3">
+                                                <input type="{% if global.security_status == 'encrypted' %}text{% else %}text{% endif %}" class="form-control" id="victim_ages_children_{{ victim.id }}" name="victim_ages_children_{{ victim.id }}" value="{{ victim.ages_of_children }}" {% if global.security_status == "encrypted" %}disabled{% endif %}>
+                                                <label for="victim_ages_children_{{ victim.id }}">Ages of Children</label>
                                             </div>
                                         </div>
 
@@ -1667,19 +1686,32 @@
                         </div><!--End of col-->
                     </div><!--End of row-->
                     <div class="row">
-                        <div class="col-lg-6 col-6">
+                        <div class="col-lg-3 col-6">
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="victim_contact_number" name="victim_contact_number">
                                 <label for="victim_contact_number">Contact Number</label>
                             </div>
                         </div><!--End of col-->
                         
-                        <div class="col-lg-6 col-6">
+                        <div class="col-lg-3 col-6">
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="victim_telephone_number" name="victim_telephone_number">
                                 <label for="victim_telephone_number">Telephone Number</label>
                             </div>
                         </div><!--End of col-->
+                        <div class="col-lg-3 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="victim_number_children" name="victim_number_children">
+                                <label for="victim_number_children">Number of Children</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="victim_ages_children" name="victim_ages_children">
+                                <label for="victim_ages_children">Ages of Children</label>
+                            </div>
+                        </div>
                     </div><!--End of row-->
                     <div class="row">
                         <div class="col-lg-3 mb-3">
@@ -2610,55 +2642,52 @@
             }
         }
 
-        // Get all forms
-        const forms = document.querySelectorAll("form");
+        const victimForms = document.querySelectorAll("form[id^='victim_form_']");
 
-        // Get the form associated with the save-btn-victim button
-        const form = document.getElementById('save-btn-victim').closest('form');
+        victimForms.forEach(function(form) {
+            form.addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent the default form submission
 
-        // Add a submit event listener to the form
-        form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Get the victim ID from the form's ID
-            const victimId = this.id.split('_')[2];
-
-            // Get the form data
-            const formData = new FormData(this);
-
-            // Send an AJAX request to save the data
-            fetch(`/save_victim_data/${victimId}/`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Display success message in a toast
-                const successToast = document.getElementById("successToast");
-                const toastBody = successToast.querySelector('.toast-body');
-                toastBody.textContent = data.message;
-                successToast.classList.add('show');
-                setTimeout(() => {
-                    successToast.classList.remove('show');
-                }, 3000);
-                // Reload the page after a short delay
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Display error message in a toast
-                const errorToast = document.getElementById("errorToast");
-                const toastBody = errorToast.querySelector('.toast-body');
-                toastBody.textContent = 'An error occurred while saving the data.';
-                errorToast.classList.add('show');
-                setTimeout(() => {
-                    errorToast.classList.remove('show');
-                }, 3000);
+                // Get the victim ID from the form's ID
+                const victimId = this.id.split('_')[2];
+                        
+                // Get the form data
+                const formData = new FormData(this);
+        
+                // Send an AJAX request to save the data
+                fetch(`/save_victim_data/${victimId}/`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display success message in a toast
+                    const successToast = document.getElementById("successToast");
+                    const toastBody = successToast.querySelector('.toast-body');
+                    toastBody.textContent = data.message;
+                    successToast.classList.add('show');
+                    setTimeout(() => {
+                        successToast.classList.remove('show');
+                    }, 3000);
+                    // Reload the page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Display error message in a toast
+                    const errorToast = document.getElementById("errorToast");
+                    const toastBody = errorToast.querySelector('.toast-body');
+                    toastBody.textContent = 'An error occurred while saving the data.';
+                    errorToast.classList.add('show');
+                    setTimeout(() => {
+                        errorToast.classList.remove('show');
+                    }, 3000);
+                });
             });
         });
 

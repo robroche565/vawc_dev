@@ -42,6 +42,8 @@ urlpatterns = [
     path('add-new-case/', views.add_new_case, name='add_new_case'),
     path('admin-barangay-vawc/view-case/behalf/<int:case_id>/', views.view_case_behalf, name='barangay case behalf view'),
     path('admin-barangay-vawc/view-case/impacted/<int:case_id>/', views.view_case_impact, name='barangay case impacted view'),
+    path('admin-barangay-vawc/case/pdf/<int:case_id>/', views.pdf_template_view, name='pdf case'),
+    path('process_service_info/', views.process_service_info, name='process_service_info'),
 
     path('add_new_contact_person/', views.add_new_contact_person, name='add_new_contact_person'),
     path('save_victim_data/<int:victim_id>/', views.save_victim_data, name='save_victim_data'),

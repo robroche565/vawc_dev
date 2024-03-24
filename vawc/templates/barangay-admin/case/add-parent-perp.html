@@ -121,14 +121,20 @@
                                     </div><!--End of col-->
                                 </div><!--End of row-->
                                 <div class="row">
-                                    <div class="col-lg-6 col-6">
+                                    <div class="col-lg-4 col-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="parent_relationship_of_guardian_{{ parent.id }}" name="parent_relationship_of_guardian_{{ parent.id }}" value="{{ parent.relationship_of_guardian }}" placeholder="none">
+                                            <label for="parent_relationship_of_guardian_{{ parent.id }}">Relationship of Guardian</label>
+                                        </div>
+                                    </div><!--End of col-->
+                                    <div class="col-lg-4 col-6">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="parent_contact_number_{{ parent.id }}" name="parent_contact_number_{{ parent.id }}" value="{{ parent.contact_number }}">
                                             <label for="parent_contact_number_{{ parent.id }}">Contact Number</label>
                                         </div>
                                     </div><!--End of col-->
                                     
-                                    <div class="col-lg-6 col-6">
+                                    <div class="col-lg-4 col-6">
                                         <div class="form-floating mb-3">
                                             <input type="number" class="form-control" id="parent_telephone_number_{{ parent.id }}" name="parent_telephone_number_{{ parent.id }}" value="{{ parent.telephone_number }}">
                                             <label for="parent_telephone_number_{{ parent.id }}">Telephone Number</label>
@@ -385,14 +391,20 @@
                         </div><!--End of col-->
                     </div><!--End of row-->
                     <div class="row">
-                        <div class="col-lg-6 col-6">
+                        <div class="col-lg-4 col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="parent_relationship_of_guardian" name="parent_relationship_of_guardian" placeholder="none">
+                                <label for="parent_relationship_of_guardian">Relationship of Guardian</label>
+                            </div>
+                        </div><!--End of col-->
+                        <div class="col-lg-4 col-6">
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="parent_contact_number" name="parent_contact_number">
                                 <label for="parent_contact_number">Contact Number</label>
                             </div>
                         </div><!--End of col-->
                         
-                        <div class="col-lg-6 col-6">
+                        <div class="col-lg-4 col-6">
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" id="parent_telephone_number" name="parent_telephone_number">
                                 <label for="parent_telephone_number">Telephone Number</label>
