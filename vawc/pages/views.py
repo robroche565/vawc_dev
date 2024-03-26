@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseNotFound, QueryDict, HttpRespo
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.core.files.storage import FileSystemStorage
 import os
 from django.contrib import auth
@@ -26,6 +26,7 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
 from weasyprint import HTML
 from django.template import loader
+from collections import defaultdict
 # Create your views here.
 
 from .utils import encrypt_data, decrypt_data
@@ -169,7 +170,7 @@ def admin_dashboard_view (request):
         # Count the number of active and closed cases
         active_count = len(list(filter(lambda case: case.status == Case.STATUS_ACTIVE, cases)))
         closed_count = len(list(filter(lambda case: case.status == Case.STATUS_CLOSE, cases)))
-        
+
         crisis_count = len(list(filter(lambda case: case.service_information == Case.CRISIS_INTERVENTION, cases)))
         bpo_count = len(list(filter(lambda case: case.service_information == Case.ISSUANCE_ENFORCEMENT, cases)))
     
@@ -219,7 +220,7 @@ def create_account(request):
             
             try:
                 password = generate_random_password()
-                print(password)
+                passkey = generate_random_password()
                 subject = 'Account Creation from VAWC'
                 message = (
                     f'--------------------------\n'
@@ -229,6 +230,7 @@ def create_account(request):
                     f'Email:  {email}\n'
                     f'Username:  {username}\n'
                     f'Password:  {password}\n\n'
+                    f'Passkey: {passkey}\n\n'
                     f'First Name:  {first_name}\n'
                     f'Middle Name:  {middle_name}\n'
                     f'Last Name:  {last_name}\n\n'
@@ -296,7 +298,7 @@ def admin_graph_view(request):
     total_closed = cases.filter(status=Case.STATUS_CLOSE).count()  # Count closed cases
     total_victim = victims.count()
     total_perpetrator = perpetrators.count()
-    
+
     return render(request, 'super-admin/graph-report.html', {
         'cases': cases,
         'account': account,
@@ -338,22 +340,101 @@ def send_email_report(request):
 
     return JsonResponse({'success': True, 'message': 'Sent Succcessfully'})
 
-def request_graph_report(request):
-    # Retrieve start_date and end_date from the request
-    start_date = datetime(2024, 3, 18)
-    end_date = datetime(2024, 3, 25)
+def update_graph_table_report(request):
+    if request.method == 'GET':
+        try:
+            min_date_str = request.GET.get('min_date')
+            max_date_str = request.GET.get('max_date')
 
-    # Convert date strings to datetime objects
-    # start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-    # end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+            # Convert string dates to datetime objects
+            min_date = datetime.strptime(min_date_str, '%m/%d/%Y').strftime('%Y-%m-%d') if min_date_str else None
 
-    # Filter Case objects within the specified date range
-    cases = Case.objects.filter(date_added__range=[start_date, end_date])
+            # Convert max_date_str to datetime object if it's not empty
+            max_date = datetime.strptime(max_date_str, '%m/%d/%Y').strftime('%Y-%m-%d') if max_date_str else None
+
+            temp_case =Case.objects.all()
+            total_active = temp_case.filter(status=Case.STATUS_ACTIVE).count()
+            print("active:",total_active)
+            # Filter cases based on the date range
+            if max_date:
+                cases = Case.objects.filter(date_added__range=[min_date, max_date])
+            else:
+                cases = Case.objects.filter(date_added__gte=min_date)
+
+            # Total number of cases
+            total_cases = cases.count()
+
+            # Total number of active cases
+            active_cases = cases.filter(status=Case.STATUS_ACTIVE).count()
+
+            # Total number of closed cases
+            closed_cases = cases.filter(status=Case.STATUS_CLOSE).count()
+
+            # Total number of victims
+            total_victims = Victim.objects.filter(case_victim__in=cases).count()
+
+            # Total number of perpetrators
+            total_perpetrators = Perpetrator.objects.filter(case_perpetrator__in=cases).count()
+
+            # Construct the JSON response
+            response_data = {
+                'success': True,
+                'total_cases': total_cases,
+                'active_cases': active_cases,
+                'closed_cases': closed_cases,
+                'total_victims': total_victims,
+                'total_perpetrators': total_perpetrators
+            }
+            
+            return JsonResponse(response_data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    else:
+        pass
+
+
+def update_graph_report(request):
+    if request.method == 'GET':
+        try:
+            min_date_str = request.GET.get('min_date')
+            max_date_str = request.GET.get('max_date')
+
+            # Convert string dates to datetime objects
+            min_date = datetime.strptime(min_date_str, '%m/%d/%Y').strftime('%Y-%m-%d') if min_date_str else None
+
+            # Convert max_date_str to datetime object if it's not empty
+            max_date = datetime.strptime(max_date_str, '%m/%d/%Y').strftime('%Y-%m-%d') if max_date_str else None
+
+            print("Start Date test:", min_date)
+            print("End Date test:", max_date)
+            
+            # Filter cases based on the date range
+            if min_date and max_date:
+                cases = Case.objects.filter(date_added__range=[min_date, max_date])
+            elif min_date:
+                cases = Case.objects.filter(date_added__gte=min_date)
+            elif max_date:
+                cases = Case.objects.filter(date_added__lte=max_date)
+            else:
+                cases = Case.objects.all()
+
+            # Aggregate data by date
+            date_data = defaultdict(lambda: {'total_cases': 0, 'total_victims': 0, 'total_perpetrators': 0})
+            for case in cases:
+                date_str = case.date_added.strftime('%m/%d/%Y')
+                date_data[date_str]['total_cases'] += 1
+                date_data[date_str]['total_victims'] += Victim.objects.filter(case_victim=case).count()
+                date_data[date_str]['total_perpetrators'] += Perpetrator.objects.filter(case_perpetrator=case).count()
+
+            # Convert the defaultdict to a list of dictionaries
+            date_list = [{'date': date_str, **data} for date_str, data in date_data.items()]
+
+            return JsonResponse({'success': True, 'data': date_list})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    else:
+        pass
     
-    print(cases)
-
-    return JsonResponse({'success': True, 'case': cases})
-
 # NOTIF
 @login_required
 def admin_notification_view (request):
@@ -789,46 +870,48 @@ def add_case(request):
         contact_person_data = get_contact_person_data(request.POST)
         contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
 
+        matching_users_emails = []
 
-        ######################################
+        # Filter CustomUser objects based on the barangay attribute of associated Account objects
         all_users = CustomUser.objects.all()
+
+        print('case number:',case_instance.case_number)
         # Now you can iterate over all_users and access each user's attributes
         for user in all_users:
             try:
                 # Access the associated Account object
                 account = user.account
-                
+
+                # Check if the account's barangay matches temp_barangay
                 if account.barangay == temp_barangay:
-                    receiver = user.email
-                    print("MATCHEDDDD")
-                    break
-                    
+                    # Add the email of the user to the list of matching users
+                    matching_users_emails.append(user.email)
+
             except ObjectDoesNotExist:
                 # Handle the case where no associated Account object exists for the user
-                # print("User ID:", string(user.id))
-                # print("User Email:", user.email)
                 print("No associated Account object found for this user.")
-            
-        print(temp_service_info) 
-        # crisis
-        # issuance
 
-        case_id = str(case_instance.id)
+        # Now, matching_users_emails contains the email addresses of all users whose associated accounts match temp_barangay
+        print("Matching users emails:", matching_users_emails)
+
+        # Iterate over the collected emails and send the notification to each email
+        for receiver in matching_users_emails:
+            message = "You have a new case (#" + str(case_instance.case_number) + ") awaiting for your attention. The priority is "
+            if temp_service_info == "crisis":
+                message += "HIGH"
+            else:
+                message += "LOW"
+
+            try:
+                path = f"/admin-barangay-vawc/view-case/{temp_type_case.lower()}/{case_instance.id}/"
+                link = request.build_absolute_uri(path)
+                print('link:', link)
+            except:
+                link = request.build_absolute_uri("/admin-barangay-vawc/view-case/")
+
+            send_notification(message, link, receiver)
         
-        message = "You have a new case (#"+ case_id + ") awaiting for your attention. The priority is "
-
-        if temp_service_info == "crisis":
-            message += "HIGH"
-        else:
-            message += "LOW"
-            
-        try:
-            path = f"/admin-barangay-vawc/view-case/{temp_type_case.lower()}/{case_id}/"
-            link = request.build_absolute_uri(path)
-        except:
-            link = request.build_absolute_uri("/admin-barangay-vawc/view-case/")
-
-        send_notification (message, link, receiver)
+        case_id = str(case_instance.case_number)
         
         receiver = email
         subject = "Submitted Succesfully"
@@ -939,14 +1022,17 @@ def add_new_case(request):
         email = request.POST.get('email')
         type_of_case = request.POST.get('case_type')
         service_information = request.POST.get('service_type')
+        barangay = encrypt_data(request.POST.get('barangay')).decode('utf-8')
 
+        print('barangay encrypted:', barangay)
+        print('barangay decrypted:', decrypt_data(barangay))
         case_data = {
             'case_number': get_next_case_number(),
             'email': email,
             'date_latest_incident': dummy_encrypted,
             'place_of_incident': dummy_encrypted,
             'street': dummy_encrypted,
-            'barangay': dummy_encrypted,
+            'barangay': barangay,
             'province': dummy_encrypted,
             'city': dummy_encrypted,
             'region': dummy_encrypted,
@@ -1012,24 +1098,27 @@ def add_new_case(request):
      
         perpetrator_instance = Perpetrator.objects.create(case_perpetrator=case_instance, **perpetrator_data)
         
-        contact_person_data = {
-            'first_name': dummy_encrypted,
-            'middle_name': dummy_encrypted,
-            'last_name': dummy_encrypted,
-            'suffix': dummy_encrypted,
-            'relationship': dummy_encrypted,
-            'street': dummy_encrypted,
-            'barangay': dummy_encrypted,
-            'city': dummy_encrypted,
-            'province': dummy_encrypted,
-            'contact_number': dummy_encrypted,
-            'telephone_number': dummy_encrypted,
-            'region': dummy_encrypted,
-            'bldg_number': dummy_encrypted,
-        }
-        
-        contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
-        
+        if type_of_case == 'Behalf':
+            contact_person_data = {
+                'first_name': dummy_encrypted,
+                'middle_name': dummy_encrypted,
+                'last_name': dummy_encrypted,
+                'suffix': dummy_encrypted,
+                'relationship': dummy_encrypted,
+                'street': dummy_encrypted,
+                'barangay': dummy_encrypted,
+                'city': dummy_encrypted,
+                'province': dummy_encrypted,
+                'contact_number': dummy_encrypted,
+                'telephone_number': dummy_encrypted,
+                'region': dummy_encrypted,
+                'bldg_number': dummy_encrypted,
+            }
+
+            contact_person_instance = Contact_Person.objects.create(case_contact=case_instance, **contact_person_data)
+        else:
+            pass
+
             # Return the case_id upon successful creation
         return JsonResponse({'success': True, 'case_id': case_instance.id, 'type_of_case': type_of_case})
     #         #return redirect('barangay case') 

@@ -17,7 +17,10 @@
     <div class="pt-3">
         <h2>SUMMARY</h2>
     </div>
-      <input type="hidden" class="email" name="email" value="{{ account.user.email }}">
+    <input type="hidden" class="email" name="email" value="{{ account.user.email }}">
+    <div class="col-12">
+        <canvas id="myBarChart"></canvas>
+    </div>
     <!--table-->
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -26,15 +29,15 @@
                     <tbody>
                         <tr class="border-bottom border-2">
                             <th>Total of cases filed</th>
-                            <th>{{ total_cases }}</th>
+                            <th><span id="total_cases">{{ total_cases }}</span></th>
                         </tr>
                         <tr class="border-bottom border-2">
                             <th>Total number of Active Cases</th>
-                            <th>{{ total_active }}</th>
+                            <th><span id="total_active">{{ total_active }}</span></th>
                         </tr>
                         <tr class="border-bottom border-2">
                             <th>Total number of Close Cases</th>
-                            <th>{{ total_closed }}</th>
+                            <th><span id="total_closed">{{ total_closed }}</span></th>
                         </tr>
                     </tbody>
                 </table><!--end of table-->
@@ -46,11 +49,11 @@
                 <tbody>
                     <tr class="border-bottom border-2">
                         <th>Total number of Victims</th>
-                        <th>{{ total_victim }}</th>
+                        <th><span id="total_victim">{{ total_victim }}</span></th>
                     </tr>
                     <tr class="border-bottom border-2">
                         <th>Total number of Perpetrators</th>
-                        <th>{{ total_perpetrator }}</th>
+                        <th><span id="total_perpetrator">{{ total_perpetrator }}</span></th>
                     </tr>
                 </tbody>
                 </table><!--end of table-->
@@ -71,6 +74,20 @@
             </div>
         </div><!--end of col-->
     </div><!--starting of row-->
+    <div class="row">
+        <div class="col-lg-4 col-6">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="min" name="min" placeholder="name@example.com">
+                <label for="floatingInput">Start Date</label>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="max" name="max" placeholder="name@example.com">
+                <label for="floatingInput">End Date</label>
+            </div>
+        </div>
+    </div>
     <!--table-->
     <div class="pt-4">
         <table class="table table-striped nowrap" id="table-case" style="width:100%">
@@ -144,44 +161,224 @@
 {% block scripts %}
 <script>
     $( document ).ready(function() {
+
+        let minDate, maxDate;
+        // Custom filtering function which will search data in column four between two values
+        DataTable.ext.search.push(function (settings, data, dataIndex) {
+            let min = minDate.val();
+            let max = maxDate.val();
+            let date = new Date(data[4]);
+        
+            if (
+                (min === null && max === null) ||
+                (min === null && date <= max) ||
+                (min <= date && max === null) ||
+                (min <= date && date <= max)
+            ) {
+                return true;
+            }
+            return false;
+        });
+        
+        minDate = new DateTime('#min', {
+            format: 'MM/DD/YYYY'
+        });
+        maxDate = new DateTime('#max', {
+            format: 'MM/DD/YYYY'
+        });
+
+        // DataTables initialisation
+        //let table = new DataTable('#example');
+
         let dataTable = $('#table-case').DataTable({
             dom: 'Brt <"bottom"lp>',
             responsive: true,
             fixedHeader: true,
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[4, 'desc']],
+        });
+        
+        // Refilter the table
+        document.querySelectorAll('#min, #max').forEach((el) => {
+            el.addEventListener('change', () => dataTable.draw());
+        });
+
+        // Function to handle AJAX request
+        function sendAjaxRequest() {
+            $.ajax({
+                type: 'GET',
+                url: '/update_graph_table_report/',  // URL to fetch status information
+                dataType: 'json',
+                data: {
+                    min_date: $('#min').val(), // Get the value of the "Start Date" input
+                    max_date: $('#max').val()  // Get the value of the "End Date" input
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Total Perpetrators: ' + response.total_perpetrators)
+                        // Update the spans with the returned data
+                        $('#total_cases').text(response.total_cases);
+                        $('#total_active').text(response.active_cases);
+                        $('#total_closed').text(response.closed_cases);
+                        $('#total_victim').text(response.total_victims);
+                        $('#total_perpetrator').text(response.total_perpetrators);
+
+                        console.log('success');
+                    } else {
+                        // Show toast with error message
+                        $('.toast-body').text(response.message);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                    // Show toast with AJAX error message
+                    $('.toast-body').text('AJAX Error: ' + error);
+                    $('#errorToast').toast('show');
+                }
+            });
+        }
+
+        // Bind change event handler to the "Start Date" and "End Date" inputs
+        $('#min, #max').on('change', function(event) {
+            // Check which input triggered the change event
+            if ($(this).attr('id') === 'min') {
+                // Log the value of the "Start Date" input
+                console.log('Start Date value:', $(this).val());
+            } else if ($(this).attr('id') === 'max') {
+                // Log the value of the "End Date" input
+                console.log('End Date value:', $(this).val());
+            }
+            // Call the function to handle AJAX request
+            sendAjaxRequest();
+            sendGraphRequest();
         });
 
         $('#sendreportbtn').click(function() {
-            console.log('i got clicked')
-            let email = document.querySelector('.email').value;
+            console.log('Button clicked');
+        
+            // Retrieve the values from the spans
+            let total_cases = $('#total_cases').text();
+            let total_active_cases = $('#total_active').text();
+            let total_closed_cases = $('#total_closed').text();
+            let total_victims = $('#total_victim').text();
+            let total_perpetrators = $('#total_perpetrator').text();
+            
+            // Get the email value
+            let email = $('.email').val();
+        
+            // Send AJAX request
             $.ajax({
-                type: 'POST',  // Assuming you want to send data via POST method
-                url: '{% url 'send_email_report' %}',  // Replace with the URL to send the report
+                type: 'POST',
+                url: '{% url 'send_email_report' %}',
                 data: {
-                    'email' : email ,
-                    'total_cases' : {{ total_cases }} ,
-                    'total_active_cases' : {{ total_active }},
-                    'total_closed_cases' : {{ total_closed }},
-                    'total_victims' : {{ total_victim }},
-                    'total_perpetrators' : {{ total_perpetrator }},
+                    'email': email,
+                    'total_cases': total_cases,
+                    'total_active_cases': total_active_cases,
+                    'total_closed_cases': total_closed_cases,
+                    'total_victims': total_victims,
+                    'total_perpetrators': total_perpetrators,
                 },
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+                    'X-CSRFToken': '{{ csrf_token }}'
                 },
                 success: function(response) {
-                    // Handle the success response here
                     console.log('Report sent successfully!');
+                    $('.toast-body').text('Report Sent Successfully!');
+                    $('#successToast').toast('show');
+
+                    // Handle success response here
                 },
                 error: function(xhr, status, error) {
-                    // Handle any errors that occur during the AJAX request
                     console.error('Error sending report:', error);
+                    // Handle error here
                 }
             });
         });
 
+        // Function to handle AJAX request
+        function sendGraphRequest() {
+            $.ajax({
+                type: 'GET',
+                url: '/update_graph_report/',  // URL to fetch status information
+                dataType: 'json',
+                data: {
+                    min_date: $('#min').val(), // Get the value of the "Start Date" input
+                    max_date: $('#max').val()  // Get the value of the "End Date" input
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Extract data from the response
+                        var dateData = response.data;
+                
+                        // Extract arrays for each data type
+                        var dates = dateData.map(entry => entry.date);
+                        var totalCases = dateData.map(entry => entry.total_cases);
+                        var totalVictims = dateData.map(entry => entry.total_victims);
+                        var totalPerpetrators = dateData.map(entry => entry.total_perpetrators);
+                
+                        // Update the labels and data for the chart
+                        myBarChart.data.labels = dates;
+                        myBarChart.data.datasets[0].data = totalVictims;
+                        myBarChart.data.datasets[1].data = totalPerpetrators;
+                        myBarChart.data.datasets[2].data = totalCases;
+                        myBarChart.update();
+                    } else {
+                        // Show toast with error message
+                        $('.toast-body').text(response.message);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                    // Show toast with AJAX error message
+                    $('.toast-body').text('AJAX Error: ' + error);
+                    $('#errorToast').toast('show');
+                }
+            });
+        }
+        sendGraphRequest();
+        // Initial chart setup
+        var ctx = document.getElementById('myBarChart').getContext('2d');
 
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [], // Initially empty labels
+                datasets: [{
+                    label: 'Victim',
+                    data: [], // Initially empty data
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red color for victims
+                    borderWidth: 1
+                }, {
+                    label: 'Perpetrator',
+                    data: [], // Initially empty data
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color for perpetrators
+                    borderWidth: 1
+                }, {
+                    label: 'Total Cases',
+                    data: [], // Initially empty data
+                    backgroundColor: 'rgba(75, 192, 192, 0.8)', // Green color for total cases
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false
+                    },
+                    y: {
+                        stacked: false,
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     });
-    
-
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script src="https://cdn.datatables.net/datetime/1.5.2/js/dataTables.dateTime.min.js" ></script>
+
 {% endblock scripts %}
