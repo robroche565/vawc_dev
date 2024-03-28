@@ -45,28 +45,20 @@
       let notification_icon_parent = document.querySelector(".list-notification")
 
       $.ajax({
-        url: '{% url 'get_all_notification_barangay'  %}', // Modify the URL to point to your Django view endpoint
+        url: '{% url 'get_all_notification_barangay'  %}',
         method: 'GET',
         headers: {
-          'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token using Django's template syntax
+            'X-CSRFToken': '{{ csrf_token }}'
         },
         success: function(response) {
-        // Assuming response is an array of notifications
-        if (response.every(notif => notif.read === true)) {
-          // All notifications have read attribute set to true
-          // Perform your action here
-          // console.log("All notifications are read");
-          notification_icon_parent.classList.remove("notification");
-        } else {
-          // Not all notifications have read attribute set to true
-          // console.log("Not all notifications are read");
-          notification_icon_parent.classList.add("notification");
-        }
-
-            // You can perform any additional actions here after the notification is marked as read
+            if (response.unread_notifications_exist) {
+                notification_icon_parent.classList.add("notification");
+            } else {
+                notification_icon_parent.classList.remove("notification");
+            }
         },
         error: function(xhr, status, error) {
-            console.error('Error marking notification as read:', error);
+            console.error('Error fetching notifications:', error);
         }
       });
 

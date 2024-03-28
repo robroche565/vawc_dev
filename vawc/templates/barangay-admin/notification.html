@@ -2,49 +2,69 @@
 {% load static %}
 {% block title %}Notification{% endblock %}
 {% block styles %}
-<link rel="stylesheet" href="{% static '/css/notification.css' %}" />
-{% endblock %}
-
+  <style>
+    /* Custom CSS for DataTables pagination */
+    .dataTables_wrapper .dataTables_paginate {
+      margin-right: 10px;
+    }
+  </style>
+{% endblock styles %}
 {% block content %}
-
 <div class="container-fluid">
-
-  <div class="row notification-container">
-      <h2 class="text-center">My Notifications</h2>
-
-      {% for notification in notifications %}
-      <div class="card notification-card notification-invitation">
-        <div class="card-body">
-          <table style="width: 100%;">
-            <tr>
-              <td><p>{{ notification.message }}</p></td>
-              <td>                
-                {% if notification.link != "#" %}
-                    <a href="{{notification.link}}" class="btn btn-primary">View</a>
-                {% endif %}
-                <a href="#{{notification.id}}" class="btn btn-danger read-notif dismiss-notification">Read</a>
-              </td>
-            </tr>
-          </table>
-          <p>{{notification.date}}</p>
-          <p class="hidden">{{notification.read}}</p>
-          <p class="hidden">{{notification.id}}</p>
+  <div class="notification-container">
+    <div class="w-100 py-4 px-1 px-lg-2" style="min-height: 450px;">
+    <div class="card border-0 shadow-lg rounded-3">
+        <div class="d-flex flex-row-reverse bd-highlight my-1">
+            <div class="p-2 bd-highlight">
+            </div>
         </div>
-      </div>
-      {% endfor %}
-
+        <table class="table" id="notif_tbl">
+            <thead>
+                <th class="p-0 m-0 col-10"></th>
+                <th class="p-0 m-0 col-2"></th>
+            </thead>
+            <tbody id ="notification-content">
+                {% for notification in notifications %}
+                <tr {% if notification.read %}  class="bg-light-subtle" {% else %} class="bg-body-secondary" {% endif %}>
+                  <td class="col-10 align-middle">
+                    <div class="mb-0">
+                      <p>{{ notification.message }}</p>
+                    </div>
+                    <div class="mt-0">
+                      <p>{{notification.date}}</p>
+                    </div>
+                  </td>
+                  <td class="col-2 align-middle">
+                    <p class="d-none">{{notification.read}}</p>
+                    <p class="d-none">{{notification.id}}</p>
+                    {% if notification.link != "#" %}
+                      <a href="{{notification.link}}" class="btn btn-sm btn-primary mb-lg-0 mb-2">View</a>
+                    {% endif %}
+                    <a href="#{{notification.id}}" class="btn btn-sm btn-danger read-notif dismiss-notification">Read</a>
+                  </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    </div>
+  </div>
 </div>
-
 {% endblock content %}
 {% block scripts %}
 <script>
-  console.log("test")
-
+  $('#notif_tbl').DataTable({
+    dom: '<"top"f>rt<"bottom"lp><"clear">',
+    responsive: true,
+    fixedHeader: true,
+    lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    order: [[0, 'desc']],
+    "bLengthChange": false,
+    "ordering": false,
+    "bFilter": false,
+  });
 
   let notification_parent = document.querySelector(".notification-container")
-
-  console.log(notification_parent)
 
 
   notification_parent.addEventListener("click", function handleEvent(e) {
@@ -64,6 +84,9 @@
         },
         success: function(response) {
             console.log('Notification marked as read');
+            setTimeout(function() {
+                location.reload();
+            }, 2000); // Reload after 2 seconds (2000 milliseconds)
             // You can perform any additional actions here after the notification is marked as read
         },
         error: function(xhr, status, error) {
@@ -72,14 +95,6 @@
       });
     }
   })
-
-
-
-
-
-
-
-
 
 </script>
 {% endblock scripts %}

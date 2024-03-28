@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseNotFound, QueryDict, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Max, Q
@@ -474,13 +474,21 @@ def read_notification(request):
     return JsonResponse({'success': True, 'message': 'Updated Succesfully.'})
 
 def get_all_notification_barangay(request):
-    all_notifications = Notification.objects.all()
-    
-    # Serialize the queryset to JSON
-    notifications_list = list(all_notifications.values())
+    # Get the current user
+    CustomUser = get_user_model()
+    current_user = request.user
 
-    # Return JSON response with list of dictionaries
-    return JsonResponse(notifications_list, safe=False)
+    # Filter notifications for the current user
+    user_notifications = Notification.objects.filter(receiver_account=current_user.email)
+
+    # Check if there are any unread notifications for the current user
+    unread_notifications_exist = user_notifications.filter(read=False).exists()
+
+    # Serialize the queryset to JSON
+    notifications_list = list(user_notifications.values())
+
+    # Return JSON response with list of dictionaries and flag indicating unread notifications
+    return JsonResponse({'notifications': notifications_list, 'unread_notifications_exist': unread_notifications_exist})
 
 @login_required
 def barangay_dashboard_view (request):
