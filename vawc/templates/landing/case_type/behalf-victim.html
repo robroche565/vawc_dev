@@ -10,10 +10,10 @@
         <div class="col-12 col-lg-8 ml-auto mr-auto mb-4">
           <div class="multisteps-form__progress">
             <button class="multisteps-form__progress-btn js-active" type="button" title="Victim-Survivor Info">Victim-Survivor Info</button>
-            <button class="multisteps-form__progress-btn" type="button" title="Perpetrator Information">Perpetrator Information</button>
-            <button class="multisteps-form__progress-btn" type="button" title="Incident Information">Incident Information</button>
-            <button class="multisteps-form__progress-btn" type="button" title="Contact Person Information">Contact Person Information</button>
-            <button class="multisteps-form__progress-btn" type="button" title="Service Information">Service Information</button>
+            <button class="multisteps-form__progress-btn" type="button" title="Perpetrator Information" disabled>Perpetrator Information</button>
+            <button class="multisteps-form__progress-btn" type="button" title="Incident Information" disabled>Incident Information</button>
+            <button class="multisteps-form__progress-btn" type="button" title="Contact Person Information" disabled>Contact Person Information</button>
+            <button class="multisteps-form__progress-btn" type="button" title="Service Information" disabled>Service Information</button>
           </div>
         </div>
       </div>
@@ -40,24 +40,34 @@
                                     <div class="col-lg-1 col-6">
                                         <a href="#" class="delete-individual-form btn btn-danger d-flex align-items-center justify-content-center">Delete</a>
                                     </div>
-                                    <h5 class="pt-3"><strong>Name:</strong></h5>
 
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--Firstname-->
+                                    <h5 class="pt-1"><strong>Name:</strong></h5>
+
+                                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2"> <!--Firstname-->
                                     <label for="victim-firstname_0" class="form-label">First name: </label>
                                     <input type="text" class="form-control" id="victim-firstname_0" name="victim-firstname_0">
+                                    <div class="invalid-feedback victim-firstname_0" >
+
+                                    </div>
                                     </div>
 
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--middlename-->
+                                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2"> <!--middlename-->
                                     <label for="victim-middlename_0" class="form-label">Middle name: </label>
                                     <input type="text" class="form-control" id="victim-middlename_0" name="victim-middlename_0">
+                                    <div class="invalid-feedback victim-middlename_0" >
+
+                                    </div>
                                     </div>
 
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--lastname-->
+                                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2"> <!--lastname-->
                                     <label for="victim-lastname_0" class="form-label">Last name: </label>
                                     <input type="text" class="form-control" id="victim-lastname_0" name="victim-lastname_0">
+                                    <div class="invalid-feedback victim-lastname_0" >
+
+                                    </div>
                                     </div>
 
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--suffix-->
+                                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2"> <!--suffix-->
                                     <label for="victim-Suffix_0" class="form-label">Suffix: </label>
                                     <select id="victim-Suffix_0" name="victim-Suffix_0" class="form-select">
                                         <option value="none">N/A</option>
@@ -71,7 +81,7 @@
                                 </div><!--End of First row-->
 
                                 <div class="row pt-3"><!--Start of second row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                    <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                     <label for="victim-sex_0" class="form-label">Sex: </label>
                                         <select id="victim-sex_0" name="victim-sex_0" class="form-select">
                                         <option value="Male">Male</option>
@@ -79,12 +89,12 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                        <label for="victim-date-of-birth_0"  class="form-label">Date of Birth: </label>
-                                        <input type="date" class="form-control" id="victim-date-of-birth_0" name="victim-date-of-birth_0">
+                                    <div class="col-lg-4 col-md-4 col-sm-12 mt-2 pb-3">
+                                        <label for="victim-date-of-birth_0">Date of Birth: </label>
+                                        <input type="date" class="form-control" id="victim-date-of-birth_0" name="victim-date-of-birth_0" value="2024-03-01">
                                     </div>
 
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
                                         <label for="victim-civilstatus_0" class="form-label">Civil Status: </label>
                                         <select id="victim-civilstatus_0" name="victim-civilstatus_0"  class="form-select">
                                             <option value="single">Single</option>
@@ -98,24 +108,28 @@
                                 </div><!--End of second row-->
 
                                 <div class="row pt-3 pb-3"><!--Start of third row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                    <div class="col-lg-6 col-md-4 col-12 pb-2">
                                         <label for="victim-nationality_0" class="form-label">Nationality: </label>
-                                        <input type="text" class="form-control" id="victim-nationality_0" name="victim-nationality_0"  placeholder="Filipino">
+                                        <select class="form-select" id="victim-nationality_0" name="victim-nationality_0">
+                                            <option value="Filipino" selected>Filipino</option>
+                                            <option value="Aeta">Aeta</option>
+                                            <option value="Agta">Agta</option>
+                                            <option value="Bicolano">Bicolano</option>
+                                            <option value="Bisaya">Bisaya</option>
+                                            <option value="Ilokano">Ilokano</option>
+                                            <option value="Igorot">Igorot</option>
+                                            <option value="Ilonggo">Ilonggo</option>
+                                            <option value="Kapampangan">Kapampangan</option>
+                                            <option value="Mangyan">Mangyan</option>
+                                            <option value="Moros">Moros</option>
+                                            <option value="Pangasinense">Pangasinense</option>
+                                            <option value="Tagalog">Tagalog</option>
+                                            <option value="Waray">Waray</option>
+                                            <!-- Add more options for other nationalities in the Philippines -->
+                                        </select>
                                     </div>
 
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                        <label for="victim-contact-number_0" class="form-label">Contact Number:</label>
-                                        <input type="number" class="form-control" id="victim-contact-number_0" name="victim-contact-number_0" value="0">
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                        <label for="victim-tel-number_0" class="form-label">Telephone Number:</label>
-                                        <input type="number" class="form-control"  id="victim-tel-number_0" name="victim-tel-number_0" value="0">
-                                    </div>
-                                </div><!--End of third row-->
-
-                                <div class="row pb-3"><!--Start of fourth row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                    <div class="col-lg-6 col-md-8 col-12">
                                         <label for="victim-region_0" class="form-label">Region: </label>
                                         <select id="victim-region_0" name="victim-region_0" class="form-select">
                                             <option value="region-I">Region I – Ilocos Region</option>
@@ -137,39 +151,158 @@
                                             <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
                                         </select>
                                     </div><!--end of row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8">
+                                </div><!--End of third row-->
+
+                                <div class="row pb-lg-0 pb-0"><!--Start of fourth row-->
+                                    <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                         <label for="victim-province_0" class="form-label">Province: </label>
-                                        <input type="text" class="form-control" id="victim-province_0" name="victim-province_0" placeholder="Zamboanga Del Sur">
+                                        <select id="victim-province_0" name="victim-province_0" class="form-select">
+                                            <option value="Zamboanga Del Sur" selected>Zamboanga Del Sur</option>
+                                            <option value="Zamboanga Del Norte">Zamboanga Del Norte</option>
+                                        </select>
                                     </div><!--end of col-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8">
+                                    <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                         <label for="victim-city_0" class="form-label">City / Mun: </label>
-                                        <input type="text" class="form-control" id="victim-city_0" placeholder="Zamboanga City" name="victim-city_0">
+                                        <select id="victim-city_0" name="victim-city_0" class="form-select">
+                                            <option value="Zamboanga City" selected>Zamboanga City</option>
+                                            <option value="Pagadian City">Pagadian City</option>
+                                        </select>
                                     </div><!--emd of col-->
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <label for="victim-barangay_0" class="form-label">Barangay: </label>
+                                        <select id="victim-barangay_0" name="victim-barangay_0" class="form-select">
+                                            <option value="Aplaya" selected>Aplaya</option>
+                                            <option value="Arena Blanco (Sauyo) ">Arena Blanco (Sauyo) </option>
+                                            <option value="Ayala">Ayala</option>
+                                            <option value="Bagong Calarian">Bagong Calarian</option>
+                                            <option value="Baluno">Baluno</option>
+                                            <option value="Boalan">Boalan</option>
+                                            <option value="Bolong">Bolong</option>
+                                            <option value="Buenavista">Buenavista</option>
+                                            <option value="Bunguiao">Bunguiao</option>
+                                            <option value="Busay (Tumaga Proper)">Busay (Tumaga Proper)</option>
+                                            <option value="Cabaluay">Cabaluay</option>
+                                            <option value="Cabatangan">Cabatangan</option>
+                                            <option value="Cacao">Cacao</option>
+                                            <option value="Calabasa">Calabasa</option>
+                                            <option value="Calarian">Calarian</option>
+                                            <option value="Camino Nuevo">Camino Nuevo</option>
+                                            <option value="Campo Islam">Campo Islam</option>
+                                            <option value="Canelar">Canelar</option>
+                                            <option value="Capisan">Capisan</option>
+                                            <option value="Cawit">Cawit</option>
+                                            <option value="Culianan">Culianan</option>
+                                            <option value="Curuan">Curuan</option>
+                                            <option value="Dita">Dita</option>
+                                            <option value="Divisoria">Divisoria</option>
+                                            <option value="Dulian (Upper Bunguiao)">Dulian (Upper Bunguiao)</option>
+                                            <option value="Dulian (Upper Pasonanca)">Dulian (Upper Pasonanca)</option>
+                                            <option value="Guisao">Guisao</option>
+                                            <option value="Guiwan">Guiwan</option>
+                                            <option value="Kasanyangan">Kasanyangan</option>
+                                            <option value="La Paz">La Paz</option>
+                                            <option value="Labuan">Labuan</option>
+                                            <option value="Lamisahan">Lamisahan</option>
+                                            <option value="Landang Gua">Landang Gua</option>
+                                            <option value="Landang Laum">Landang Laum</option>
+                                            <option value="Lanzones">Lanzones</option>
+                                            <option value="Lapakan">Lapakan</option>
+                                            <option value="Lapuyan">Lapuyan</option>
+                                            <option value="Latuan Curuan">Latuan Curuan</option>
+                                            <option value="Licomo">Licomo</option>
+                                            <option value="Limaong">Limaong</option>
+                                            <option value="Limpapa">Limpapa</option>
+                                            <option value="Luba">Luba</option>
+                                            <option value="Lumayang">Lumayang</option>
+                                            <option value="Lunzuran">Lunzuran</option>
+                                            <option value="Maasin">Maasin</option>
+                                            <option value="Malagutay">Malagutay</option>
+                                            <option value="Mampang">Mampang</option>
+                                            <option value="Manalipa">Manalipa</option>
+                                            <option value="Mangusu">Mangusu</option>
+                                            <option value="Manicahan">Manicahan</option>
+                                            <option value="Mariki">Mariki</option>
+                                            <option value="Mercedes">Mercedes</option>
+                                            <option value="Mutong">Mutong</option>
+                                            <option value="Pamucutan">Pamucutan</option>
+                                            <option value="Panubigan">Panubigan</option>
+                                            <option value="Pasilmanta (Sacol Island)">Pasilmanta (Sacol Island)</option>
+                                            <option value="Pasobolong">Pasobolong</option>
+                                            <option value="Pasonanca">Pasonanca</option>
+                                            <option value="Patalon">Patalon</option>
+                                            <option value="Putsan">Putsan</option>
+                                            <option value="Quiniput">Quiniput</option>
+                                            <option value="Recodo">Recodo</option>
+                                            <option value="Rio Hondo">Rio Hondo</option>
+                                            <option value="Salaan">Salaan</option>
+                                            <option value="San Jose Cawa-Cawa">San Jose Cawa-Cawa</option>
+                                            <option value="San Jose Gusu">San Jose Gusu</option>
+                                            <option value="San Ramon">San Ramon</option>
+                                            <option value="San Roque">San Roque</option>
+                                            <option value="Sangali">Sangali</option>
+                                            <option value="Santa Barbara">Santa Barbara</option>
+                                            <option value="Santa Catalina">Santa Catalina</option>
+                                            <option value="Santa Maria">Santa Maria</option>
+                                            <option value="Santa Roza">Santa Roza</option>
+                                            <option value="Sibulao (Talisayan)">Sibulao (Talisayan)</option>
+                                            <option value="Sinubong">Sinubong</option>
+                                            <option value="Sinunuc">Sinunuc</option>
+                                            <option value="Sta. Cruz">Sta. Cruz</option>
+                                            <option value="Sta. Maria">Sta. Maria</option>
+                                            <option value="Sta. Catalina">Sta. Catalina</option>
+                                            <option value="Sta. Catalina (Talisayan)">Sta. Catalina (Talisayan)</option>
+                                            <option value="Sta. Maria">Sta. Maria</option>
+                                            <option value="Sto. Niño" selected>Sto. Niño</option>
+                                            <option value="Tagasilay">Tagasilay</option>
+                                            <option value="Taguiti">Taguiti</option>
+                                            <option value="Talabaan">Talabaan</option>
+                                            <option value="Talisayan">Talisayan</option>
+                                            <option value="Talon-Talon">Talon-Talon</option>
+                                            <option value="Taluksangay">Taluksangay</option>
+                                            <option value="Talungon">Talungon</option>
+                                            <option value="Tetuan">Tetuan</option>
+                                            <option value="Tictapul">Tictapul</option>
+                                            <option value="Tigbalabag">Tigbalabag</option>
+                                            <option value="Tigtabon">Tigtabon</option>
+                                            <option value="Tolosa">Tolosa</option>
+                                            <option value="Tugbungan">Tugbungan</option>
+                                            <option value="Tulungatung">Tulungatung</option>
+                                            <option value="Tumaga">Tumaga</option>
+                                            <option value="Tumalutab">Tumalutab</option>
+                                            <option value="Tumitus">Tumitus</option>
+                                            <option value="Victoria">Victoria</option>
+                                            <option value="Vitali">Vitali</option>
+                                            <option value="Zambowood">Zambowood</option>
+                                        </select>
+                                    </div><!--End of col-->
                                 </div><!--end of fourth row-->
 
                                 <div class="row pt-3 pb-3"><!--Start of fifth row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8">
-                                        <label for="victim-barangay_0" class="form-label">Barangay: </label>
-                                        <input type="text" class="form-control" id="victim-barangay_0" name="victim-barangay_0">
-                                    </div><!--End of col-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                    
+                                    <div class="col-lg-2 col-md-4 col-sm-12 pb-2">
                                         <label for="victim-street_0" class="form-label">Street: </label>
                                         <input type="text" class="form-control" id="victim-street_0" name="victim-street_0">
+                                        <div class="invalid-feedback victim-street_0" >
+
+                                        </div>
                                     </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                        <label for="victim-house-info_0" class="form-label">Unit no./House no./Building name:</label>
+                                    <div class="col-lg-10 col-md-8 col-sm-12 pb-2">
+                                        <label for="victim-house-info_0" class="form-label">Address:</label>
                                         <input type="text" class="form-control" name="victim-house-info_0" id="victim-house-info_0">
+                                        <div class="invalid-feedback victim-house-info_0" >
+
+                                        </div>
                                     </div>
                                 </div><!--end of fifth row-->
                             </div> <!--end of victim form-->
                         </div>
-                        <div class="row">
+                        <div class="row pt-3">
                             <div class="col">
                                 <button class="btn btn-primary w-100" id="add-victim-form"><i class='bx bx-plus-circle'></i> Add Victim</button>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end mt-4">
-                        <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
+                        <button class="btn btn-primary ml-auto next-perpetrator-button js-btn-next" type="button" title="Next" disabled>Next</button>
                         </div>
                     </div>
                 </div>
@@ -188,19 +321,28 @@
                                         <a href="#" class="delete-individual-form btn btn-danger d-flex align-items-center justify-content-center">Delete</a>
                                     </div>
                                     <h5 class="pt-3"><strong>Name:</strong></h5>
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--Firstname-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6 col-12 pb-2"> <!--Firstname-->
                                         <label for="perp-firstname_0" class="form-label">First name: </label>
                                         <input type="text" class="form-control" id="perp-firstname_0" name="perp-firstname_0">
+                                        <div class="invalid-feedback perp-firstname_0" >
+
+                                        </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--middlename-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6 col-12 pb-2"> <!--middlename-->
                                         <label for="perp-middlename_0" class="form-label">Middle name: </label>
                                         <input type="text" class="form-control" id="perp-middlename_0" name="perp-middlename_0">
+                                        <div class="invalid-feedback perp-middlename_0" >
+
+                                        </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--lastname-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6 col-12 pb-2"> <!--lastname-->
                                         <label for="perp-lastname_0" class="form-label">Last name: </label>
                                         <input type="text" class="form-control" id="perp-lastname_0" name="perp-lastname_0">
+                                        <div class="invalid-feedback perp-lastname_0" >
+
+                                        </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--suffix-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6 col-12 pb-2"> <!--suffix-->
                                         <label for="perp-Suffix_0" class="form-label">Suffix: </label>
                                         <select id="perp-Suffix_0" name="perp-Suffix_0" class="form-select">
                                             <option value="none">N/A</option>
@@ -213,12 +355,15 @@
                                     </div>
                                 </div><!--End of First row-->
                                 <div class="row pt-3"><!--Start of second row-->
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2"> <!--lastname-->
+                                    <div class="col-lg-3 col-md-3 col-sm-12 pb-2"> <!--lastname-->
                                         <label for="perp-alias_0" class="form-label">Alias: </label>
                                         <input type="text" class="form-control" id="perp-alias_0" name="perp-alias_0">
+                                        <div class="invalid-feedback perp-alias_0" >
+
+                                        </div>
                                     </div><!--Ennd of col-->
     
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2">
+                                    <div class="col-lg-3 col-md-3 col-sm-12 pb-2">
                                         <label for="perp-sex_0" class="form-label">Sex: </label>
                                         <select id="perp-sex_0" name="perp-sex_0" class="form-select">
                                             <option value="Male">Male</option>
@@ -226,25 +371,41 @@
                                         </select>
                                     </div><!--End of col-->
     
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2">
+                                    <div class="col-lg-3 col-md-3 col-sm-6 pb-2">
                                         <label for="perp-date-of-birth_0" class="form-label">Date of Birth: </label>
                                         <input type="date" class="form-control" id="perp-date-of-birth_0" name="perp-date-of-birth_0" value="2024-03-01">
                                     </div>
     
-                                    <div class="col-lg-3 col-md-3 col-sm-8 pb-2">
+                                    <div class="col-lg-3 col-md-3 col-sm-6 pb-2">
                                         <label for="perp-nationality_0" class="form-label">Nationality: </label>
-                                        <input type="text" class="form-control" id="perp-nationality_0" name="perp-nationality_0" value="Filipino">
+                                        <select class="form-select" id="perp-nationality_0" name="perp-nationality_0">
+                                            <option value="Filipino" selected>Filipino</option>
+                                            <option value="Aeta">Aeta</option>
+                                            <option value="Agta">Agta</option>
+                                            <option value="Bicolano">Bicolano</option>
+                                            <option value="Bisaya">Bisaya</option>
+                                            <option value="Ilokano">Ilokano</option>
+                                            <option value="Igorot">Igorot</option>
+                                            <option value="Ilonggo">Ilonggo</option>
+                                            <option value="Kapampangan">Kapampangan</option>
+                                            <option value="Mangyan">Mangyan</option>
+                                            <option value="Moros">Moros</option>
+                                            <option value="Pangasinense">Pangasinense</option>
+                                            <option value="Tagalog">Tagalog</option>
+                                            <option value="Waray">Waray</option>
+                                            <!-- Add more options for other nationalities in the Philippines -->
+                                        </select>
                                     </div><!--end of col-->
-                            
                                 </div><!--End of second row-->
                                 <div class="row"><!--Start of third row-->
-                                    <div class="col-lg-12 col-md-12 col-sm-8 pb-2"> <!--lastname-->
+                                    <div class="col-lg-6 col-md-12 col-sm-12 pb-2"> <!--lastname-->
                                         <label for="perp-identifying-marks_0" class="form-label">Identifying Marks: </label>
                                         <input type="text" class="form-control" id="perp-identifying-marks_0" name="perp-identifying-marks_0">
+                                        <div class="invalid-feedback perp-identifying-marks_0" >
+
+                                        </div>
                                     </div><!--End of col-->
-                                </div><!--End of third row-->
-                                <div class="row pt-3 pb-3"><!--Start of fourth row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                    <div class="col-lg-6 col-md-12 col-sm-12 pb-2">
                                         <label for="perp-region_0" class="form-label">Region: </label>
                                         <select id="perp-region_0" name="perp-region_0" class="form-select">
                                             <option value="region-I">Region I – Ilocos Region</option>
@@ -266,32 +427,148 @@
                                             <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
                                         </select>
                                     </div><!--end of col-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8">
+                                </div><!--End of third row-->
+                                <div class="row pt-3 pb-3"><!--Start of fourth row-->
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
                                         <label for="perp-province_0" class="form-label">Province: </label>
-                                        <input type="text" class="form-control" id="perp-province_0" name="perp-province_0" value="Zamboanga Del Sur">
+                                        <select id="perp-province_0" name="perp-province_0" class="form-select">
+                                            <option value="Zamboanga Del Sur" selected>Zamboanga Del Sur</option>
+                                            <option value="Zamboanga Del Norte">Zamboanga Del Norte</option>
+                                        </select>
                                     </div><!--end of col-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
                                         <label for="perp-city_0" class="form-label">City / Mun: </label>
-                                        <input type="text" class="form-control" id="perp-city_0" name="perp-city_0" value="Zamboanga City">
+                                        <select id="perp-city_0" name="perp-city_0" class="form-select">
+                                            <option value="Zamboanga City" selected>Zamboanga City</option>
+                                            <option value="Pagadian City">Pagadian City</option>
+                                        </select>
                                     </div><!--emd of col-->
-                                </div><!--End of row-->
-                                <div class="row pt-3 pb-3"><!--Start of fifth row-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
                                         <label for="perp-barangay_0" class="form-label">Barangay: </label>
-                                        <input type="text" class="form-control" id="perp-barangay_0" name="perp-barangay_0">
+                                        <select id="perp-barangay_0" name="perp-barangay_0" class="form-select">
+                                            <option value="Aplaya" selected>Aplaya</option>
+                                            <option value="Arena Blanco (Sauyo) ">Arena Blanco (Sauyo) </option>
+                                            <option value="Ayala">Ayala</option>
+                                            <option value="Bagong Calarian">Bagong Calarian</option>
+                                            <option value="Baluno">Baluno</option>
+                                            <option value="Boalan">Boalan</option>
+                                            <option value="Bolong">Bolong</option>
+                                            <option value="Buenavista">Buenavista</option>
+                                            <option value="Bunguiao">Bunguiao</option>
+                                            <option value="Busay (Tumaga Proper)">Busay (Tumaga Proper)</option>
+                                            <option value="Cabaluay">Cabaluay</option>
+                                            <option value="Cabatangan">Cabatangan</option>
+                                            <option value="Cacao">Cacao</option>
+                                            <option value="Calabasa">Calabasa</option>
+                                            <option value="Calarian">Calarian</option>
+                                            <option value="Camino Nuevo">Camino Nuevo</option>
+                                            <option value="Campo Islam">Campo Islam</option>
+                                            <option value="Canelar">Canelar</option>
+                                            <option value="Capisan">Capisan</option>
+                                            <option value="Cawit">Cawit</option>
+                                            <option value="Culianan">Culianan</option>
+                                            <option value="Curuan">Curuan</option>
+                                            <option value="Dita">Dita</option>
+                                            <option value="Divisoria">Divisoria</option>
+                                            <option value="Dulian (Upper Bunguiao)">Dulian (Upper Bunguiao)</option>
+                                            <option value="Dulian (Upper Pasonanca)">Dulian (Upper Pasonanca)</option>
+                                            <option value="Guisao">Guisao</option>
+                                            <option value="Guiwan">Guiwan</option>
+                                            <option value="Kasanyangan">Kasanyangan</option>
+                                            <option value="La Paz">La Paz</option>
+                                            <option value="Labuan">Labuan</option>
+                                            <option value="Lamisahan">Lamisahan</option>
+                                            <option value="Landang Gua">Landang Gua</option>
+                                            <option value="Landang Laum">Landang Laum</option>
+                                            <option value="Lanzones">Lanzones</option>
+                                            <option value="Lapakan">Lapakan</option>
+                                            <option value="Lapuyan">Lapuyan</option>
+                                            <option value="Latuan Curuan">Latuan Curuan</option>
+                                            <option value="Licomo">Licomo</option>
+                                            <option value="Limaong">Limaong</option>
+                                            <option value="Limpapa">Limpapa</option>
+                                            <option value="Luba">Luba</option>
+                                            <option value="Lumayang">Lumayang</option>
+                                            <option value="Lunzuran">Lunzuran</option>
+                                            <option value="Maasin">Maasin</option>
+                                            <option value="Malagutay">Malagutay</option>
+                                            <option value="Mampang">Mampang</option>
+                                            <option value="Manalipa">Manalipa</option>
+                                            <option value="Mangusu">Mangusu</option>
+                                            <option value="Manicahan">Manicahan</option>
+                                            <option value="Mariki">Mariki</option>
+                                            <option value="Mercedes">Mercedes</option>
+                                            <option value="Mutong">Mutong</option>
+                                            <option value="Pamucutan">Pamucutan</option>
+                                            <option value="Panubigan">Panubigan</option>
+                                            <option value="Pasilmanta (Sacol Island)">Pasilmanta (Sacol Island)</option>
+                                            <option value="Pasobolong">Pasobolong</option>
+                                            <option value="Pasonanca">Pasonanca</option>
+                                            <option value="Patalon">Patalon</option>
+                                            <option value="Putsan">Putsan</option>
+                                            <option value="Quiniput">Quiniput</option>
+                                            <option value="Recodo">Recodo</option>
+                                            <option value="Rio Hondo">Rio Hondo</option>
+                                            <option value="Salaan">Salaan</option>
+                                            <option value="San Jose Cawa-Cawa">San Jose Cawa-Cawa</option>
+                                            <option value="San Jose Gusu">San Jose Gusu</option>
+                                            <option value="San Ramon">San Ramon</option>
+                                            <option value="San Roque">San Roque</option>
+                                            <option value="Sangali">Sangali</option>
+                                            <option value="Santa Barbara">Santa Barbara</option>
+                                            <option value="Santa Catalina">Santa Catalina</option>
+                                            <option value="Santa Maria">Santa Maria</option>
+                                            <option value="Santa Roza">Santa Roza</option>
+                                            <option value="Sibulao (Talisayan)">Sibulao (Talisayan)</option>
+                                            <option value="Sinubong">Sinubong</option>
+                                            <option value="Sinunuc">Sinunuc</option>
+                                            <option value="Sta. Cruz">Sta. Cruz</option>
+                                            <option value="Sta. Maria">Sta. Maria</option>
+                                            <option value="Sta. Catalina">Sta. Catalina</option>
+                                            <option value="Sta. Catalina (Talisayan)">Sta. Catalina (Talisayan)</option>
+                                            <option value="Sta. Maria">Sta. Maria</option>
+                                            <option value="Sto. Niño" selected>Sto. Niño</option>
+                                            <option value="Tagasilay">Tagasilay</option>
+                                            <option value="Taguiti">Taguiti</option>
+                                            <option value="Talabaan">Talabaan</option>
+                                            <option value="Talisayan">Talisayan</option>
+                                            <option value="Talon-Talon">Talon-Talon</option>
+                                            <option value="Taluksangay">Taluksangay</option>
+                                            <option value="Talungon">Talungon</option>
+                                            <option value="Tetuan">Tetuan</option>
+                                            <option value="Tictapul">Tictapul</option>
+                                            <option value="Tigbalabag">Tigbalabag</option>
+                                            <option value="Tigtabon">Tigtabon</option>
+                                            <option value="Tolosa">Tolosa</option>
+                                            <option value="Tugbungan">Tugbungan</option>
+                                            <option value="Tulungatung">Tulungatung</option>
+                                            <option value="Tumaga">Tumaga</option>
+                                            <option value="Tumalutab">Tumalutab</option>
+                                            <option value="Tumitus">Tumitus</option>
+                                            <option value="Victoria">Victoria</option>
+                                            <option value="Vitali">Vitali</option>
+                                            <option value="Zambowood">Zambowood</option>
+                                        </select>
                                     </div><!--End of col-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                </div><!--End of row-->
+                                <div class="row pt-3 pb-lg-0"><!--Start of fifth row-->
+                                    <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                         <label for="perp-street_0" class="form-label">Street: </label>
                                         <input type="text" class="form-control" id="perp-street_0" name="perp-street_0">
+                                        <div class="invalid-feedback perp-street_0" >
+
+                                        </div>
                                     </div><!--end of col-->
-                                    <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                        <label for="perp-address-info_0" class="form-label">Unit no./House no./Building name: </label>
+                                    <div class="col-lg-8 col-md-4 col-sm-12 pb-2">
+                                        <label for="perp-address-info_0" class="form-label">Address: </label>
                                         <input type="text" class="form-control" id="perp-address-info_0" name="perp-address-info_0">
+                                        <div class="invalid-feedback perp-address-info_0" >
+
+                                        </div>
                                     </div><!--End of col-->
                                 </div><!--end of fifth row-->
-
                                 <div class="row pt-3 pb-3"><!--Start of sixth row-->
-                                    <div class="col-lg-12 col-md-12 col-sm-8 pb-2">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 pb-2">
                                         <label for="perp-relationsip-victim_0" class="form-label">Relationship of Perpetrator to the Victim: </label>
                                         <select id="perp-relationsip-victim_0" name="perp-relationsip-victim_0" class="form-select">
                                             <option value="currentSpouse">Current spouse / partner</option>
@@ -319,7 +596,7 @@
                         </div>
                         <div class="d-flex justify-content-between mt-4">
                         <button class="btn btn-outline-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                        <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
+                        <button class="btn btn-primary ml-auto next-incident-button js-btn-next" type="button" title="Next" disabled>Next</button>
                         </div>
                     </div>
                 </div>
@@ -333,7 +610,7 @@
                                     <label for="date-latest-incident" class="form-label"><strong>Date of Latest Incident: </strong></label>
                                 </div><!--end of col-->
                                 <div class="col-lg-4 col-md-4 col-sm-12">
-                                    <input type="date" class="form-control" name="date-latest-incident" id="date-latest-incident" value="">
+                                    <input type="date" class="form-control" name="date-latest-incident" id="date-latest-incident" value="2024-03-01">
                                 </div><!--emd of col-->
                                 <div class="col-lg-4 col-md-4 col-sm-12 pt-2">
                                     <div class="form-check">
@@ -346,9 +623,9 @@
                                 </div><!--emd of col-->
                             </div><!--end of row-->
 
-                            <div class="row pt-3 pb-3">
+                            <div class="row pt-3 pb-lg-3">
                                 <h5 class="pb-3"><strong>Place of Incident</strong></h5>
-                                <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                     <label for="place-incident" class="form-label">Type of Place of incident: </label>
                                     <select id="place-incident" name="place-incident" class="form-select">
                                         <option selected>---Select Place of Incident---</option>
@@ -364,7 +641,7 @@
                                         <option value="noResponse">No Response</option>
                                     </select>
                                 </div><!--end of col-->
-                                <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                     <label for="incident-region" class="form-label">Region: </label>
                                     <select id="incident-region" name="incident-region" class="form-select">
                                         <option value="region-I">Region I – Ilocos Region</option>
@@ -386,21 +663,29 @@
                                         <option value="barmm">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
                                     </select>
                                 </div><!--end of col-->
-                                <div class="col-lg-4 col-md-4 col-sm-8">
-                                    <label for="incident-province" class="form-label">Province: </label>
-                                    <input type="text" class="form-control" name="incident-province" id="incident-province" value="Zamboanga Del Sur">
+
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <label for="incident-province" class="form-label">Province:</label>
+                                    <select id="incident-province" name="incident-province" class="form-select">
+                                        <option value="Zamboanga Del Sur" selected>Zamboanga Del Sur</option>
+                                        <option value="Zamboanga Del Norte">Zamboanga Del Norte</option>
+                                    </select>
                                 </div><!--end of col-->
                             </div><!--end of row-->
 
-                            <div class="row pt-3 pb-3">
-                                <div class="col-lg-4 col-md-4 col-sm-8">
-                                    <label for="incident-city" class="form-label">City / Mun: </label>
-                                    <input type="text" class="form-control" name="incident-city" id="incident-city" value="Zamboanga City">
+                            <div class="row pt-3 pb-lg-3">
+                                <div class="col-lg-4 col-md-4 col-sm-12 pb-lg-0 pb-2">
+                                    <label for="incident-city" class="form-label">City / Mun:</label>
+                                    <select id="incident-city" name="incident-city" class="form-select">
+                                        <option value="Zamboanga City" selected>Zamboanga City</option>
+                                        <option value="Pagadian City">Pagadian City</option>
+                                    </select>
                                 </div><!--emd of col-->
-                                <div class="col-lg-4 col-md-4 col-sm-8">
+
+                                <div class="col-lg-4 col-md-4 col-sm-12 pb-lg-0 pb-3">
                                     <label for="incident-barangay" class="form-label">Barangay:</label>
                                     <select id="incident-barangay" name="incident-barangay" class="form-select">
-                                        <option selected>---Select Barangay---</option>
+                                        <option>---Select Barangay---</option>
                                         <option value="Aplaya">Aplaya</option>
                                         <option value="Arena Blanco (Sauyo) ">Arena Blanco (Sauyo) </option>
                                         <option value="Ayala">Ayala</option>
@@ -482,7 +767,7 @@
                                         <option value="Sta. Catalina">Sta. Catalina</option>
                                         <option value="Sta. Catalina (Talisayan)">Sta. Catalina (Talisayan)</option>
                                         <option value="Sta. Maria">Sta. Maria</option>
-                                        <option value="Sto. Niño">Sto. Niño</option>
+                                        <option value="Sto. Niño" selected>Sto. Niño</option>
                                         <option value="Tagasilay">Tagasilay</option>
                                         <option value="Taguiti">Taguiti</option>
                                         <option value="Talabaan">Talabaan</option>
@@ -506,9 +791,12 @@
                                     </select>
                                 </div><!--End of col-->
 
-                                <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
+                                <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                     <label for="incident-street" class="form-label">Street: </label>
                                     <input type="text" class="form-control" id="incident-street" name="incident-street">
+                                    <div class="invalid-feedback incident-street">
+
+                                    </div>
                                 </div><!--end of col-->
                             </div><!--end of row-->
 
@@ -516,6 +804,9 @@
                                 <div class="mb-3">
                                     <label for="incident-desc" class="form-label"><strong>Description of Incident:</strong></label>
                                     <textarea class="form-control" name="incident-desc" id="incident-desc" rows="3"></textarea>
+                                    <div class="invalid-feedback incident-street">
+
+                                    </div>
                                 </div><!--for textbox-->
                             </div><!--End or row-->
 
@@ -528,7 +819,7 @@
                         <div class="row">
                             <div class="d-flex justify-content-between mt-4 col-12">
                                 <button class="btn btn-outline-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                                <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
+                                <button class="btn btn-primary ml-auto btn-next-contact-person js-btn-next" type="button" title="Next" disabled>Next</button>
                             </div>
                         </div>
                     </div>
@@ -541,14 +832,23 @@
                             <div class="col-lg-3 col-md-3 col-sm-12 pb-2">
                                 <label for="contact-firstname" class="form-label">First Name: </label>
                                 <input type="text" class="form-control" id="contact-firstname" name="contact-firstname">
+                                <div class="invalid-feedback contact-firstname" >
+
+                                </div>
                             </div><!--end of col-->
                             <div class="col-lg-3 col-md-3 col-sm-12 pb-2">
                                 <label for="contact-midname" class="form-label">Middle Name: </label>
                                 <input type="text" class="form-control" id="contact-midname" name="contact-midname">
+                                <div class="invalid-feedback contact-midname" >
+
+                                </div>
                             </div><!--end of col-->
                             <div class="col-lg-3 col-md-3 col-sm-12 pb-2">
                                 <label for="contact-lastname" class="form-label">Last Name: </label>
                                 <input type="text" class="form-control" id="contact-lastname" name="contact-lastname">
+                                <div class="invalid-feedback contact-lastname" >
+
+                                </div>
                             </div><!--end of col-->
                             <div class="col-lg-3 col-md-3 col-sm-12 pb-2">
                                 <label for="contact-Suffix" class="form-label">Suffix: </label>
@@ -567,6 +867,9 @@
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="relationship" class="form-label">Relationship to the Victim: </label>
                                 <input type="text" class="form-control" id="relationship" name="relationship">
+                                <div class="invalid-feedback relationship" >
+
+                                </div>
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="contact-number" class="form-label">Contact No.: </label>
@@ -574,7 +877,7 @@
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="contact-tel" class="form-label">Telephone No.: </label>
-                                <input type="text" class="form-control" id="contact-tel" name="contact-tel" value="0">
+                                <input type="number" class="form-control" id="contact-tel" name="contact-tel" value="0">
                             </div><!--end of col-->
                         </div><!--end of row-->
 
@@ -603,29 +906,144 @@
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="contact-province" class="form-label">Province: </label>
-                                <input type="text" class="form-control" id="contact-province" name="contact-province" placeholder="Province">
+                                <select id="contact-province" name="contact-province" class="form-select">
+                                    <option value="Zamboanga Del Sur" selected>Zamboanga Del Sur</option>
+                                    <option value="Zamboanga Del Norte">Zamboanga Del Norte</option>
+                                </select>
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="contact-city" class="form-label">City/ Mun: </label>
-                                <input type="text" class="form-control" id="contact-city" name="contact-city" placeholder="City">
+                                <select id="contact-city" name="contact-city" class="form-select">
+                                    <option value="Zamboanga City" selected>Zamboanga City</option>
+                                    <option value="Pagadian City">Pagadian City</option>
+                                </select>
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="contact-barangay" class="form-label">Barangay: </label>
-                                <input type="text" class="form-control" id="contact-barangay" name="contact-barangay">
+                                <select id="contact-barangay" name="contact-barangay" class="form-select">
+                                    <option value="Aplaya" selected>Aplaya</option>
+                                    <option value="Arena Blanco (Sauyo) ">Arena Blanco (Sauyo) </option>
+                                    <option value="Ayala">Ayala</option>
+                                    <option value="Bagong Calarian">Bagong Calarian</option>
+                                    <option value="Baluno">Baluno</option>
+                                    <option value="Boalan">Boalan</option>
+                                    <option value="Bolong">Bolong</option>
+                                    <option value="Buenavista">Buenavista</option>
+                                    <option value="Bunguiao">Bunguiao</option>
+                                    <option value="Busay (Tumaga Proper)">Busay (Tumaga Proper)</option>
+                                    <option value="Cabaluay">Cabaluay</option>
+                                    <option value="Cabatangan">Cabatangan</option>
+                                    <option value="Cacao">Cacao</option>
+                                    <option value="Calabasa">Calabasa</option>
+                                    <option value="Calarian">Calarian</option>
+                                    <option value="Camino Nuevo">Camino Nuevo</option>
+                                    <option value="Campo Islam">Campo Islam</option>
+                                    <option value="Canelar">Canelar</option>
+                                    <option value="Capisan">Capisan</option>
+                                    <option value="Cawit">Cawit</option>
+                                    <option value="Culianan">Culianan</option>
+                                    <option value="Curuan">Curuan</option>
+                                    <option value="Dita">Dita</option>
+                                    <option value="Divisoria">Divisoria</option>
+                                    <option value="Dulian (Upper Bunguiao)">Dulian (Upper Bunguiao)</option>
+                                    <option value="Dulian (Upper Pasonanca)">Dulian (Upper Pasonanca)</option>
+                                    <option value="Guisao">Guisao</option>
+                                    <option value="Guiwan">Guiwan</option>
+                                    <option value="Kasanyangan">Kasanyangan</option>
+                                    <option value="La Paz">La Paz</option>
+                                    <option value="Labuan">Labuan</option>
+                                    <option value="Lamisahan">Lamisahan</option>
+                                    <option value="Landang Gua">Landang Gua</option>
+                                    <option value="Landang Laum">Landang Laum</option>
+                                    <option value="Lanzones">Lanzones</option>
+                                    <option value="Lapakan">Lapakan</option>
+                                    <option value="Lapuyan">Lapuyan</option>
+                                    <option value="Latuan Curuan">Latuan Curuan</option>
+                                    <option value="Licomo">Licomo</option>
+                                    <option value="Limaong">Limaong</option>
+                                    <option value="Limpapa">Limpapa</option>
+                                    <option value="Luba">Luba</option>
+                                    <option value="Lumayang">Lumayang</option>
+                                    <option value="Lunzuran">Lunzuran</option>
+                                    <option value="Maasin">Maasin</option>
+                                    <option value="Malagutay">Malagutay</option>
+                                    <option value="Mampang">Mampang</option>
+                                    <option value="Manalipa">Manalipa</option>
+                                    <option value="Mangusu">Mangusu</option>
+                                    <option value="Manicahan">Manicahan</option>
+                                    <option value="Mariki">Mariki</option>
+                                    <option value="Mercedes">Mercedes</option>
+                                    <option value="Mutong">Mutong</option>
+                                    <option value="Pamucutan">Pamucutan</option>
+                                    <option value="Panubigan">Panubigan</option>
+                                    <option value="Pasilmanta (Sacol Island)">Pasilmanta (Sacol Island)</option>
+                                    <option value="Pasobolong">Pasobolong</option>
+                                    <option value="Pasonanca">Pasonanca</option>
+                                    <option value="Patalon">Patalon</option>
+                                    <option value="Putsan">Putsan</option>
+                                    <option value="Quiniput">Quiniput</option>
+                                    <option value="Recodo">Recodo</option>
+                                    <option value="Rio Hondo">Rio Hondo</option>
+                                    <option value="Salaan">Salaan</option>
+                                    <option value="San Jose Cawa-Cawa">San Jose Cawa-Cawa</option>
+                                    <option value="San Jose Gusu">San Jose Gusu</option>
+                                    <option value="San Ramon">San Ramon</option>
+                                    <option value="San Roque">San Roque</option>
+                                    <option value="Sangali">Sangali</option>
+                                    <option value="Santa Barbara">Santa Barbara</option>
+                                    <option value="Santa Catalina">Santa Catalina</option>
+                                    <option value="Santa Maria">Santa Maria</option>
+                                    <option value="Santa Roza">Santa Roza</option>
+                                    <option value="Sibulao (Talisayan)">Sibulao (Talisayan)</option>
+                                    <option value="Sinubong">Sinubong</option>
+                                    <option value="Sinunuc">Sinunuc</option>
+                                    <option value="Sta. Cruz">Sta. Cruz</option>
+                                    <option value="Sta. Maria">Sta. Maria</option>
+                                    <option value="Sta. Catalina">Sta. Catalina</option>
+                                    <option value="Sta. Catalina (Talisayan)">Sta. Catalina (Talisayan)</option>
+                                    <option value="Sta. Maria">Sta. Maria</option>
+                                    <option value="Sto. Niño" selected>Sto. Niño</option>
+                                    <option value="Tagasilay">Tagasilay</option>
+                                    <option value="Taguiti">Taguiti</option>
+                                    <option value="Talabaan">Talabaan</option>
+                                    <option value="Talisayan">Talisayan</option>
+                                    <option value="Talon-Talon">Talon-Talon</option>
+                                    <option value="Taluksangay">Taluksangay</option>
+                                    <option value="Talungon">Talungon</option>
+                                    <option value="Tetuan">Tetuan</option>
+                                    <option value="Tictapul">Tictapul</option>
+                                    <option value="Tigbalabag">Tigbalabag</option>
+                                    <option value="Tigtabon">Tigtabon</option>
+                                    <option value="Tolosa">Tolosa</option>
+                                    <option value="Tugbungan">Tugbungan</option>
+                                    <option value="Tulungatung">Tulungatung</option>
+                                    <option value="Tumaga">Tumaga</option>
+                                    <option value="Tumalutab">Tumalutab</option>
+                                    <option value="Tumitus">Tumitus</option>
+                                    <option value="Victoria">Victoria</option>
+                                    <option value="Vitali">Vitali</option>
+                                    <option value="Zambowood">Zambowood</option>
+                                </select>
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-12 pb-2">
                                 <label for="contact-street" class="form-label">Street: </label>
                                 <input type="text" class="form-control" id="contact-street" name="contact-street">
+                                <div class="invalid-feedback contact-street" >
+
+                                </div>
                             </div><!--end of col-->
                             <div class="col-lg-4 col-md-4 col-sm-8 pb-2">
-                                <label for="contact-bldg-no" class="form-label">Unit no./House no./Building name:</label>
+                                <label for="contact-bldg-no" class="form-label">Address:</label>
                                 <input type="text" class="form-control" name="contact-bldg-no" id="contact-bldg-no">
+                                <div class="invalid-feedback contact-bldg-no" >
+
+                                </div>
                             </div>
                         </div><!--end of row-->
                         
                         <div class="d-flex justify-content-between mt-4">
                             <button class="btn btn-outline-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                            <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
+                            <button class="btn btn-primary ml-auto btn-service-info js-btn-next" type="button" title="Next" disabled>Next</button>
                         </div>
                     </div>
                 </div>
@@ -772,6 +1190,260 @@
     }
     
     $(document).ready(function() {
+        function checkButtonsValidity() {
+            const FirstNameValue = $("#contact-firstname").val().trim();
+            const MidNameValue = $("#contact-midname").val().trim();
+            const LastNameValue = $("#contact-lastname").val().trim();
+            const RelationshipValue = $("#relationship").val().trim();
+            const StreetValue = $("#contact-street").val().trim();
+            const AddressValue = $("#contact-bldg-no").val().trim();
+
+            const isStreetValid = !$("#contact-street").hasClass('is-invalid') && StreetValue !== "";
+            const isFirstNameValid = !$("#contact-firstname").hasClass('is-invalid') && FirstNameValue !== "";
+            const isMidNameValid = !$("#contact-midname").hasClass('is-invalid') && MidNameValue !== "";
+            const isLastNameValid = !$("#contact-lastname").hasClass('is-invalid') && LastNameValue !== "";
+            const isRelationshipValid = !$("#relationship").hasClass('is-invalid') && RelationshipValue !== "";
+            const isAddressValid = !$("#contact-bldg-no").hasClass('is-invalid') && AddressValue !== "";
+
+            const progressButton = $('button[title="Service Information"]');
+            const nextButton = $('.btn-service-info');
+        
+            if (isStreetValid && isFirstNameValid && isMidNameValid && isLastNameValid && isRelationshipValid && isAddressValid) {
+                console.log("Okay: All inputs are valid contact.");
+                progressButton.prop('disabled', false);
+                nextButton.prop('disabled', false);
+            } else {
+                console.log("No: Some inputs are not valid contact.");
+                progressButton.prop('disabled', true);
+                nextButton.prop('disabled', true);
+            }
+        }
+        
+        // Call the function initially
+        checkButtonsValidity();
+        function validateTextInput(inputId, maxLength, errorMessage) {
+            const input = $("#" + inputId);
+            let value = input.val().trim();
+        
+            // Truncate the input value if it exceeds the maximum length
+            if (value.length > maxLength) {
+                value = value.slice(0, maxLength);
+                input.val(value); // Update the input value
+            }
+        
+            // Remove numerical characters
+            value = value.replace(/\d/g, '');
+        
+            // Check if the input value exceeds the maximum length
+            const isOverMaxLength = value.length >= maxLength;
+        
+            const feedback = input.next(".invalid-feedback");
+            if (isOverMaxLength) {
+                feedback.text(`Only up to ${maxLength} characters allowed.`);
+            } else if (!value) {
+                feedback.text("This is a required input.");
+            } else {
+                feedback.text("");
+            }
+        
+            // Add or remove the 'is-invalid' class based on input validity
+            if (isOverMaxLength || !value) {
+                input.addClass('is-invalid');
+            } else {
+                input.removeClass('is-invalid');
+            }
+        }
+
+        // Add event listeners for validation and required input error
+        $("#contact-firstname, #contact-midname, #contact-lastname, #relationship, #contact-street").on('input', function() {
+            validateTextInput($(this).attr('id'), 50, "");
+            checkButtonsValidity();
+        });
+
+        // Add event listener for the "required input" error
+        $("#contact-firstname, #contact-midname, #contact-lastname, #relationship, #contact-street").on('blur', function() {
+            const input = $(this);
+            const feedback = input.next(".invalid-feedback");
+            if (!input.val().trim()) {
+                feedback.text("This is a required input.");
+                input.addClass('is-invalid');
+                checkButtonsValidity();
+            }
+        });
+        $("#contact-firstname, #contact-midname, #contact-lastname, #relationship, #contact-street").on('keydown', function(event) {
+            if (/\d/.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+
+        // Function to validate address input
+        function validateAddressInput() {
+            const addressInput = $("#contact-bldg-no");
+            let value = addressInput.val().trim();
+
+            // Truncate the input value if it exceeds the maximum length
+            const maxLength = 150;
+            if (value.length > maxLength) {
+                value = value.slice(0, maxLength);
+                addressInput.val(value); // Update the input value
+            }
+
+            // Check if the input value exceeds the maximum length
+            const isOverMaxLength = value.length >= maxLength; 
+
+            const feedback = addressInput.next(".invalid-feedback");
+            if (isOverMaxLength) {
+                feedback.text(`Only up to ${maxLength} characters allowed.`);
+            } else {
+                feedback.text("");
+            }
+
+            // Add or remove the 'is-invalid' class based on input validity
+            if (isOverMaxLength) {
+                addressInput.addClass('is-invalid');
+            } else {
+                addressInput.removeClass('is-invalid');
+            }
+        }
+
+        // Add event listener to address input for validation
+        $("#contact-bldg-no").on('input', function() {
+            validateAddressInput();
+            checkButtonsValidity();
+        });
+        // Function to check if all inputs are valid and enable/disable buttons accordingly
+        function checkInputsValidity() {
+            const streetInputValue = $("#incident-street").val().trim();
+            const descriptionInputValue = $("#incident-desc").val().trim();
+            const isStreetValid = !$("#incident-street").hasClass('is-invalid') && streetInputValue !== "";
+            const isDescriptionValid = !$("#incident-desc").hasClass('is-invalid') && descriptionInputValue !== "";
+
+            const progressButton = $('button[title="Contact Person Information"]');
+            const nextButton = $('.btn-next-contact-person');
+
+            if (isStreetValid && isDescriptionValid) {
+                progressButton.prop('disabled', false);
+                nextButton.prop('disabled', false);
+            } else {
+                progressButton.prop('disabled', true);
+                nextButton.prop('disabled', true);
+            }
+        }
+
+        checkInputsValidity();
+
+        $("#incident-street, #incident-desc" ).on('input change', function() {
+            checkInputsValidity();
+        });
+        // Function to validate the incident street input
+        function validateIncidentStreet() {
+            const streetInput = $("#incident-street");
+            let value = streetInput.val().trim();
+
+            // Truncate the input value if it exceeds the maximum length
+            const maxLength = 50;
+            if (value.length > maxLength) {
+                value = value.slice(0, maxLength);
+                streetInput.val(value); // Update the input value
+            }
+
+            // Check if the input value exceeds the maximum length
+            const isOverMaxLength = value.length >= maxLength; // Change condition here
+
+            // Check if the input contains numerical characters
+            const hasNumerical = /\d/.test(value);
+
+            const feedback = streetInput.next(".invalid-feedback");
+            if (isOverMaxLength) {
+                feedback.text(`Only up to ${maxLength} characters allowed.`);
+            } else if (hasNumerical) {
+                feedback.text("Street name cannot contain numerical characters.");
+            } else if (!value) {
+                feedback.text("Street is a required input.");
+            } else {
+                feedback.text("");
+            }
+
+            // Add or remove the 'is-invalid' class based on input validity
+            if (isOverMaxLength || hasNumerical || !value) {
+                streetInput.addClass('is-invalid');
+            } else {
+                streetInput.removeClass('is-invalid');
+            }
+        }
+
+        // Add event listener to incident street input for validation
+        $("#incident-street").on('input', validateIncidentStreet);
+        // Prevent typing numerical characters in the incident street input
+        $("#incident-street").on('keydown', function(event) {
+            if (/\d/.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+
+        // Function to validate the description of incident input
+        function validateDescriptionInput() {
+            const descriptionInput = $("#incident-desc");
+            let value = descriptionInput.val().trim();
+
+            // Truncate the input value if it exceeds the maximum length
+            const maxLength = 150;
+            if (value.length > maxLength) {
+                value = value.slice(0, maxLength);
+                descriptionInput.val(value); // Update the input value
+            }
+
+            // Check if the input value exceeds the maximum length
+            const isOverMaxLength = value.length >= maxLength; // Change condition here
+
+            // Check if the input is empty
+            const isEmpty = value.length === 0;
+
+            const feedback = descriptionInput.next(".invalid-feedback");
+            if (isOverMaxLength) {
+                feedback.text(`Only up to ${maxLength} characters allowed.`);
+            }else if (isEmpty) {
+                feedback.text("Description of incident is a required input.");
+            } else {
+                feedback.text("");
+            }
+
+            // Add or remove the 'is-invalid' class based on input validity
+            if (isOverMaxLength || isEmpty) {
+                descriptionInput.addClass('is-invalid');
+            } else {
+                descriptionInput.removeClass('is-invalid');
+            }
+        }
+
+        // Add event listener to description of incident textarea for validation
+        $("#incident-desc").on('input', validateDescriptionInput);
+
+        // Function to validate the upload evidence input
+        function validateUploadEvidence() {
+            const evidenceInput = $("#incident-evidence");
+            const files = evidenceInput[0].files;
+
+            // Check if any file is uploaded and validate each file type
+            let isValidFileType = true;
+            for (let i = 0; i < files.length; i++) {
+                if (!files[i].type.startsWith('image/')) {
+                    isValidFileType = false;
+                    break;
+                }
+            }
+            if (!isValidFileType) {
+                feedback.text("Only images are allowed to be uploaded.");
+                // Clear the uploaded files
+                evidenceInput.val('');
+            } else {
+                feedback.text("");
+            }
+        }
+
+        // Add event listener to upload evidence input for validation
+        $("#incident-evidence").on('change', validateUploadEvidence);
+
 
         const form = document.querySelector("#impact-victim-form")
 
