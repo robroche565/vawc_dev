@@ -2385,7 +2385,7 @@ def update_case_status(request, case_id):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})  # Return an error response if the request method is not POST
 
-def tite(request):
+def encrypt_decrypt(request):
 
     form_data = request.POST.get('formData')
     parsed_data = QueryDict(form_data)

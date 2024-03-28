@@ -86,7 +86,7 @@ urlpatterns = [
     #user
     path('custom_password_change/', views.custom_password_change_view, name='custom_password_change'),
 
-    path('tite/', views.tite, name='tite')
+    path('encrypt_decrypt/', views.encrypt_decrypt, name='encrypt_decrypt')
 ]
 
 # Serve media files during development
